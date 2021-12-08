@@ -54,20 +54,6 @@
                                                     <label class="floating-label">Contraseña *</label>
                                                 </div>
                                             </div>
-
-                                            <div class="form-group col-lg-12 col-md-12 pl-0 pr-0">
-
-
-                                                <label class="floating-label-active">Tipo de Usuarios *</label>
-                                                <div class="floating-label-group">
-                                                    <select name="users[user_type]" class="form-control input-form" required>
-                                                        <option value="1">Zumpango</option>
-                                                        <option value="2">DIF</option>
-                                                        <option value="3">ODAPAZ</option>
-                                                        <option value="4">IMCUFIDEZ</option>
-                                                    </select>
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div id="permisos_div" style="display:<?php echo ($id > 0 ? 'block' : 'none'); ?>">
