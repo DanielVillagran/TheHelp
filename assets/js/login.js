@@ -10,7 +10,7 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
-const messaging = firebase.messaging();
+// const messaging = firebase.messaging();
 $(document).ready(function () {
   $("#loginbtn").click(function () {
     login();
@@ -45,8 +45,8 @@ function login() {
     success: function (Response) {
       //swal.close();
       if (Response == true) {
-        get_token();
-        //location.reload();
+        //get_token();
+        location.reload();
       } else {
         swal("Error", "El usuario no existe", "error");
       }

@@ -45,12 +45,6 @@
 
                 </div>
                 <?php endif;?>
-                <a href="#logos" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Logotipos<i class="fa fa-caret-down pull-right"></i></a>
-                <div class="collapse list-group-submenu" id="logos">
-                    <a href="/Logos/" class="list-group-item item-second-list" data-parent="#employees">Ver logos</a>
-                   
-
-                </div>
                 <?php if ($this->tank_auth->user_has_privilege('Eventos')): ?>
                 <a href="#eventos" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Eventos<i class="fa fa-caret-down pull-right"></i></a>
                 <div class="collapse list-group-submenu" id="eventos">

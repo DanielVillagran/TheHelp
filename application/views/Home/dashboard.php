@@ -3,7 +3,7 @@
 <section class="main-container">
     <div class="container-fluid">
 
-        <div class="row row-home-denuncias">
+       <!-- <div class="row row-home-denuncias">
             <div class="col-lg-12 col-md-12">
 
 
@@ -73,7 +73,9 @@
 
         </div>
 
-    </div>
+   
+-->
+ </div>
 
 
 </section>
