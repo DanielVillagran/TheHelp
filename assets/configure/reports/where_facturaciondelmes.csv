@@ -1,0 +1,4 @@
+"Campos Solicitados",Tabla,Condicion,"Tipo de condicion
+        ","Valor Condicion"
+CFECHA,admDocumentos,"admDocumentos.CFECHA BETWEEN DATEADD(DAY -90 getdate()) AND getdate()",+-cut-90,hoy
+CNOMBRECONCEPTO,admConceptos,"admConceptos.CNOMBRECONCEPTO LIKE '%Factura%'","LIKE ==",Factura

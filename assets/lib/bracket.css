@@ -1,0 +1,462 @@
+.wizard > .steps {
+  margin-bottom: 10px; }
+  .wizard > .steps > ul {
+    padding: 0;
+    margin-bottom: 0;
+    display: flex; }
+    .wizard > .steps > ul li {
+      float: none;
+      display: block;
+      width: auto; }
+      .wizard > .steps > ul li .current-info {
+        display: none; }
+      .wizard > .steps > ul li .title {
+        margin-left: 5px;
+        white-space: nowrap;
+        transition: all 0.2s ease-in-out; }
+        @media screen and (prefers-reduced-motion: reduce) {
+          .wizard > .steps > ul li .title {
+            transition: none; } }
+        @media (min-width: 576px) {
+          .wizard > .steps > ul li .title {
+            display: none;
+            margin-left: 10px; } }
+        @media (min-width: 768px) {
+          .wizard > .steps > ul li .title {
+            display: inline-block; } }
+      .wizard > .steps > ul li + li {
+        margin-left: 5px; }
+        @media (min-width: 992px) {
+          .wizard > .steps > ul li + li {
+            margin-left: 10px; } }
+  .wizard > .steps a,
+  .wizard > .steps a:hover,
+  .wizard > .steps a:active {
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    padding: 12px 15px;
+    border-radius: 3px; }
+    @media (min-width: 1200px) {
+      .wizard > .steps a,
+      .wizard > .steps a:hover,
+      .wizard > .steps a:active {
+        justify-content: flex-start; } }
+    .wizard > .steps a .number,
+    .wizard > .steps a:hover .number,
+    .wizard > .steps a:active .number {
+      flex-shrink: 0;
+      font-weight: 700;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      display: block;
+      text-align: center;
+      line-height: 1.8;
+      width: 30px;
+      height: 30px;
+      border: 2px solid #adb5bd;
+      border-radius: 100%;
+      transition: all 0.2s ease-in-out; }
+      @media screen and (prefers-reduced-motion: reduce) {
+        .wizard > .steps a .number,
+        .wizard > .steps a:hover .number,
+        .wizard > .steps a:active .number {
+          transition: none; } }
+      @media (min-width: 576px) {
+        .wizard > .steps a .number,
+        .wizard > .steps a:hover .number,
+        .wizard > .steps a:active .number {
+          font-size: 13px;
+          font-weight: 700;
+          line-height: 1.9;
+          width: 30px;
+          height: 30px; } }
+  .wizard > .steps .disabled {
+    display: none; }
+    @media (min-width: 576px) {
+      .wizard > .steps .disabled {
+        display: block; } }
+    .wizard > .steps .disabled a,
+    .wizard > .steps .disabled a:hover,
+    .wizard > .steps .disabled a:active {
+      color: #adb5bd; }
+  .wizard > .steps .current a, .wizard > .steps .current a:hover, .wizard > .steps .current a:active {
+    background-color: #17A2B8;
+    color: #fff; }
+    .wizard > .steps .current a .title, .wizard > .steps .current a:hover .title, .wizard > .steps .current a:active .title {
+      display: none; }
+      @media (min-width: 576px) {
+        .wizard > .steps .current a .title, .wizard > .steps .current a:hover .title, .wizard > .steps .current a:active .title {
+          display: inline-block; } }
+    .wizard > .steps .current a .number, .wizard > .steps .current a:hover .number, .wizard > .steps .current a:active .number {
+      border-color: #fff; }
+  .wizard > .steps .done a, .wizard > .steps .done a:hover, .wizard > .steps .done a:active {
+    background-color: #1CAF9A;
+    color: #fff; }
+    .wizard > .steps .done a .title, .wizard > .steps .done a:hover .title, .wizard > .steps .done a:active .title {
+      display: none; }
+      @media (min-width: 768px) {
+        .wizard > .steps .done a .title, .wizard > .steps .done a:hover .title, .wizard > .steps .done a:active .title {
+          display: inline-block; } }
+    .wizard > .steps .done a .number, .wizard > .steps .done a:hover .number, .wizard > .steps .done a:active .number {
+      border-color: #fff; }
+
+.wizard > .content {
+  background-color: #fff;
+  min-height: 150px;
+  padding: 20px;
+  border-radius: 3px; }
+  @media (min-width: 768px) {
+    .wizard > .content {
+      padding: 25px; } }
+  @media (min-width: 992px) {
+    .wizard > .content {
+      padding: 30px; } }
+  .wizard > .content > .title {
+    font-size: 18px;
+    color: #212529;
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: none; }
+    .wizard > .content > .title.current {
+      display: block; }
+  .wizard > .content > .body {
+    float: none;
+    position: static;
+    width: auto;
+    height: auto; }
+    .wizard > .content > .body input.parsley-error {
+      border-color: #DC3545; }
+      .wizard > .content > .body input.parsley-error + ul {
+        list-style: none !important; }
+
+.wizard > .actions {
+  margin-top: 10px; }
+  .wizard > .actions > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-between; }
+    .wizard > .actions > ul > li:last-child a {
+      background-color: #1CAF9A; }
+  .wizard > .actions a,
+  .wizard > .actions a:hover,
+  .wizard > .actions a:active {
+    display: block;
+    background-color: #17A2B8;
+    padding: 9px 25px;
+    line-height: 1.573;
+    color: #fff;
+    border-radius: 3px; }
+  .wizard > .actions .disabled a,
+  .wizard > .actions .disabled a:hover,
+  .wizard > .actions .disabled a:active {
+    background-color: #adb5bd; }
+
+.wizard.vertical > .steps {
+  padding-right: 10px; }
+  @media (min-width: 576px) {
+    .wizard.vertical > .steps {
+      float: left;
+      width: 20%; } }
+  @media (min-width: 768px) {
+    .wizard.vertical > .steps {
+      width: 15%; } }
+  @media (min-width: 992px) {
+    .wizard.vertical > .steps {
+      width: 30%; } }
+  @media (min-width: 576px) {
+    .wizard.vertical > .steps ul {
+      flex-direction: column; } }
+  .wizard.vertical > .steps ul li + li {
+    margin-left: 10px; }
+    @media (min-width: 576px) {
+      .wizard.vertical > .steps ul li + li {
+        margin-top: 10px;
+        margin-left: 0; } }
+  .wizard.vertical > .steps ul li .title {
+    display: none; }
+    @media (min-width: 992px) {
+      .wizard.vertical > .steps ul li .title {
+        display: block; } }
+  @media (min-width: 992px) {
+    .wizard.vertical > .steps a {
+      justify-content: flex-start; } }
+  .wizard.vertical > .steps .current a .title {
+    display: inline-block; }
+    @media (min-width: 576px) {
+      .wizard.vertical > .steps .current a .title {
+        display: none; } }
+    @media (min-width: 992px) {
+      .wizard.vertical > .steps .current a .title {
+        display: inline-block; } }
+
+.wizard.vertical > .content {
+  margin: 0;
+  padding: 20px; }
+  @media (min-width: 576px) {
+    .wizard.vertical > .content {
+      border-top-width: 0;
+      border-bottom-width: 0;
+      width: 80%;
+      float: right; } }
+  @media (min-width: 768px) {
+    .wizard.vertical > .content {
+      width: 85%; } }
+  @media (min-width: 992px) {
+    .wizard.vertical > .content {
+      width: 70%;
+      padding: 25px; } }
+
+@media (min-width: 576px) {
+  .wizard.vertical > .actions {
+    width: 80%;
+    float: right; } }
+
+@media (min-width: 768px) {
+  .wizard.vertical > .actions {
+    width: 85%; } }
+
+@media (min-width: 992px) {
+  .wizard.vertical > .actions {
+    width: 70%; } }
+
+.wizard.vertical > .actions ul {
+  float: none;
+  margin: 0;
+  padding: 0; }
+
+/****** EQUAL COLUMN WIDTH STEP INDICATOR *****/
+.step-equal-width > .steps > ul {
+  display: flex; }
+  .step-equal-width > .steps > ul > li {
+    flex: 1;
+    width: auto;
+    float: none; }
+
+/***** CUSTOM STYLES *****/
+.wizard-style-1 > .steps > ul a, .wizard-style-1 > .steps > ul a:hover, .wizard-style-1 > .steps > ul a:active {
+  padding: 0;
+  height: 50px; }
+  .wizard-style-1 > .steps > ul a .number, .wizard-style-1 > .steps > ul a:hover .number, .wizard-style-1 > .steps > ul a:active .number {
+    width: 50px;
+    height: 100%;
+    border: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #6c757d;
+    background-color: #dee2e6;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  .wizard-style-1 > .steps > ul a .title, .wizard-style-1 > .steps > ul a:hover .title, .wizard-style-1 > .steps > ul a:active .title {
+    margin-right: 20px;
+    margin-left: 20px; }
+
+.wizard-style-1 > .steps > ul .current a .number, .wizard-style-1 > .steps > ul .current a:hover .number, .wizard-style-1 > .steps > ul .current a:active .number {
+  background-color: #148ea1;
+  color: #fff; }
+
+.wizard-style-1 > .steps > ul .done a .number, .wizard-style-1 > .steps > ul .done a:hover .number, .wizard-style-1 > .steps > ul .done a:active .number {
+  background-color: #189987;
+  color: #fff; }
+
+.wizard-style-2 > .steps > ul a, .wizard-style-2 > .steps > ul a:hover, .wizard-style-2 > .steps > ul a:active {
+  padding: 0;
+  height: 50px;
+  border-radius: 50px; }
+  .wizard-style-2 > .steps > ul a .number, .wizard-style-2 > .steps > ul a:hover .number, .wizard-style-2 > .steps > ul a:active .number {
+    width: 50px;
+    height: 100%;
+    border: 2px solid #fff;
+    font-size: 18px;
+    font-weight: bold;
+    color: #6c757d;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  .wizard-style-2 > .steps > ul a .title, .wizard-style-2 > .steps > ul a:hover .title, .wizard-style-2 > .steps > ul a:active .title {
+    margin-right: 20px; }
+
+.wizard-style-2 > .steps > ul .current a .number, .wizard-style-2 > .steps > ul .current a:hover .number, .wizard-style-2 > .steps > ul .current a:active .number {
+  border-color: #17A2B8;
+  color: #17A2B8; }
+
+.wizard-style-2 > .steps > ul .done a .number, .wizard-style-2 > .steps > ul .done a:hover .number, .wizard-style-2 > .steps > ul .done a:active .number {
+  border-color: #1CAF9A;
+  color: #1CAF9A; }
+
+.wizard-style-3 > .steps > ul a, .wizard-style-3 > .steps > ul a:hover, .wizard-style-3 > .steps > ul a:active {
+  padding: 0;
+  height: 50px;
+  border-radius: 0;
+  background-color: transparent; }
+  .wizard-style-3 > .steps > ul a .number, .wizard-style-3 > .steps > ul a:hover .number, .wizard-style-3 > .steps > ul a:active .number {
+    width: 50px;
+    height: 100%;
+    border-width: 0;
+    background-color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    color: #adb5bd;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  .wizard-style-3 > .steps > ul a .title, .wizard-style-3 > .steps > ul a:hover .title, .wizard-style-3 > .steps > ul a:active .title {
+    margin-right: 20px; }
+
+.wizard-style-3 > .steps > ul .current a, .wizard-style-3 > .steps > ul .current a:hover, .wizard-style-3 > .steps > ul .current a:active {
+  color: #17A2B8;
+  background-color: transparent; }
+  .wizard-style-3 > .steps > ul .current a .number, .wizard-style-3 > .steps > ul .current a:hover .number, .wizard-style-3 > .steps > ul .current a:active .number {
+    background-color: #17A2B8;
+    color: #fff; }
+
+.wizard-style-3 > .steps > ul .done a, .wizard-style-3 > .steps > ul .done a:hover, .wizard-style-3 > .steps > ul .done a:active {
+  background-color: transparent;
+  color: #1CAF9A; }
+  .wizard-style-3 > .steps > ul .done a .number, .wizard-style-3 > .steps > ul .done a:hover .number, .wizard-style-3 > .steps > ul .done a:active .number {
+    background-color: #1CAF9A;
+    color: #fff; }
+
+/***** RTL SUPPORT *****/
+.rtl .wizard > .steps > ul > li .title {
+  margin-left: 0;
+  margin-right: 5px; }
+  @media (min-width: 576px) {
+    .rtl .wizard > .steps > ul > li .title {
+      margin-right: 10px; } }
+
+.rtl .wizard > .steps > ul > li + li {
+  margin-left: 0;
+  margin-right: 5px; }
+  @media (min-width: 992px) {
+    .rtl .wizard > .steps > ul > li + li {
+      margin-right: 10px; } }
+
+.rtl .wizard.vertical > .steps > ul > li + li {
+  margin-right: 0; }
+
+.rtl .wizard-style-1 > .steps > ul a,
+.rtl .wizard-style-2 > .steps > ul a {
+  padding-left: 15px; }
+
+.rtl .wizard-style-1 > .steps > ul .number {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px; }
+
+/* ------------------------------------------ */
+/* ############### 4.8 JQVMap ############### */
+/* ------------------------------------------ */
+.jqvmap-label {
+  padding: 2px 8px;
+  background-color: rgba(17, 17, 17, 0.9);
+  border-radius: 2px; }
+
+.jqvmap-zoomin,
+.jqvmap-zoomout {
+  font-size: 20px;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px; }
+
+.jqvmap-zoomout {
+  top: 32px; }
+
+/* Setup basic CSS for Label */
+.jqvmap-pin {
+  font-family: "Fira Sans", "Helvetica Neue", Arial, sans-serif;
+  cursor: default;
+  pointer-events: none; }
+
+/* Hide Whichever Labels you want */
+#jqvmap1_ri_pin, #jqvmap1_dc_pin, #jqvmap1_de_pin, #jqvmap1_md_pin {
+  display: none; }
+
+/* Reposition Labels that are not quite right ( labels are centered in shape, and sometimes need tweaking ) */
+#jqvmap1_ak_pin {
+  margin-top: -2%; }
+
+#jqvmap1_ca_pin {
+  margin-left: -2%; }
+
+#jqvmap1_ct_pin {
+  margin-top: -0.25%;
+  margin-left: -0.25%; }
+
+#jqvmap1_fl_pin {
+  margin-left: 5%; }
+
+#jqvmap1_id_pin {
+  margin-top: 3%;
+  margin-left: -1%; }
+
+#jqvmap1_ky_pin {
+  margin-left: 2%; }
+
+#jqvmap1_la_pin {
+  margin-left: -2%; }
+
+#jqvmap1_mi_pin {
+  margin-top: 4%;
+  margin-left: 3%; }
+
+#jqvmap1_ma_pin {
+  margin-top: -0.25%; }
+
+#jqvmap1_mn_pin {
+  margin-top: 2%;
+  margin-left: -2%; }
+
+#jqvmap1_nh_pin {
+  margin-top: 1%;
+  margin-left: -0.25%; }
+
+#jqvmap1_nj_pin {
+  margin-top: 1%; }
+
+#jqvmap1_ok_pin {
+  margin-left: 2%; }
+
+#jqvmap1_va_pin {
+  margin-left: 2%; }
+
+#jqvmap1_wv_pin {
+  margin-left: -1%;
+  margin-top: 1%; }
+
+/* Add responsibe support to resize labels for difference screen sizes */
+@media only screen and (min-width: 320px) {
+  .jqvmap-pin {
+    font-size: 6px; } }
+
+@media only screen and (min-width: 480px) {
+  .jqvmap-pin {
+    font-size: 8px; } }
+
+@media only screen and (min-width: 640px) {
+  .jqvmap-pin {
+    font-size: 10px; } }
+
+@media only screen and (min-width: 800px) {
+  .jqvmap-pin {
+    font-size: 12px; } }
+
+@media only screen and (min-width: 1024px) {
+  .jqvmap-pin {
+    font-size: 14px; } }
+

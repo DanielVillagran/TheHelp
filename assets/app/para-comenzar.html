@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Para comenzar</title>
+
+    <!-- CSS-->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="plugin/bootstrap/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="plugin/bootstrap/css/bootstrap4-toggle.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="plugin/sidebar/css/style.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="plugin/sidebar/css/jquery.mCustomScrollbar.min.css">
+
+
+</head>
+
+<body class="body-splash">
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-12">
+                    <div class="d-para-comenzar">
+                        <img src="images/logo-zumpango-ind-white.svg" alt="">
+                        <p class="t1">Para comenzar</p>
+                        <p class="t2">Por favor selecciona a que colonia perteneces.</p>
+                        <select id="colonia" class="form-control select-form select-colonia select-colonia-comenzar mt-3">
+                            <option class="option-colonia" hidden>Colonia</option>
+                           
+                        </select>
+
+                        <div class="d-btns-comenzar">
+                            <button type="button" class="btn btn-comenzar" onclick="save_colonia()">Continuar</button>
+                            <p> <a class="btn btn-link-white" href="inicio.html" role="button">En otro momento</a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script src="plugin/bootstrap/js/jquery-3.3.1.min.js"></script>
+    <!-- Popper.JS -->
+    <script src="plugin/bootstrap/js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="plugin/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Toogle -->
+    <script src="plugin/bootstrap/js/bootstrap4-toggle.min.js"></script>
+    <!-- jQuery Custom Scroller -->
+    <script src="plugin/sidebar/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- Custom Scripts -->
+    
+    <script src="js/select.js"></script>
+    <script src="js/notification.js"></script>
+    <script src="js/para_comenzar.js"></script>
+</body></html>

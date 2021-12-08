@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="338.918" height="94" viewBox="0 0 338.918 94">
+  <g id="icon-visa-master" transform="translate(-1277 -519)">
+    <g id="Grupo_7" data-name="Grupo 7" transform="translate(1277 528.823)">
+      <path id="Trazado_33" data-name="Trazado 33" d="M17.2,66.436H29.63l7.988-49.7H24.3Z" transform="translate(37.829 1.22)" fill="#1565c0"/>
+      <path id="Trazado_34" data-name="Trazado 34" d="M34.9,17.063l-11.539,35.5-2.179-10c-6.213-15.09-16.866-21.3-16.866-21.3l11.056,45.5H28.684L47.325,17.06H34.9Zm99.412,0H120.993L100.577,66.771H113l2.662-7.1H131.64l1.775,7.1h10.656ZM118.332,50.791l7.1-18.638,3.551,18.638ZM82.825,31.264c0-2.662,1.775-5.326,7.988-5.326,4.437,0,8.877,3.551,8.877,3.551l2.662-10.65s-6.213-2.662-11.539-2.662c-13.315,0-19.527,7.1-19.527,15.09,0,15.976,17.752,13.315,17.752,21.3,0,1.775-.886,4.437-7.988,4.437a30.494,30.494,0,0,1-12.425-2.662L66.849,65s4.437,2.662,13.315,2.662c7.988.886,20.417-6.213,20.417-16.866C100.58,38.366,82.825,37.48,82.825,31.264Z" transform="translate(9.485 0)" fill="#1565c0"/>
+      <path id="Trazado_35" data-name="Trazado 35" d="M31.066,43.358,26.629,21.169a7.646,7.646,0,0,0-7.1-4.437H0S25.74,24.72,31.066,43.358Z" transform="translate(0 1.22)" fill="#ff9800"/>
+    </g>
+    <g id="Grupo_8" data-name="Grupo 8" transform="translate(1466 477)">
+      <path id="Trazado_37" data-name="Trazado 37" d="M90.092,50.021A34.754,34.754,0,1,1,55.339,15.2,34.787,34.787,0,0,1,90.092,50.021Z" transform="translate(59.825 44.181)" fill="#f79f1a"/>
+      <path id="Trazado_38" data-name="Trazado 38" d="M79.116,50.021A34.753,34.753,0,1,1,44.363,15.2,34.786,34.786,0,0,1,79.116,50.021Z" transform="translate(27.927 44.181)" fill="#ea001b"/>
+      <path id="Trazado_39" data-name="Trazado 39" d="M33.9,17.1a34.873,34.873,0,0,0,0,54.821,34.873,34.873,0,0,0,0-54.821Z" transform="translate(59.827 49.693)" fill="#ff5f01"/>
+    </g>
+    <rect id="Rectángulo_1" data-name="Rectángulo 1" width="2" height="94" transform="translate(1466 519)" opacity="0.19"/>
+  </g>
+</svg>

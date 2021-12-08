@@ -1,0 +1,137 @@
+[30-Oct-2019 10:08:02 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 15
+[30-Oct-2019 10:08:15 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 15
+[30-Oct-2019 10:09:31 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:09:31 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 16
+[30-Oct-2019 10:09:51 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:09:57 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:10:03 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:10:03 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:10:03 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:10:04 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:15:58 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:15:58 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:15:58 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:15:58 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:17:40 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:17:40 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:17:40 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:17:41 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:17:42 America/Mexico_City] PHP Notice:  Undefined variable: handler in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 19
+[30-Oct-2019 10:17:42 America/Mexico_City] PHP Warning:  curl_exec() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 19
+[30-Oct-2019 10:17:42 America/Mexico_City] PHP Notice:  Undefined variable: handler in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:17:42 America/Mexico_City] PHP Warning:  curl_close() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:17:44 America/Mexico_City] PHP Notice:  Undefined variable: handler in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 19
+[30-Oct-2019 10:17:44 America/Mexico_City] PHP Warning:  curl_exec() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 19
+[30-Oct-2019 10:17:44 America/Mexico_City] PHP Notice:  Undefined variable: handler in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:17:44 America/Mexico_City] PHP Warning:  curl_close() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:17:48 America/Mexico_City] PHP Notice:  Undefined variable: handler in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 19
+[30-Oct-2019 10:17:48 America/Mexico_City] PHP Warning:  curl_exec() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 19
+[30-Oct-2019 10:17:48 America/Mexico_City] PHP Notice:  Undefined variable: handler in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:17:48 America/Mexico_City] PHP Warning:  curl_close() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:21:33 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:21:33 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:21:33 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:21:33 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:30:19 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:30:19 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:30:19 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:30:20 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 3
+[30-Oct-2019 10:33:57 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:33:57 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:33:57 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:33:57 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:41:38 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:41:38 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:41:38 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:41:38 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:42:28 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:42:28 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:42:28 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:42:28 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:53:18 America/Mexico_City] PHP Parse error:  syntax error, unexpected '"' in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:53:25 America/Mexico_City] PHP Parse error:  syntax error, unexpected '"' in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:53:31 America/Mexico_City] PHP Parse error:  syntax error, unexpected '"' in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:53:31 America/Mexico_City] PHP Parse error:  syntax error, unexpected '"' in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:53:31 America/Mexico_City] PHP Parse error:  syntax error, unexpected '"' in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:53:31 America/Mexico_City] PHP Parse error:  syntax error, unexpected '"' in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[30-Oct-2019 10:54:20 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:54:20 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:54:20 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:54:21 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 10:54:22 America/Mexico_City] PHP Warning:  fopen(./files/test.pdf): failed to open stream: No such file or directory in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 31
+[30-Oct-2019 10:54:22 America/Mexico_City] PHP Warning:  fputs() expects parameter 1 to be resource, boolean given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 32
+[30-Oct-2019 10:54:22 America/Mexico_City] PHP Warning:  fclose() expects parameter 1 to be resource, boolean given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[30-Oct-2019 10:58:19 America/Mexico_City] PHP Notice:  Undefined variable: path_file in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 26
+[30-Oct-2019 10:58:19 America/Mexico_City] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:23) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 26
+[30-Oct-2019 10:58:19 America/Mexico_City] PHP Notice:  Undefined variable: path_file in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 27
+[30-Oct-2019 10:58:19 America/Mexico_City] PHP Warning:  readfile(): Filename cannot be empty in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 27
+[30-Oct-2019 11:01:30 America/Mexico_City] PHP Parse error:  syntax error, unexpected '}' in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 22
+[30-Oct-2019 11:08:01 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:08:01 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:08:01 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:08:02 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:09:58 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:09:58 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:09:58 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:09:59 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:11:09 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:11:09 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:11:09 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:11:10 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:12:41 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:12:41 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:12:41 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:12:42 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 11:53:31 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 12:04:44 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 12:04:51 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 12:04:51 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 12:04:51 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[30-Oct-2019 12:04:51 America/Mexico_City] PHP Notice:  Undefined index: download in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 2
+[07-Jan-2020 23:29:04 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:04 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/55): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:04 UTC] PHP Warning:  file_put_contents(): Filename cannot be empty in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:08 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:08 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/55): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:08 UTC] PHP Warning:  file_put_contents(): Filename cannot be empty in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:27 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:27 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/55): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:29:27 UTC] PHP Warning:  file_put_contents(): Filename cannot be empty in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:32:55 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:32:55 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/55): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:35:40 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:35:40 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/55): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:35:40 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:35:40 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/55): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:35:53 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:35:53 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/55): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:36:26 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:36:26 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/60): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:52:24 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[07-Jan-2020 23:52:24 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/60): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[08-Jan-2020 21:33:16 UTC] PHP Warning:  file_get_contents(): http:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[08-Jan-2020 21:33:16 UTC] PHP Warning:  file_get_contents(http://esprezza2.no-ip.org/Capacitacion/EncuestaNom035/get_encuesta_pdf/6): failed to open stream: no suitable wrapper could be found in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 21
+[08-Jan-2020 22:05:31 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 27
+[08-Jan-2020 22:05:31 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 28
+[08-Jan-2020 22:05:31 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 29
+[08-Jan-2020 22:05:31 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 30
+[08-Jan-2020 22:05:34 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 27
+[08-Jan-2020 22:05:34 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 28
+[08-Jan-2020 22:05:34 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 29
+[08-Jan-2020 22:05:34 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 30
+[08-Jan-2020 22:05:45 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 27
+[08-Jan-2020 22:05:45 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 28
+[08-Jan-2020 22:05:45 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 29
+[08-Jan-2020 22:05:45 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/esprezza/clientes.nom035.esprezza.com/functions.php:26) in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 30
+[22-Jan-2020 20:11:43 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:12:02 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:12:19 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:16:19 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:18:34 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:22:10 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:23:41 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:26:39 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:52:04 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:52:53 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:54:42 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33
+[22-Jan-2020 20:57:13 UTC] PHP Warning:  curl_setopt_array() expects parameter 1 to be resource, null given in /home/esprezza/clientes.nom035.esprezza.com/functions.php on line 33

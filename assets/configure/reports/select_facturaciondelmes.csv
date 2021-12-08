@@ -1,0 +1,8 @@
+"Campos Solicitados",Tabla
+CCODIGOCLIENTE,admClientes
+CRAZONSOCIAL,admClientes
+CDENCOMERCIAL,admClientes
+CNOMBRECONCEPTO,admConceptos
+CFOLIO,admDocumentos
+CFECHA,admDocumentos
+CTOTAL,admDocumentos

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Resumen de pago</title>
+
+    <!-- CSS-->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/sweet.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../plugin/bootstrap/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../plugin/bootstrap/css/bootstrap4-toggle.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="../plugin/sidebar/css/style.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="../plugin/sidebar/css/jquery.mCustomScrollbar.min.css">
+
+
+</head>
+
+<body class="bg-gray">
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <section class="sec-nav-oda">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-6">
+                            <div class="d-back-logo">
+                                <button type="button" class="btn btn-back" href=""><img src="../images/icons/icon-back.svg" alt=""></button>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-6 text-right">
+                            <p class="name-view"><span>Pagar</span><button type="button" id="sidebarCollapse" class="btn btn-sidebar ml-3">
+                                    <img class="icon-burger" src="../images/icons/icon-burger.svg" alt="">
+                                </button></p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="sec-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="d-monto d-monto-oda">
+                                <div class="d-1">
+                                    <p class="t1 catastral" style="display :none;">Clave catastral</p>
+                                    <p class="t2" id="servicio"></p>
+                                </div>
+
+                                <div class="d-2">
+                                    <p class="t1">Monto a pagar</p>
+                                    <p class="t2 monto"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row-resumen">
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="d-resumen">
+                                <p class="title">Resumen de pago</p>
+
+                                <div class="row mt-3 catastral" style="display: none;">
+                                    <div class="col-lg-6 col-md-6 col-6">
+                                        <p class="t1">Clave catastral</p>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-6">
+                                        <p class="t2" id="catastral_number">159560100368</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+
+                                    <div class="col-lg-6 col-md-6 col-6">
+                                        <p class="t1">Monto a pagar</p>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-6">
+                                        <p class="t2 monto"></p>
+                                    </div>
+                                </div>
+                                <div class="row row-form-resumen mt-4">
+                                    <div class="col-lg-12 col-md-12 col-12">
+                                        <p class="title">Datos personales</p>
+                                        <br>
+                                        <div class="form-group">
+                                            <div class="floating-label-group">
+                                                <input type="text" class="form-control input-form-gray" id="nombre" required />
+                                                <label class="floating-label">Nombre *</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="floating-label-group">
+                                                <input type="email" id="email" class="form-control input-form-gray" required />
+                                                <label class="floating-label">Correo electrónico *</label>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+                                <hr class="mt-1">
+
+                                <div class="row row-metodo" id="botones_pagar" style="display: none;">
+                                    <div class="col-lg-6 col-md-6 col-6">
+                                        <div class="d-item-metodo">
+                                            <p class="t1">Pago con tarjeta</p>
+                                            <button type="button" class="btn btn-metodo-pago btn-tarjeta" data-toggle="modal" data-target="#modalTarjeta"><img src="../images/icons/icon-visa-master.svg" alt=""></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-6">
+                                        <div class="d-item-metodo">
+                                            <p class="t1">Pago en efectivo</p>
+                                            <button type="button" onclick="create_oxxo_pay()" class="btn btn-metodo-pago btn-efectivo"><img src="../images/icons/icon-oxxo.svg" alt=""></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- END CONTENT -->
+        </div>
+    </div>
+
+    <div class="overlay"></div>
+
+
+    <div class="modal fade" id="modalTarjeta" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Pago con tarjeta</h5>
+                    <button type="button" class="close btn-close-tarjeta" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <p class="p-metodo-pago">Datos bancarios</p>
+
+                    <form id="card_payment" class="form-tarjeta-modal">
+                        <input type="hidden" name="token_id" id="token_id">
+
+                        <div class="form-group">
+                            <div class="floating-label-group">
+                                <input type="text" class="form-control input-form-gray" id="nombre_tarjeta" data-openpay-card="holder_name" required />
+                                <label class="floating-label">Nombre en la tarjeta</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="floating-label-group">
+                                <input type="text" class="form-control input-form-gray" data-openpay-card="card_number" id="numero_tarjeta" required />
+                                <label class="floating-label">Número de tarjeta</label>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-lg-4 col-md-4 col-4">
+                                <div class="floating-label-group">
+                                    <input type="text" class="form-control input-form-gray" id="vencimiento_tarjeta" data-openpay-card="expiration_month" required />
+                                    <label class="floating-label">Mes</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4 col-md-4 col-4">
+                                <div class="floating-label-group">
+                                    <input type="text" class="form-control input-form-gray" id="ano_vencimiento_tarjeta" data-openpay-card="expiration_year" required />
+                                    <label class="floating-label">Año</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4 col-md-4 col-4">
+                                <div class="floating-label-group">
+                                    <input type="text" class="form-control input-form-gray" id="cvv_tarjeta" data-openpay-card="cvv2" required />
+                                    <label class="floating-label">CVV</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" id="pay-button" class="btn btn-lg-primary-oda btn-pagar-predial mt-2">Pagar</button>
+
+                    </form>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-modal-cancelar btn-cancelar-tarjeta" data-dismiss="modal">Cancelar</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- jQuery -->
+    <script src="../plugin/bootstrap/js/jquery-3.3.1.min.js"></script>
+    <!-- Popper.JS -->
+    <script src="../plugin/bootstrap/js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="../plugin/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Toogle -->
+    <script src="../plugin/bootstrap/js/bootstrap4-toggle.min.js"></script>
+    <!-- jQuery Custom Scroller -->
+    <script src="../plugin/sidebar/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- Custom Scripts -->
+    <script src="js/main-oda.js"></script>
+    <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+    <script type='text/javascript' src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+    <script src="js/pago.js"></script>
+    <script src="../js/sweetalert.js"></script>
+</body>
+
+</html>

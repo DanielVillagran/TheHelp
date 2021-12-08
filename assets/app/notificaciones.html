@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Notificaciones</title>
+
+    <!-- CSS-->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="plugin/bootstrap/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="plugin/bootstrap/css/bootstrap4-toggle.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="plugin/sidebar/css/style.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="plugin/sidebar/css/jquery.mCustomScrollbar.min.css">
+
+
+</head>
+
+<body class="bg-gray">
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <section class="sec-nav">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-6">
+                            <div class="d-back-logo">
+                                <button type="button" class="btn btn-back" href=""><img src="images/icons/icon-back.svg" alt=""></button>
+                                <img src="images/logo-zumpango-horizontal-white.svg" alt="">
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-6 text-right">
+                            <p class="name-view"><span>Notificaciones</span><button type="button" id="sidebarCollapse" class="btn btn-sidebar ml-3">
+                                    <img class="icon-burger" src="images/icons/icon-burger.svg" alt="">
+                                </button></p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <section class="sec-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="d-items-noti">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- END CONTENT -->
+        </div>
+    </div>
+
+    <div class="overlay"></div>
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script src="plugin/bootstrap/js/jquery-3.3.1.min.js"></script>
+    <!-- Popper.JS -->
+    <script src="plugin/bootstrap/js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="plugin/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Toogle -->
+    <script src="plugin/bootstrap/js/bootstrap4-toggle.min.js"></script>
+    <!-- jQuery Custom Scroller -->
+    <script src="plugin/sidebar/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- Custom Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/select.js"></script>
+    <script src="js/ajustes.js"></script>}
+
+
+    <script>
+        $(document).ready(function() {
+            // Configure/customize these variables.
+            $.ajax({
+		url: server+"/WS/get_noti_list",
+		type: "POST",
+		dataType: "json",
+		beforeSend: function() {
+		},
+		success: function(data) {
+				//swal.close();
+				////console.log(data);
+				//console.log(data);
+				$(".d-items-noti").empty().append(data);
+			}
+		});
+            var showChar = 150; // How many characters are shown by default
+            var ellipsestext = "...";
+            var moretext = "Leer más";
+            var lesstext = "Leer menos";
+
+
+            $('.more').each(function() {
+                var content = $(this).html();
+
+                if (content.length > showChar) {
+                    var c = content.substr(0, showChar);
+                    var h = content.substr(showChar, content.length - showChar);
+                    var html = c + '<span class="moreellipses">' + ellipsestext + '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+                    $(this).html(html);
+                }
+
+            });
+
+            $(".morelink").click(function() {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                    
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        });
+    </script>
+
+</body></html>

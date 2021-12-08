@@ -1,0 +1,10 @@
+"Campos Solicitados",Tabla
+FACTURADORA,Movimientos
+"NUMERO MOVIMIENTO",Movimientos
+"TIPO DOCUMENTO","Tipo Documento"
+"RAZON SOCIAL",Clientes
+CURP,Clientes
+RFC,Clientes
+FOLIO,Documentos
+FECHA,Documentos
+"NOMBRE CONCEPTO",Conceptos

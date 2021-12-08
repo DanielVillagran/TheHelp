@@ -1,0 +1,2 @@
+"SQL operation","HTML operation"
+"admClientes.CCODIGOCLIENTE+"" probando ""","<li class=""list-group-item ui-sortable-handle"" title=""CCODIGOCLIENTE"" element_type=""varchar"" element_table=""admClientes"" style=""display: block;""><b>CCODIGOCLIENTE</b></li><li class=""list-group-item ui-sortable-handle"" title=""Operador"" style=""display: block;""><b>+</b></li><li class=""list-group-item ui-sortable-handle"" title=""Variable"" style=""display: block;""><b><input onchange=""handle_function(this)"" class=""handle"" type=""text"" size=""10""></b></li>"

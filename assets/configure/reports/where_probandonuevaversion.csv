@@ -1,0 +1,3 @@
+"Campos Solicitados",Tabla,Condicion,"Tipo de condicion
+        ","Valor Condicion"
+FECHA,Documentos,"Documentos.FECHA BETWEEN DATEADD(DAY -8 getdate()) AND getdate()",+-cut-8,hoy

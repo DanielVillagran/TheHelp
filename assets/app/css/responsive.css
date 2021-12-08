@@ -1,0 +1,79 @@
+@media only screen and (max-width: 767px) {}
+
+
+/* RESPONSIVE S5 */
+@media only screen and (max-width: 360px) {
+    .d-para-comenzar .t1 {
+        font-size: 22px;
+    }
+
+    .d-para-comenzar {
+        padding-left: 10px;
+        padding-right: 10px;
+
+    }
+
+    .d-para-comenzar .t2 {
+        font-size: 12px;
+    }
+
+    .d-btns-comenzar {
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: calc(100% - 50px);
+    }
+
+    .d-back-logo > img {
+        width: 80px;
+        margin-left: 5px;
+    }
+
+    .d-item-eventos .t1 {
+        font-size: 18px;
+        margin-top: 2px;
+    }
+
+    .btn.btn-tarjeta > img {
+        width: 90px;
+    }
+
+    .d-monto .d-2 .t2 {
+        font-size: 38px;
+    }
+
+    .d-monto .d-1 .t2 {
+        font-size: 16px;
+    }
+
+}
+
+/* RESPONSIVE iPHONE 5 */
+@media only screen and (max-width: 320px) {
+
+    .item-servicios > img {
+        display: none;
+    }
+
+    .d-item-eventos .t1 {
+        font-size: 18px;
+        margin-top: 0px;
+    }
+
+    .d-item-eventos .t2 {
+        font-size: 10px;
+    }
+
+    .btn.btn-tarjeta > img {
+        width: 80px;
+    }
+
+    .btn.btn-efectivo > img {
+        width: 35px;
+    }
+
+    .d-item-inicio .t1 {
+        font-size: 12px;
+    }
+
+}

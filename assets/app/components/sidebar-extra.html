@@ -1,0 +1,175 @@
+<<<<<<< HEAD
+<div id="dismiss">
+    <img class="btn-close" src="images/icons/cerrar-light.svg" alt="">
+</div>
+
+<div class="sidebar-header">
+    <p class="t1">Menu</p>
+</div>
+
+<div class="d-links-sidebar">
+    <ul>
+        <li><a class="link-inicio" href="inicio.html">Inicio</a></li>
+        <li><a class="link-emergencias" href="tel:911">Emergencias</a></li>
+        <li><a class="link-directorio" href="directorio.html">Directorio</a></li>
+        <li><a class="link-eventos" href="eventos.html">Eventos</a></li>
+        <li><a class="link-servicios" href="servicios.html">Servicios</a></li>
+        <li><a class="link-mapa" href="mapa.html">Mapa</a></li>
+        <li><a class="link-inicio" href="/inicio.html">Zumpango</a></li>
+    </ul>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+
+        /*  SIDEBAR CONTROLS */
+
+        $("#sidebar").mCustomScrollbar({
+            theme: "minimal"
+        });
+
+        $('#dismiss, .overlay').on('click', function() {
+            $('#sidebar').removeClass('active');
+            $('.overlay').removeClass('active');
+        });
+
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').addClass('active');
+            $('.overlay').addClass('active');
+            $('.collapse.in').toggleClass('in');
+            $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+        });
+
+        /*  SIDEBAR CONTROLS */
+
+        /*  BTN BACK */
+        $('.btn-back').on('click', function() {
+            $('#sidebar').removeClass('active');
+            $('.overlay').removeClass('active');
+            window.history.back();
+        });
+        /*  BTN BACK */
+
+        /*  SIDEBAR CONTROLS */
+
+        /*  SIDEBAR ACTIVE LINK */
+
+        var text = $('.name-view span').text(),
+            textinicio = $('.name-view .span-inicio').text();
+
+        if (textinicio == "DIF") {
+            $('.link-inicio').addClass('active');
+        } else if (textinicio == "IMCUFIDEZ") {
+            $('.link-inicio').addClass('active');
+        } else if (textinicio == "ODAPAZ") {
+            $('.link-inicio').addClass('active');
+        } else if (text == "Emergencias") {
+            $('.link-emergencias').addClass('active');
+        } else if (text == "Directorio") {
+            $('.link-directorio').addClass('active');
+        } else if (text == "Denuncia") {
+            $('.link-denuncia').addClass('active');
+        } else if (text == "Eventos") {
+            $('.link-eventos').addClass('active');
+        } else if (text == "Servicios") {
+            $('.link-servicios').addClass('active');
+        } else if (text == "Mapa") {
+            $('.link-mapa').addClass('active');
+        } else if (text == "Intereses") {
+            $('.link-intereses').addClass('active');
+        } else if (text == "Ajustes") {
+            $('.link-ajustes').addClass('active');
+        } else if (text == "Iniciar sesión") {
+            $('.link-iniciar-sesion').addClass('active');
+        }
+
+       /* SIDEBAR ACTIVE LINK */
+
+    });
+
+</script>
+=======
+<div id="dismiss">
+    <img class="btn-close" src="images/icons/cerrar-light.svg" alt="">
+</div>
+
+<div class="sidebar-header">
+    <p class="t1">Menu</p>
+</div>
+
+<div class="d-links-sidebar">
+    <ul>
+        <li><a class="link-inicio" href="inicio.html">Inicio</a></li>
+        <li><a class="link-emergencias" href="tel:911">Emergencias</a></li>
+        <li><a class="link-directorio" href="directorio.html">Directorio</a></li>
+        <li><a class="link-eventos" href="eventos.html">Eventos</a></li>
+        <li><a class="link-servicios" href="servicios.html">Servicios</a></li>
+        <li><a class="link-mapa" href="mapa.html">Mapa</a></li>
+        <li><a class="link-inicio" href="/inicio.html">Zumpango</a></li>
+    </ul>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+
+        /*  SIDEBAR CONTROLS */
+
+        $("#sidebar").mCustomScrollbar({
+            theme: "minimal"
+        });
+
+        $('#dismiss, .overlay').on('click', function() {
+            $('#sidebar').removeClass('active');
+            $('.overlay').removeClass('active');
+        });
+
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').addClass('active');
+            $('.overlay').addClass('active');
+            $('.collapse.in').toggleClass('in');
+            $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+        });
+
+        /*  SIDEBAR CONTROLS */
+
+        /*  SIDEBAR CONTROLS */
+
+        /*  SIDEBAR ACTIVE LINK */
+
+        var text = $('.name-view span').text(),
+            textinicio = $('.name-view .span-inicio').text();
+
+        if (textinicio == "DIF") {
+            $('.link-inicio').addClass('active');
+        } else if (textinicio == "IMCUFIDEZ") {
+            $('.link-inicio').addClass('active');
+        } else if (textinicio == "ODAPAZ") {
+            $('.link-inicio').addClass('active');
+        } else if (text == "Emergencias") {
+            $('.link-emergencias').addClass('active');
+        } else if (text == "Directorio") {
+            $('.link-directorio').addClass('active');
+        } else if (text == "Denuncia") {
+            $('.link-denuncia').addClass('active');
+        } else if (text == "Eventos") {
+            $('.link-eventos').addClass('active');
+        } else if (text == "Servicios") {
+            $('.link-servicios').addClass('active');
+        } else if (text == "Mapa") {
+            $('.link-mapa').addClass('active');
+        } else if (text == "Intereses") {
+            $('.link-intereses').addClass('active');
+        } else if (text == "Ajustes") {
+            $('.link-ajustes').addClass('active');
+        } else if (text == "Iniciar sesión") {
+            $('.link-iniciar-sesion').addClass('active');
+        }
+
+       /* SIDEBAR ACTIVE LINK */
+
+    });
+
+</script>
+>>>>>>> bb6f705345e325d17d8ba7e00469d1a65dc8afd4

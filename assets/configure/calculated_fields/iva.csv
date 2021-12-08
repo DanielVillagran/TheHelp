@@ -1,0 +1,2 @@
+"SQL operation","HTML operation"
+[Documentos].[TOTAL]*0.16,"<li class=""list-group-item ui-sortable-handle"" title=""TOTAL"" element_type=""float"" element_table=""Documentos"" style=""""><b>TOTAL</b></li><li class=""list-group-item number ui-sortable-handle"" title=""Operador"" style=""""><b>*</b></li><li class=""list-group-item ui-sortable-handle"" title=""Variable"" style=""""><b><input class=""handle"" type=""text"" size=""10""></b></li>"

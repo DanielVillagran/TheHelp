@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Modo evento</title>
+
+    <!-- CSS-->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../plugin/bootstrap/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../plugin/bootstrap/css/bootstrap4-toggle.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="../plugin/sidebar/css/style.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="../plugin/sidebar/css/jquery.mCustomScrollbar.min.css">
+
+</head>
+
+<body class="bg-white">
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <section class="sec-nav-oda">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-6">
+                            <div class="d-back-logo">
+                                <button type="button" class="btn btn-back" href=""><img src="../images/icons/icon-back.svg" alt=""></button>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-6 text-right">
+                            <p class="name-view"><span>Evento</span><button type="button" id="sidebarCollapse" class="btn btn-sidebar ml-3"><img class="icon-burger" src="../images/icons/icon-burger.svg" alt="">
+                                </button></p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <section class="sec-img-evento" id="imagen" style="background-image: url(../images/noticias/1.jpg);">
+
+            </section>
+
+            <section class="sec-padding sec-evento">
+                <div class="container">
+                    <div class="row mb-2">
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <p class="title-sec" id="titulo"></p>
+                            <p class="sub-title-sec mt-3" id="descripcion"></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="d-compartir-evento">
+                                <button type="button" class="btn btn-compartir-evento"><img src="../images/icons/icon-share.svg" alt=""> Compartir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="elementos">
+
+                    </div>
+
+
+                </div>
+            </section>
+
+            <!-- END CONTENT -->
+        </div>
+    </div>
+    <div class="modal fade modal-telefono" id="modalTelefono" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Participar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-telefono" id="form_participar">
+                        <div class="form-group">
+                            <p class="t1">Ingresa tu número de teléfono para participar</p>
+                            <input type="tel" id="telefono" class="form-control input-form-gray input-participar" placeholder="Teléfono" data-toggle="tooltip" data-placement="top" title="Ingresa tu número de teléfono">
+                        </div>
+                        <button type="submit" class="btn btn-lg-green btn-participar-modal mt-2">PARTICIPAR</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="overlay"></div>
+
+    <!-- jQuery -->
+    <script src="../plugin/bootstrap/js/jquery-3.3.1.min.js"></script>
+    <!-- Popper.JS -->
+    <script src="../plugin/bootstrap/js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="../plugin/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Toogle -->
+    <script src="../plugin/bootstrap/js/bootstrap4-toggle.min.js"></script>
+    <!-- jQuery Custom Scroller -->
+    <script src="../plugin/sidebar/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- Custom Scripts -->
+    <script src="js/main-oda.js"></script>
+    <script src="js/modo-evento.js"></script>
+
+</body></html>

@@ -1,0 +1,4 @@
+"Campos Solicitados",Tabla,Condicion,"Tipo de condicion
+        ","Valor Condicion"
+FACTURADORA,Documentos,"Documentos.FACTURADORA LIKE '%VELTA%'","LIKE ==",VELTA
+FECHA,Documentos,"Documentos.FECHA BETWEEN DATEADD(DAY -5 getdate()) AND getdate()",+-cut-5,hoy

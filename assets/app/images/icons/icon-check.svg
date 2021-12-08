@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="327" height="327" viewBox="0 0 327 327">
+  <defs>
+    <filter id="Elipse_2" x="58.5" y="67.5" width="227" height="227" filterUnits="userSpaceOnUse">
+      <feOffset dx="8" dy="17" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="7.5" result="blur"/>
+      <feFlood flood-opacity="0.129"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="icon-check" transform="translate(-44 -39)">
+    <circle id="Elipse_1" data-name="Elipse 1" cx="163.5" cy="163.5" r="163.5" transform="translate(44 39)" fill="#00c695"/>
+    <g transform="matrix(1, 0, 0, 1, 44, 39)" filter="url(#Elipse_2)">
+      <circle id="Elipse_2-2" data-name="Elipse 2" cx="91" cy="91" r="91" transform="translate(73 73)" fill="#fff"/>
+    </g>
+    <g id="cheque" transform="translate(176.442 124.562)">
+      <path id="Trazado_17" data-name="Trazado 17" d="M60.562,65.846,27.649,98.757a6.245,6.245,0,0,1-8.83,0L1.828,81.766a6.244,6.244,0,0,1,8.83-8.831L23.235,85.512l28.5-28.5a6.244,6.244,0,0,1,8.831,8.83Z" transform="translate(0)" fill="#00c695"/>
+    </g>
+  </g>
+</svg>
