@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="footer-left">
-                    <span>Copyright © 2020 <a href="#">Ayuntamiento de Zumpango</a></span>
+                    <span>Copyright © 2022 <a href="#">Luma Maquinaria</a></span>
                 </div>
             </div>
         </div>

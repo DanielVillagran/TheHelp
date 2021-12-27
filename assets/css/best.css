@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
 
 .topbar .topbar-left {
-    background-color: #921922;
+    background-color: #337737;
 }
 
 a {
@@ -142,7 +142,7 @@ body {
 }
 
 .p-name-sec b {
-    color: #921922;
+    color: #337737;
     font-weight: 700;
 }
 
@@ -728,7 +728,7 @@ input[type=file] {
 }
 
 .btn.btn-guardar {
-    background-color: #921922;
+    background-color: #337737;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -1000,7 +1000,7 @@ legend {
 }
 
 .btn.btn-entrar {
-    background-color: #921922;
+    background-color: #337737;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -1012,7 +1012,7 @@ legend {
 }
 
 .btn.btn-entrar:hover {
-    background-color: #921922;
+    background-color: #86c440;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -1024,7 +1024,7 @@ legend {
 
 .btn.btn-entrar:active,
 .btn.btn-entrar:focus {
-    background-color: #921922;
+    background-color: #337737;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -1043,7 +1043,7 @@ legend {
 
 .login-frm-input:active,
 .login-frm-input:focus {
-    border: 1px solid #921922;
+    border: 1px solid #337737;
     box-shadow: none;
 
 }

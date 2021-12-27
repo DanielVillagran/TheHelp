@@ -68,7 +68,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                         <div class="login-form-header">
                             <div class="logo">
-                                <img src="/assets/files/fotos/<?php echo $this->tank_auth->get_logos(1);?> " alt="logo" width="70%" />
+                            <img src="/assets/files/fotos/<?php echo $this->tank_auth->get_logos(1);?> " alt="logo" width="50%" >
                             </div>
                         </div>
 
