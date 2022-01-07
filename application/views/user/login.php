@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
     <meta name="msapplication-TileImage" content="assets/images/favicon/ms-icon-144x144.png">
-    <title>Zumpango</title>
+    <title>Luma Maquinaria</title>
     <link type="text/css" rel="stylesheet" href="assets/css/font-awesome.css">
     <link type="text/css" rel="stylesheet" href="assets/css/animate.css">
     <link type="text/css" rel="stylesheet" href="assets/css/material-design-iconic-font.css">
