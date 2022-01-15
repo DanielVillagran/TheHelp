@@ -1,9 +1,9 @@
 var states = "";
-$(document).ready(function() {
-    if ($("#id").val()!=0) {
+$(document).ready(function () {
+    if ($("#id").val() != 0) {
         get_info_Departamentos($("#id").val());
     }
-  
+
 });
 
 function get_info_Departamentos(id) {
@@ -15,24 +15,41 @@ function get_info_Departamentos(id) {
             id: id
         },
         dataType: "json",
-        beforeSend: function() {
+        beforeSend: function () {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
                 imageUrl: "/assets/images/loader.gif"
             });
         },
-        success: function(data) {
+        success: function (data) {
             swal.close();
             for (var key in data) {
-                if(key!='logo'){
-                $('[name="users[' + key + ']"]').val($.trim(data[key]));
+                if (key != 'logo') {
+                    $('[name="users[' + key + ']"]').val($.trim(data[key]));
                 }
             }
-            
-           
+
+            new QRCode(document.getElementById("qrcode"), {
+                text: "vehiculos..." + data['id'],
+                width: 300,
+                height: 300,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            $("#qrCodeDiv").show();
+
+
         }
     });
+}
+function downloadAsImage() {
+    html2canvas($("#qrcode")[0]).then((canvas) => {
+        var a = document.createElement('a');
+        a.href = canvas.toDataURL("image/png");
+        a.download = 'image.png';
+        a.click();
+    });
+
 }
 
 function save_Departamentos() {
@@ -44,20 +61,20 @@ function save_Departamentos() {
         data: data,
         processData: false,
         contentType: false,
-        beforeSend: function() {
+        beforeSend: function () {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
                 imageUrl: "/assets/images/loader.gif"
             });
         },
-        success: function(data) {
-            
+        success: function (data) {
+
             swal.close();
-          
-                location.href="/Vehiculos";
-           
-           
+
+            location.href = "/Vehiculos";
+
+
         }
     });
 }

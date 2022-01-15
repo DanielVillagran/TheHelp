@@ -21,6 +21,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/lib/qrcode.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/jquery-migrate.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/jRespond.js"></script>
@@ -96,6 +97,7 @@
 
 
 <script src="https://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js" integrity="sha512-UcDEnmFoMh0dYHu0wGsf5SKB7z7i5j3GuXHCnb3i4s44hfctoLihr896bxM0zL7jGkcHQXXrJsFIL62ehtd6yQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- select2 -->
 
 

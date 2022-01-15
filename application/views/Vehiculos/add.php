@@ -63,12 +63,14 @@
                                         <div class="form-group col-lg-12 col-md-12 pl-0">
                                             <div class="floating-label-group">
                                                 <textarea id="descripcion" name="users[descripcion]" class="form-control input-form-area" rows="4" required></textarea>
-                                                <label class="floating-label">Descripción *</label>
+
                                             </div>
                                         </div>
-
-
-
+                                        <div id="qrCodeDiv" style="display:none" class="form-group col-lg-12 col-md-12 pl-0">
+                                            <label >Click en QR para descargar</label>
+                                            <br><br>
+                                            <div onclick="downloadAsImage()" id="qrcode"></div>
+                                        </div>
                                         <legend></legend>
 
                                         <div style="margin-top: 15px" class="form-group col-lg-12 col-md-12 pl-0">
