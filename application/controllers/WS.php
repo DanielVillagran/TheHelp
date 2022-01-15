@@ -29,13 +29,15 @@ class WS extends ANT_Controller
         }
         $servidor = "https://zumpango.vmcomp.com.mx";
         if ($import) {
-            $aux = Departamentos_Model::Load(array('select' => "*",
+            $aux = Departamentos_Model::Load(array(
+                'select' => "*",
                 'result' => 'array',
                 'where' => 'user_type=' . $tipo . ' ' . $where,
 
             ));
         } else {
-            $aux = Departamentos_Model::Load(array('select' => "*",
+            $aux = Departamentos_Model::Load(array(
+                'select' => "*",
                 'result' => 'array',
                 'where' => 'user_type=' . $this->input->post('tipo') . ' ' . $where,
             ));
@@ -78,25 +80,27 @@ class WS extends ANT_Controller
         } else {
             $this->output_json($regreso);
         }
-
     }
     public function get_noticias($import = false, $tipo = null)
     {
         $regreso = "";
         $servidor = "https://zumpango.vmcomp.com.mx";
         if ($import) {
-            $aux = Noticias_Model::Load(array('select' => "*",
+            $aux = Noticias_Model::Load(array(
+                'select' => "*",
                 'result' => 'array',
                 'sortBy' => "id",
                 'sortDirection' => 'DESC',
                 'where' => 'user_type=' . $tipo,
             ));
         } else {
-            $aux = Noticias_Model::Load(array('select' => "*",
+            $aux = Noticias_Model::Load(array(
+                'select' => "*",
                 'result' => 'array',
                 'sortBy' => "id",
                 'sortDirection' => 'DESC',
-                'where' => 'user_type=' . $this->input->post('tipo')));
+                'where' => 'user_type=' . $this->input->post('tipo')
+            ));
         }
         if ($aux) {
             foreach ($aux as $key) {
@@ -121,21 +125,23 @@ class WS extends ANT_Controller
         } else {
             $this->output_json($regreso);
         }
-
     }
     public function get_eventos($import = false, $tipo = null)
     {
         $regreso = "";
         $servidor = "https://zumpango.vmcomp.com.mx";
         if ($import) {
-            $aux = Eventos_Model::Load(array('select' => "*",
+            $aux = Eventos_Model::Load(array(
+                'select' => "*",
                 'result' => 'array',
                 'where' => 'status=1 AND user_type=' . $tipo,
             ));
         } else {
-            $aux = Eventos_Model::Load(array('select' => "*",
+            $aux = Eventos_Model::Load(array(
+                'select' => "*",
                 'result' => 'array',
-                'where' => 'status=1 AND user_type=' . $this->input->post('tipo')));
+                'where' => 'status=1 AND user_type=' . $this->input->post('tipo')
+            ));
         }
         if ($aux) {
             foreach ($aux as $key) {
@@ -160,14 +166,15 @@ class WS extends ANT_Controller
         } else {
             $this->output_json($regreso);
         }
-
     }
     public function get_intereses()
     {
         $regreso = "";
         $servidor = "https://zumpango.vmcomp.com.mx";
-        $aux = Intereses_Model::Load(array('select' => "*",
-            'result' => 'array'));
+        $aux = Intereses_Model::Load(array(
+            'select' => "*",
+            'result' => 'array'
+        ));
         if ($aux) {
             $data['arreglo'] = $aux;
             foreach ($aux as $key) {
@@ -179,7 +186,6 @@ class WS extends ANT_Controller
         }
         $data['regreso'] = $regreso;
         $this->output_json($data);
-
     }
     public function get_servicios($import = false, $tipo = null)
     {
@@ -255,7 +261,6 @@ class WS extends ANT_Controller
                             </div>
                         </div>
                     </div>';
-
                 }
                 $regreso .= '</div>
                     </div>
@@ -270,14 +275,15 @@ class WS extends ANT_Controller
         } else {
             $this->output_json($regreso);
         }
-
     }
     public function get_evento()
     {
         $post = $this->input->post();
-        $data = Eventos_Model::Load(array('select' => "*",
+        $data = Eventos_Model::Load(array(
+            'select' => "*",
             'where' => 'id=' . $post['id'],
-            'result' => '1row'));
+            'result' => '1row'
+        ));
         if ($data) {
             if ($data->tipo == 1) {
                 $data->elemento = $this->get_calificar();
@@ -294,17 +300,21 @@ class WS extends ANT_Controller
     public function get_service()
     {
         $post = $this->input->post();
-        $data = Departamentos_Servicios_Model::Load(array('select' => "*",
+        $data = Departamentos_Servicios_Model::Load(array(
+            'select' => "*",
             'where' => 'id=' . $post['id'],
-            'result' => '1row'));
+            'result' => '1row'
+        ));
 
         $this->output_json($data);
     }
     public function get_encuesta($id)
     {
-        $aux = Eventos_Preguntas_Model::Load(array('select' => "*",
+        $aux = Eventos_Preguntas_Model::Load(array(
+            'select' => "*",
             'where' => 'evento_id=' . $id,
-            'result' => 'array'));
+            'result' => 'array'
+        ));
         $data = "";
         if ($aux) {
             $contador = 1;
@@ -406,7 +416,8 @@ class WS extends ANT_Controller
         $result = Departamentos_Servicios_Model::Load($options);
         if ($result) {
             $result = $result[0];
-            $this->send_email_cutas(array('nombre' => $post['nombre'],
+            $this->send_email_cutas(array(
+                'nombre' => $post['nombre'],
                 'correo' => $post['email'],
                 'servicio' => $result['servicio'],
                 'departamento' => $result['departamento'],
@@ -419,7 +430,8 @@ class WS extends ANT_Controller
     {
         $post = $this->input->post();
         $post = $this->input->post();
-        $data = Eventos_Participaciones_Model::Insert(array('evento_id' => $post['id'],
+        $data = Eventos_Participaciones_Model::Insert(array(
+            'evento_id' => $post['id'],
             'number' => $post['telefono'],
             'created' => date("Y-m-d H:i:s"),
         ));
@@ -428,7 +440,8 @@ class WS extends ANT_Controller
     public function add_calificacion()
     {
         $post = $this->input->post();
-        $data = Eventos_Calificaciones_Model::Insert(array('evento_id' => $post['id'],
+        $data = Eventos_Calificaciones_Model::Insert(array(
+            'evento_id' => $post['id'],
             'calificacion' => $post['calif'],
             'comentario' => $post['comentario'],
             'created' => date("Y-m-d H:i:s"),
@@ -439,11 +452,12 @@ class WS extends ANT_Controller
     public function get_tipos_denuncias()
     {
         $data = "";
-        $aux = Tipos_Denuncias_Model::Load(array('select' => "*",
-            'result' => 'array'));
+        $aux = Tipos_Denuncias_Model::Load(array(
+            'select' => "*",
+            'result' => 'array'
+        ));
         foreach ($aux as $key) {
             $data .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
-
         }
         $this->output_json($data);
     }
@@ -463,7 +477,8 @@ class WS extends ANT_Controller
     {
         $post = $this->input->post();
         foreach ($post['respuestas'] as $key) {
-            $data = Eventos_Preguntas_Respuestas_Model::Insert(array('evento_pregunta_id' => $key['id'],
+            $data = Eventos_Preguntas_Respuestas_Model::Insert(array(
+                'evento_pregunta_id' => $key['id'],
                 'respuesta' => $key['respuesta'],
                 'created' => date("Y-m-d H:i:s"),
 
@@ -476,8 +491,7 @@ class WS extends ANT_Controller
     {
 
         $post = $this->input->post();
-        $fields = array
-            (
+        $fields = array(
             'to' => 'ExponentPushToken[YefkosJwCnAf7ltWl6MRZH]',
             'body' => "Pruebas",
             'sound' => 'default',
@@ -486,8 +500,7 @@ class WS extends ANT_Controller
         );
         //ExponentPushToken[w3-h1KDZJwKTbq2r3ctK_B]
         //ExponentPushToken[YefkosJwCnAf7ltWl6MRZH]
-        $headers = array
-            (
+        $headers = array(
             'Content-Type: application/json',
         );
 
@@ -503,18 +516,21 @@ class WS extends ANT_Controller
         //Notificaciones_Model::Insert(array('titulo' => $titulo, 'descripcion' => $body));
         //$this->output_json($result);
 
-//header("Location: notificaciones.php");
+        //header("Location: notificaciones.php");
     }
     public function proccess_card_pay()
     {
         Openpay::setProductionMode(false);
         $identificador = "m70gtw7bctazhllgfezs";
-        $openpay = Openpay::getInstance($identificador,
-            'sk_9dd56acc5cf842fb9ee13c4c173537b3');
+        $openpay = Openpay::getInstance(
+            $identificador,
+            'sk_9dd56acc5cf842fb9ee13c4c173537b3'
+        );
         $customer = array(
             'name' => $_POST['nombre_real'],
             'phone_number' => "",
-            'email' => $_POST['email']);
+            'email' => $_POST['email']
+        );
         $chargeData = array(
             'method' => 'card',
             'source_id' => $_POST["token_id"],
@@ -526,11 +542,13 @@ class WS extends ANT_Controller
         $charge = false;
         $charge = $openpay->charges->create($chargeData);
         if ($charge) {
-            Departamentos_Servicios_Pagos_Model::Insert(array('nombre' => $_POST['nombre_real'],
+            Departamentos_Servicios_Pagos_Model::Insert(array(
+                'nombre' => $_POST['nombre_real'],
                 'email' => $_POST['email'],
                 'token' => $_POST['token'],
                 'status' => '1',
-                'departamento_servicio_id' => $_POST['servicio']));
+                'departamento_servicio_id' => $_POST['servicio']
+            ));
             $options = array(
                 'select' => 'departamentos_servicios.nombre as servicio,departamentos.nombre as departamento,departamentos.user_type,departamentos_servicios_pagos.token',
                 'joinsLeft' => array(
@@ -544,16 +562,20 @@ class WS extends ANT_Controller
             $result = Departamentos_Servicios_Model::Load($options);
             if ($result) {
                 $result = $result[0];
-                $this->enviar_notificacion_pago("Tu pago ha sido acreditado.",
+                $this->enviar_notificacion_pago(
+                    "Tu pago ha sido acreditado.",
                     "Tu pago para " . $result['departamento'] . ' - ' . $result['servicio'] . " ha sido acreditado con exito. ",
-                    $result['token']);
-                $this->send_email(array('nombre' => $_POST['nombre_real'],
+                    $result['token']
+                );
+                $this->send_email(array(
+                    'nombre' => $_POST['nombre_real'],
                     'correo' => $_POST['email'],
                     'servicio' => $result['servicio'],
                     'departamento' => $result['departamento'],
                     'precio' => number_format($_POST["amount"], 2, '.', ','),
                 ));
-                $this->send_email_pago(array('nombre' => $_POST['nombre_real'],
+                $this->send_email_pago(array(
+                    'nombre' => $_POST['nombre_real'],
                     'correo' => $_POST['email'],
                     'servicio' => $result['servicio'],
                     'departamento' => $result['departamento'],
@@ -567,7 +589,8 @@ class WS extends ANT_Controller
     public function enviar_notificacion_pago($titulo, $body, $to)
     {
         $apikey = "AIzaSyCT2rnP0u1jDZTqJRbFaW1MuxOKubAl-r4";
-        $data = array('title' => $titulo,
+        $data = array(
+            'title' => $titulo,
             'body' => $body,
             'image' => 'https://zumpango.vmcomp.com.mx/assets/images/logo-zumpango-horizontal-color.png',
         );
@@ -893,7 +916,6 @@ class WS extends ANT_Controller
             //unlink("uploads/p" . $name . ".pdf");
             //echo "Message has been sent";
         }
-
     }
     public function send_email_pago($datos)
     {
@@ -1210,7 +1232,6 @@ class WS extends ANT_Controller
             //unlink("uploads/p" . $name . ".pdf");
             //echo "Message has been sent";
         }
-
     }
     public function send_email_cutas($datos)
     {
@@ -1526,7 +1547,6 @@ class WS extends ANT_Controller
             //unlink("uploads/p" . $name . ".pdf");
             //echo "Message has been sent";
         }
-
     }
     public function proccess_oxxo_pay()
     {
@@ -1540,18 +1560,22 @@ class WS extends ANT_Controller
             $server = "https://sandbox-dashboard.openpay.mx/spei-pdf/";
         }
         $identificador = "m70gtw7bctazhllgfezs";
-        $openpay = Openpay::getInstance($identificador,
-            'sk_9dd56acc5cf842fb9ee13c4c173537b3');
+        $openpay = Openpay::getInstance(
+            $identificador,
+            'sk_9dd56acc5cf842fb9ee13c4c173537b3'
+        );
 
         $customer = array(
             'name' => $_POST['nombre'],
             'phone_number' => "",
-            'email' => $_POST['email']);
+            'email' => $_POST['email']
+        );
         $chargeData = array(
             'method' => $tipo,
             'amount' => floatval($_POST['amount']),
             'description' => $_POST["description"],
-            "customer" => $customer);
+            "customer" => $customer
+        );
         $charge = $openpay->charges->create($chargeData);
         $referencia = "";
         if ($_POST['type'] == 1) {
@@ -1605,19 +1629,22 @@ class WS extends ANT_Controller
         if (!$mail->Send()) {
             echo "Mailer Error: " . $mail->ErrorInfo;
         }
-        Departamentos_Servicios_Pagos_Model::Insert(array('nombre' => $_POST['nombre'],
+        Departamentos_Servicios_Pagos_Model::Insert(array(
+            'nombre' => $_POST['nombre'],
             'email' => $_POST['email'],
             'token' => $_POST['token'],
-            'departamento_servicio_id' => $_POST['servicio']));
+            'departamento_servicio_id' => $_POST['servicio']
+        ));
         $this->output_json($data);
-
     }
     public function get_colonia()
     {
         $data = 0;
-        $aux = Colonias_Model::Load(array('select' => "*",
+        $aux = Colonias_Model::Load(array(
+            'select' => "*",
             'result' => 'array',
-            'where' => "id=" . $this->input->post('colonia')));
+            'where' => "id=" . $this->input->post('colonia')
+        ));
         if ($aux) {
             $data = $aux[0];
         }
@@ -1639,9 +1666,11 @@ class WS extends ANT_Controller
         } else {
             $where = " AND ((colonia=0 AND token is null) OR token='" . $token . "')";
         }
-        $aux = Notificaciones_Model::Load(array('select' => "*",
+        $aux = Notificaciones_Model::Load(array(
+            'select' => "*",
             'result' => 'array',
-            'where' => "created>='" . date('Y-m-d H:i:s', strtotime('-1 days')) . "' " . $where));
+            'where' => "created>='" . date('Y-m-d H:i:s', strtotime('-1 days')) . "' " . $where
+        ));
         if ($aux) {
             $data = sizeof($aux);
         }
@@ -1659,7 +1688,6 @@ class WS extends ANT_Controller
         if ($import) {
             $colonia = $informacion['colonia'];
             $token = $informacion['token'];
-
         } else {
             $colonia = $this->input->post('colonia');
             $token = $this->input->post('token');
@@ -1670,13 +1698,15 @@ class WS extends ANT_Controller
         } else {
             $where = " AND ((colonia=0 AND notificaciones.token is null) OR notificaciones.token='" . $token . "')";
         }
-        $aux = Notificaciones_Model::Load(array('select' => "notificaciones.*, readed_notifications.id as has",
+        $aux = Notificaciones_Model::Load(array(
+            'select' => "notificaciones.*, readed_notifications.id as has",
             'joinsLeft' => array('readed_notifications' => "readed_notifications.token='$token' AND readed_notifications.notificacion_id=notificaciones.id"),
             'result' => 'array',
 
             'sortBy' => 'notificaciones.id',
             'sortDirection' => 'desc',
-            'where' => "created>='" . date('Y-m-d H:i:s', strtotime('-1 days')) . "' " . $where));
+            'where' => "created>='" . date('Y-m-d H:i:s', strtotime('-1 days')) . "' " . $where
+        ));
         if ($aux) {
             foreach ($aux as $key) {
                 $imagen = "images/noticias/5.jpg";
@@ -1705,7 +1735,6 @@ class WS extends ANT_Controller
             </span>
         </div>';
             }
-
         }
         if ($import) {
             return $data;
@@ -1716,7 +1745,8 @@ class WS extends ANT_Controller
     public function send_firebase_notification($to, $texto)
     {
         $apikey = "AIzaSyCT2rnP0u1jDZTqJRbFaW1MuxOKubAl-r4";
-        $data = array('title' => 'Zumpango Web App',
+        $data = array(
+            'title' => 'Zumpango Web App',
             'body' => $texto,
             'image' => 'https://zumpango.vmcomp.com.mx/assets/images/logo-zumpango-horizontal-color.png',
         );
@@ -1731,17 +1761,16 @@ class WS extends ANT_Controller
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
         $result = curl_exec($ch);
-
     }
     public function get_all_logos()
     {
-        $data['l6'] =$this->tank_auth->get_logos(6);
-        $data['l7'] =$this->tank_auth->get_logos(7);
-        $data['l8'] =$this->tank_auth->get_logos(8);
-        $data['l9'] =$this->tank_auth->get_logos(9);
-        $data['l10'] =$this->tank_auth->get_logos(10);
-        $data['l11'] =$this->tank_auth->get_logos(11);
-        $data['l12'] =$this->tank_auth->get_logos(12);
+        $data['l6'] = $this->tank_auth->get_logos(6);
+        $data['l7'] = $this->tank_auth->get_logos(7);
+        $data['l8'] = $this->tank_auth->get_logos(8);
+        $data['l9'] = $this->tank_auth->get_logos(9);
+        $data['l10'] = $this->tank_auth->get_logos(10);
+        $data['l11'] = $this->tank_auth->get_logos(11);
+        $data['l12'] = $this->tank_auth->get_logos(12);
 
         //$data['servicios'] = $this->get_all_service_data();
         $this->output_json($data);
@@ -1776,5 +1805,217 @@ class WS extends ANT_Controller
         $token = $this->input->post('token');
         $result = Readed_Notifications_Model::Insert(array('token' => $token, 'notificacion_id' => $notificacion));
         $this->output_json($result);
+    }
+    public function informacion()
+    {
+        $archivo = fopen('assets/credenciales.csv', "r");
+        $linea = 0;
+        $contador = 0;
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $datos = array_map("utf8_encode", $datos);
+            if ($linea > 1 && $datos[0] != "") {
+                $clave = $datos[0];
+                $nombre = $datos[1];
+                $puesto = $datos[2];
+                $area = $datos[3];
+                $fabricante = $datos[4];
+                $cert = $datos[5];
+                $inicio = $datos[6];
+                $fin = $datos[7];
+                $aux = Users_Model::Query("SELECT * FROM CasasCertificadoras where Nombre='" . $fabricante . "'");
+                if ($aux) {
+                    $fabricanteId = $aux[0]['Id'];
+                } else {
+                    $aux = Users_Model::Query("INSERT INTO CasasCertificadoras
+                    (Nombre)
+                    VALUES
+                    ('" . $fabricante . "')");
+                    $aux = Users_Model::Query("SELECT * FROM CasasCertificadoras where Nombre='" . $fabricante . "'");
+                    $fabricanteId = $aux[0]['Id'];
+                }
+                $aux = Users_Model::Query("SELECT * FROM AreasCertificacion where Nombre='" . $area . "'");
+                if ($aux) {
+                    $areaId = $aux[0]['Id'];
+                } else {
+                    $aux = Users_Model::Query("INSERT INTO AreasCertificacion
+                    (Nombre)
+                    VALUES
+                    ('" . $area . "')");
+                    $aux = Users_Model::Query("SELECT * FROM AreasCertificacion where Nombre='" . $area . "'");
+                    $areaId = $aux[0]['Id'];
+                }
+                $encontreDocumento = "";
+                $nombreArchivo = $datos[9];
+                if (file_exists("assets/Credenciales/" . $nombreArchivo . ".pdf")) {
+                    $encontreDocumento = "assets/Credenciales/" . $nombreArchivo . ".pdf";
+                } else {
+                    if (file_exists("assets/Credenciales/" . $nombreArchivo . ".png")) {
+                        $encontreDocumento = "assets/Credenciales/" . $nombreArchivo . ".png";
+                    } else {
+                        if (file_exists("assets/Credenciales/" . $fabricante . "/" . $nombreArchivo . ".pdf")) {
+                            $encontreDocumento = "assets/Credenciales/" . $fabricante . "/" . $nombreArchivo . ".pdf";
+                        } else {
+                            if (file_exists("assets/Credenciales/" . $fabricante . "/" . $nombreArchivo . ".png")) {
+                                $encontreDocumento = "assets/Credenciales/" . $fabricante . "/" . $nombreArchivo . ".png";
+                            } else {
+                            }
+                        }
+                    }
+                }
+                if ($encontreDocumento == "" && $nombreArchivo != "" && $nombreArchivo != "No aplica") {
+                    var_dump($nombreArchivo);
+                    $contador++;
+                }
+                //var_dump($encontreDocumento);
+                $archivoEnviar = "";
+                $aux = Users_Model::Query("SELECT id
+                FROM [ODS_Catalogs].[dbo].[MGA_PlazasMH]
+                where empleado=" . $clave . " and '" . $nombre . "' like paterno+' '+materno+' '+nombre");
+                if ($aux) {
+                    $clave = $aux[0]['id'];
+                    if ($inicio) {
+
+                        $inicio = explode("/", $inicio)[2] . "-" . explode("/", $inicio)[1] . "-" . explode("/", $inicio)[0] . "T00:00:00.000Z";
+                    }
+                    if ($fin) {
+
+                        $fin = explode("/", $fin)[2] . "-" . explode("/", $fin)[1] . "-" . explode("/", $fin)[0] . "T00:00:00.000Z";
+                    }
+                    $obj = array(
+                        'Id' => 0,
+                        'Nombre' => $cert,
+                        'AreaCertificacionId' => $areaId,
+                        'FechaInicio' => $inicio,
+                        'FechaVencimiento' => $fin,
+                        'CasaCertificadoraId' => $fabricanteId,
+                        'UserId' => $clave
+                    );
+                    if ($encontreDocumento !== "") {
+                        $filenames = array($encontreDocumento);
+                        //$obj['file'] =  new CURLFile($encontreDocumento);
+                    }
+                    $url = "http://localhost:17391/api/Certifications";
+                    $files = array();
+                    foreach ($filenames as $f) {
+                        $files[$f] = file_get_contents($f);
+                    }
+
+                    $curl = curl_init();
+
+                    $url_data = http_build_query($obj);
+
+                    $boundary = uniqid();
+                    $delimiter = '-------------' . $boundary;
+
+                    $post_data = $this->build_data_files($boundary, $obj, $files);
+
+
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => $url,
+                        CURLOPT_RETURNTRANSFER => 1,
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 30,
+                        //CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "POST",
+                        CURLOPT_POST => 1,
+                        CURLOPT_POSTFIELDS => $post_data,
+                        CURLOPT_HTTPHEADER => array(
+                            //"Authorization: Bearer $TOKEN",
+                            "Content-Type: multipart/form-data; boundary=" . $delimiter,
+                            "Content-Length: " . strlen($post_data)
+
+                        ),
+
+
+                    ));
+
+
+                    //
+                    $response = curl_exec($curl);
+                    $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    curl_close($curl);
+                    var_dump($response);
+                    var_dump($status);
+                } else {
+                    var_dump($linea);
+                }
+            }
+            $linea++;
+        }
+    }
+    public function get_data_from_puesto()
+    {
+        $archivo = fopen('assets/puestos.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $datos = array_map("utf8_encode", $datos);
+            if ($linea > 1 && $datos[0] != "") {
+                $puesto = $datos[0];
+                $jefe = $datos[1];
+
+                $aux = Users_Model::Query("SELECT id FROM [ODS_Catalogs].[dbo].[MGA_PlazasMH] WHERE 
+                paterno+' '+materno+' '+nombre = '" . $jefe . "'
+                AND id != 0");
+                if ($aux) {
+                    $jefe_id = $aux[0]['id'];
+                    $aux = Users_Model::Query("SELECT cve_puesto FROM [ODS_Catalogs].[dbo].[MGA_PlazasMH] WHERE 
+                   descripcion_puesto = '" . $puesto . "'
+                    AND id != 0");
+                    //var_dump($jefe_id);
+                    if ($aux) {
+                        $puesto_id = $aux[0]['cve_puesto'];
+                        //var_dump($puesto_id);
+                        $query .= "INSERT INTO [dbo].[UsuariosAutorizadores]
+                        ([ColaboradorID]
+                        ,[CvePuesto])
+                  VALUES
+                        (" . $jefe_id . "
+                        ," . $puesto_id . ");";
+                    }
+                }
+            } else {
+                var_dump($linea);
+            }
+
+            $linea++;
+        }
+        var_dump($query);
+    }
+
+
+
+
+
+    function build_data_files($boundary, $fields, $files)
+    {
+        $data = '';
+        $eol = "\r\n";
+
+        $delimiter = '-------------' . $boundary;
+
+        foreach ($fields as $name => $content) {
+            $data .= "--" . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $name . "\"" . $eol . $eol
+                . $content . $eol;
+        }
+
+
+        foreach ($files as $name => $content) {
+            $data .= "--" . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $name . '"; filename="' . $name . '"' . $eol
+                //. 'Content-Type: image/png'.$eol
+                . 'Content-Transfer-Encoding: binary' . $eol;
+
+            $data .= $eol;
+            $data .= $content . $eol;
+        }
+        $data .= "--" . $delimiter . "--" . $eol;
+
+
+        return $data;
     }
 }
