@@ -24,7 +24,7 @@
                             <div class="col-lg-12 col-md-12">
                                 <div class="d-form-agregar-dep">
                                     <p class="title-sec">Agregar servicio</p>
-                                    <canvas></canvas>
+                                    <div id="qr-reader" style="width: 600px"></div>
                                     <form id="Departamentos_info" enctype="multipart/form-data" onsubmit="save_Departamentos()" class="form-agendar-cita">
                                         <input type="hidden" name="users[id]" id="id" class="form-control" value="<?php echo $id; ?>" />
                                         <div class="form-group col-lg-6 col-md-6 pl-0">

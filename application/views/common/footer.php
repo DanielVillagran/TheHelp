@@ -98,8 +98,7 @@
 
 <script src="https://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js" integrity="sha512-UcDEnmFoMh0dYHu0wGsf5SKB7z7i5j3GuXHCnb3i4s44hfctoLihr896bxM0zL7jGkcHQXXrJsFIL62ehtd6yQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/DecoderWorker.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/webcodecamjs.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <!-- select2 -->
 
 
