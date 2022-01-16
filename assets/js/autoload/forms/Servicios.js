@@ -12,7 +12,8 @@ $(document).ready(function () {
 
 });
 function onScanSuccess(decodedText, decodedResult) {
-    objetoScanner.stop();
+    //objetoScanner.stop();
+    alert("Pruebas")
     alert(decodedText);
     //console.log(`Code scanned = ${decodedText}`, decodedResult);
 }
