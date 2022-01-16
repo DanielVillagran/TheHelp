@@ -29,6 +29,13 @@
         <div id="MainMenu">
             <div class="list-group panel">
                 <a href="/home/" class="list-group-item">Inicio</a>
+                <?php if ($this->tank_auth->user_has_privilege('Servicios')) : ?>
+                    <a href="#servicios" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Servicios<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="servicios">
+                        <a href="/Servicios" class="list-group-item item-second-list">Ver Servicios</a>
+                        <a href="/Servicios/add" class="list-group-item item-second-list">Agregar Servicios</a>
+                    </div>
+                <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Empresas')) : ?>
                     <a href="#empresas" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Empresas<i class="fa fa-caret-down pull-right"></i> </a>
                     <div class="collapse list-group-submenu" id="empresas">

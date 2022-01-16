@@ -4,10 +4,10 @@ if (!defined('BASEPATH')) {
 	exit('No direct script access allowed');
 }
 
-class Vehiculos_Model extends ANT_Model
+class Servicios_Model extends ANT_Model
 {
 
-	protected static $table = 'vehiculos';
+	protected static $table = 'servicios';
 	protected static $uk = array('id');
 
 	function __construct()
@@ -20,11 +20,15 @@ class Vehiculos_Model extends ANT_Model
 		$lista = '';
 		$result = array();
 		$options = array(
-			'select' => '*',
+			'select' => 'servicios.*,vehiculos.marca,vehiculos.modelo,vehiculos.serie,tipo_servicios.nombre as tipoServicio',
+			'joinsLeft' => array(
+				'vehiculos' => 'vehiculos.id = servicios.vehiculoId',
+				'tipo_servicios' => 'tipo_servicios.id = servicios.tipoServicioId',
+			),
 			'result' => 'array'
 		);
 
-		$result = Vehiculos_Model::Load($options);
+		$result = Servicios_Model::Load($options);
 		return $result;
 	}
 	static function get_select($where = NULL, $list = NULL, $agent = NULL)
@@ -37,9 +41,9 @@ class Vehiculos_Model extends ANT_Model
 			'result' => 'array'
 		);
 
-		$result = Vehiculos_Model::Load($options);
+		$result = Servicios_Model::Load($options);
 		foreach ($result as $key) {
-			$lista .= '<option value="' . $key['id'] . '">' . $key['marca'] . ' - ' . $key['modelo'] . ' - ' . $key['serie'] . '</option>';
+			$lista .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
 		}
 		return $lista;
 	}

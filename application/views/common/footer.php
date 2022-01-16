@@ -98,6 +98,8 @@
 
 <script src="https://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js" integrity="sha512-UcDEnmFoMh0dYHu0wGsf5SKB7z7i5j3GuXHCnb3i4s44hfctoLihr896bxM0zL7jGkcHQXXrJsFIL62ehtd6yQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="<?php echo base_url(); ?>assets/js/lib/DecoderWorker.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/lib/webcodecamjs.js"></script>
 <!-- select2 -->
 
 
@@ -105,19 +107,19 @@
 <?php
 $view = isset($view) ? $view : FALSE;
 $js_scripts = isset($js_scripts) ? $js_scripts : FALSE;
-if (is_string($view)):
-	echo '<script src="' . base_url() . 'assets/js/autoload/' . $view . '.js?p=' . uniqid() . '"></script>';
-elseif (is_array($view)):
-	foreach ($view as $v):
-		echo "\n" . '<script src="' . base_url() . 'assets/js/autoload/' . $v . '.js?p=' . uniqid() . '"></script>';
-	endforeach;
+if (is_string($view)) :
+    echo '<script src="' . base_url() . 'assets/js/autoload/' . $view . '.js?p=' . uniqid() . '"></script>';
+elseif (is_array($view)) :
+    foreach ($view as $v) :
+        echo "\n" . '<script src="' . base_url() . 'assets/js/autoload/' . $v . '.js?p=' . uniqid() . '"></script>';
+    endforeach;
 endif;
-if (is_string($js_scripts)):
-	echo "\n" . '<script src="' . base_url() . 'assets/js/' . $js_scripts . '.js?p=' . uniqid() . '"></script>';
-elseif (is_array($js_scripts)):
-	foreach ($js_scripts as $js):
-		echo "\n" . '<script src="' . base_url() . 'assets/js/' . $js . '.js?p=' . uniqid() . '"></script>';
-	endforeach;
+if (is_string($js_scripts)) :
+    echo "\n" . '<script src="' . base_url() . 'assets/js/' . $js_scripts . '.js?p=' . uniqid() . '"></script>';
+elseif (is_array($js_scripts)) :
+    foreach ($js_scripts as $js) :
+        echo "\n" . '<script src="' . base_url() . 'assets/js/' . $js . '.js?p=' . uniqid() . '"></script>';
+    endforeach;
 endif;
 ?>
 <script src="<?php echo base_url(); ?>assets/js/notifications.js?j=<?php echo uniqid(); ?>"></script>
