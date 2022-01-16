@@ -1,16 +1,21 @@
 var states = "";
+let objetoScanner = null;
 $(document).ready(function () {
     if ($("#id").val() != 0) {
         get_info_Departamentos($("#id").val());
     }
-    function onScanSuccess(decodedText, decodedResult) {
-        console.log(`Code scanned = ${decodedText}`, decodedResult);
-    }
+
     var html5QrcodeScanner = new Html5QrcodeScanner(
         "qr-reader", { fps: 10, qrbox: 250 });
+    objetoScanner = html5QrcodeScanner
     html5QrcodeScanner.render(onScanSuccess);
 
 });
+function onScanSuccess(decodedText, decodedResult) {
+    objetoScanner.stop();
+    alert(decodedText);
+    //console.log(`Code scanned = ${decodedText}`, decodedResult);
+}
 
 function get_info_Departamentos(id) {
     console.log(id);
