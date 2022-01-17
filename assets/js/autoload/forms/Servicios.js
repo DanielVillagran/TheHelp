@@ -23,6 +23,15 @@ function onScanSuccess(decodedText, decodedResult) {
             // Stop failed, handle it.
             console.log("Unable to stop scanning.");
           });
+    }else{
+        alert("Pruebas");
+        objetoScanner.stop().then(ignore => {
+            // QR Code scanning is stopped.
+            console.log("QR Code scanning stopped.");
+          }).catch(err => {
+            // Stop failed, handle it.
+            console.log("Unable to stop scanning.");
+          });
     }
    
     //console.log(`Code scanned = ${decodedText}`, decodedResult);
