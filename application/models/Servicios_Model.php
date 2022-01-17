@@ -31,6 +31,22 @@ class Servicios_Model extends ANT_Model
 		$result = Servicios_Model::Load($options);
 		return $result;
 	}
+	static function get_grid_info_by_vehiculo($id)
+	{
+		$lista = '';
+		$result = array();
+		$options = array(
+			'select' => 'servicios.*, tipo_servicios.nombre as tipoServicio',
+			'joinsLeft' => array(
+				'tipo_servicios' => 'tipo_servicios.id = servicios.tipoServicioId',
+			),
+			'where' => 'servicios.vehiculoId=' . $id,
+			'result' => 'array'
+		);
+
+		$result = Servicios_Model::Load($options);
+		return $result;
+	}
 	static function get_select($where = NULL, $list = NULL, $agent = NULL)
 	{
 		$lista = '<option value="all">-- Todos los vehiculos --</option>';

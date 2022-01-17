@@ -37,6 +37,9 @@ function get_info_Departamentos(id) {
                 correctLevel: QRCode.CorrectLevel.H
             });
             $("#qrCodeDiv").show();
+            $("#tableServiciosDiv").show();
+            $('#groups_grid thead').empty().append(data.head);
+            $('#groups_grid tbody').empty().append(data.tableData).trigger('footable_redraw');
 
 
         }

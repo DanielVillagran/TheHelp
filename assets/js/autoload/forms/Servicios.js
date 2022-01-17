@@ -14,19 +14,8 @@ $(document).ready(function () {
         if (decodedText.includes("vehiculos...")) {
             let id = decodedText.split("vehiculos...")[1];
             $('[name="users[vehiculoId]"]').val(id);
-            objetoScanner.stop().then(ignore => {
-                // QR Code scanning is stopped.
-                console.log("QR Code scanning stopped.");
-            }).catch(err => {
-                // Stop failed, handle it.
-                console.log("Unable to stop scanning.");
-            });
-        } else {
-            alert("Pruebas");
             html5QrcodeScanner.clear();
         }
-
-        //console.log(`Code scanned = ${decodedText}`, decodedResult);
     }
 
 });

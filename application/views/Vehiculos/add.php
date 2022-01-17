@@ -66,10 +66,35 @@
 
                                             </div>
                                         </div>
-                                        <div id="qrCodeDiv" style="display:none" class="form-group col-lg-12 col-md-12 pl-0">
-                                            <label >Click en QR para descargar</label>
+                                        <div id="qrCodeDiv" style="display:none" class="form-group col-lg-6 col-md-6 pl-0">
+                                            <label>Click en QR para descargar</label>
                                             <br><br>
                                             <div onclick="downloadAsImage()" id="qrcode"></div>
+                                        </div>
+                                        <div id="tableServiciosDiv" style="display:none" class="form-group col-lg-6 col-md-6 pl-0">
+                                            <div class="table-responsive d-table-lg">
+                                                <table id="groups_grid" class="table table-lg" data-filter="#filter" data-filter-text-only="true" data-page-size="10" data-limit-navigation="10">
+                                                    <thead>
+                                                        <tr>
+
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td></td>
+                                                        </tr>
+                                                    </tbody>
+
+                                                    <tfoot class="hide-if-no-paging">
+                                                        <tr>
+                                                            <td colspan="7" class="footable-visible">
+                                                                <div class="pagination pagination-centered"></div>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
                                         </div>
                                         <legend></legend>
 
