@@ -13,8 +13,18 @@ $(document).ready(function () {
 });
 function onScanSuccess(decodedText, decodedResult) {
     //objetoScanner.stop();
-    alert("Pruebas")
-    alert(decodedText);
+    if(decodedText.includes("vehiculos...")){
+        let id = decodedText.split("vehiculos...")[1];
+        $('[name="users[vehiculoId]"]').val(id);
+        objetoScanner.stop().then(ignore => {
+            // QR Code scanning is stopped.
+            console.log("QR Code scanning stopped.");
+          }).catch(err => {
+            // Stop failed, handle it.
+            console.log("Unable to stop scanning.");
+          });
+    }
+   
     //console.log(`Code scanned = ${decodedText}`, decodedResult);
 }
 
