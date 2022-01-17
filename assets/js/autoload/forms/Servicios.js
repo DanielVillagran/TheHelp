@@ -9,33 +9,27 @@ $(document).ready(function () {
         "qr-reader", { fps: 10, qrbox: 250 });
     objetoScanner = html5QrcodeScanner
     html5QrcodeScanner.render(onScanSuccess);
+    function onScanSuccess(decodedText, decodedResult) {
+        //objetoScanner.stop();
+        if (decodedText.includes("vehiculos...")) {
+            let id = decodedText.split("vehiculos...")[1];
+            $('[name="users[vehiculoId]"]').val(id);
+            objetoScanner.stop().then(ignore => {
+                // QR Code scanning is stopped.
+                console.log("QR Code scanning stopped.");
+            }).catch(err => {
+                // Stop failed, handle it.
+                console.log("Unable to stop scanning.");
+            });
+        } else {
+            alert("Pruebas");
+            html5QrcodeScanner.clear();
+        }
+
+        //console.log(`Code scanned = ${decodedText}`, decodedResult);
+    }
 
 });
-function onScanSuccess(decodedText, decodedResult) {
-    //objetoScanner.stop();
-    if(decodedText.includes("vehiculos...")){
-        let id = decodedText.split("vehiculos...")[1];
-        $('[name="users[vehiculoId]"]').val(id);
-        objetoScanner.stop().then(ignore => {
-            // QR Code scanning is stopped.
-            console.log("QR Code scanning stopped.");
-          }).catch(err => {
-            // Stop failed, handle it.
-            console.log("Unable to stop scanning.");
-          });
-    }else{
-        alert("Pruebas");
-        objetoScanner.stop().then(ignore => {
-            // QR Code scanning is stopped.
-            console.log("QR Code scanning stopped.");
-          }).catch(err => {
-            // Stop failed, handle it.
-            console.log("Unable to stop scanning.");
-          });
-    }
-   
-    //console.log(`Code scanned = ${decodedText}`, decodedResult);
-}
 
 function get_info_Departamentos(id) {
     console.log(id);
