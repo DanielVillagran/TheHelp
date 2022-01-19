@@ -103,7 +103,7 @@ function readURL(input) {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            $('#icon-preview').attr('src', e.target.result);
+            $(".current_logo").html('<img src="/assets/' + e.target.result + '"/>');
         }
 
         reader.readAsDataURL(input.files[0]);
