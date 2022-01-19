@@ -93,8 +93,39 @@ class Servicios extends ANT_Controller
 
 		if ($post['id'] == 0) {
 			$result = Servicios_Model::Insert($post);
+			$evidencia = $this->is_valid_post_file($_FILES['users'], 'evidencia');
+			if ($evidencia['exist'] && !$evidencia['error']) {
+				$filename_source = $_FILES['users']['tmp_name']['evidencia'];
+				$extension = strtolower(pathinfo($_FILES['users']['name']['evidencia'], PATHINFO_EXTENSION));
+				$nombreevidencia = pathinfo($_FILES['users']['name']['evidencia'], PATHINFO_FILENAME);
+				$file_path = 'assets/files/fotos/';
+				$nombreevidencia = str_replace(array("(", ")", " "), "", $nombreevidencia);
+				$filename = 'evidencia_' . sprintf('%010s', $post['id']) . '.' . $nombreevidencia . '.' . strtolower($extension);
+				$filename_destiny = $file_path . DIRECTORY_SEPARATOR . $filename;
+				if (file_exists($filename_destiny)) {
+					@unlink($filename_destiny);
+				}
+				if (move_uploaded_file($filename_source, $filename_destiny)) {
+					$subida = Servicios_Model::Update(array('evidencia' => 'files/fotos/' . $filename), array('id' => $result['insert_id']));
+				}
+			}
 		} else {
-
+			$evidencia = $this->is_valid_post_file($_FILES['users'], 'evidencia');
+			if ($evidencia['exist'] && !$evidencia['error']) {
+				$filename_source = $_FILES['users']['tmp_name']['evidencia'];
+				$extension = strtolower(pathinfo($_FILES['users']['name']['evidencia'], PATHINFO_EXTENSION));
+				$nombreevidencia = pathinfo($_FILES['users']['name']['evidencia'], PATHINFO_FILENAME);
+				$file_path = 'assets/files/fotos/';
+				$nombreevidencia = str_replace(array("(", ")", " "), "", $nombreevidencia);
+				$filename = 'evidencia_' . sprintf('%010s', $post['id']) . '.' . $nombreevidencia . '.' . strtolower($extension);
+				$filename_destiny = $file_path . DIRECTORY_SEPARATOR . $filename;
+				if (file_exists($filename_destiny)) {
+					@unlink($filename_destiny);
+				}
+				if (move_uploaded_file($filename_source, $filename_destiny)) {
+					$result = Servicios_Model::Update(array('evidencia' => 'files/fotos/' . $filename), array('id' => $post['id']));
+				}
+			}
 			$result = Servicios_Model::Update($post, 'id=' . $post['id']);
 		}
 		$this->output_json($result);

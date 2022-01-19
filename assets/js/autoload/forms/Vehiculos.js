@@ -74,8 +74,11 @@ function save_Departamentos() {
         success: function (data) {
 
             swal.close();
-
-            location.href = "/Vehiculos";
+            if (data.insert_id) {
+                location.href = "/Vehiculos/edit/" + data.insert_id;
+            } else {
+                location.href = "/Vehiculos";
+            }
 
 
         }

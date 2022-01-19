@@ -15,8 +15,27 @@ $(document).ready(function () {
   $("#loginbtn").click(function () {
     login();
   });
-});
+  $("#revisarHistorial").click(function () {
+    revisarHistorial();
+  });
 
+});
+function revisarHistorial() {
+  $("#demo-form").hide();
+  var html5QrcodeScanner = new Html5QrcodeScanner(
+    "qr-reader", { fps: 10, qrbox: 250 });
+  objetoScanner = html5QrcodeScanner
+  html5QrcodeScanner.render(onScanSuccess);
+  function onScanSuccess(decodedText, decodedResult) {
+    //objetoScanner.stop();
+    if (decodedText.includes("vehiculos...")) {
+      let id = decodedText.split("vehiculos...")[1];
+      location.replace("/ClienteVehiculos/view/" + id)
+      // $('[name="users[vehiculoId]"]').val(id);
+      html5QrcodeScanner.clear();
+    }
+  }
+}
 function login() {
   if ($("#login").val().length == "") {
     alert("Escribe tu nombre de usuario");
@@ -62,7 +81,7 @@ function saveTokenForUser(currentToken) {
     url: "/User/add_token_to_user",
     data: { token: currentToken },
     dataType: "json",
-    beforeSend: function () {},
+    beforeSend: function () { },
     success: function (data) {
       location.reload();
     },
@@ -148,7 +167,7 @@ function sendTokenToServer(currentToken) {
   } else {
     console.log(
       "Token already sent to server so won't send it again " +
-        "unless it changes"
+      "unless it changes"
     );
   }
 }
@@ -225,4 +244,4 @@ function updateUIForPushEnabled(currentToken) {
   showToken(currentToken);
 }
 
-function updateUIForPushPermissionRequired() {}
+function updateUIForPushPermissionRequired() { }

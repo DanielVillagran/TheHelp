@@ -4,10 +4,15 @@
             <div class="user-profile clearfix">
                 <div class="admin-user-info">
                     <ul>
-                        <li><a href="javascript:;" title="<?php echo $this->tank_auth->get_user_name(); ?>" class="name-user one-line"><?php echo $this->tank_auth->get_user_name(); ?></a></li>
-                        <?php $logged_email = $this->tank_auth->get_user_email(); ?>
-                        <li><a href="#0" title="Usuario conectado" class="sub-name-user one-line"><?php echo $logged_email; ?></a></li>
-
+                        <?php
+                        if ($this->tank_auth->get_user_id() != "") {
+                        ?>
+                            <li><a href="javascript:;" title="<?php echo $this->tank_auth->get_user_name(); ?>" class="name-user one-line"><?php echo $this->tank_auth->get_user_name(); ?></a></li>
+                            <?php $logged_email = $this->tank_auth->get_user_email(); ?>
+                            <li><a href="#0" title="Usuario conectado" class="sub-name-user one-line"><?php echo $logged_email; ?></a></li>
+                        <?php
+                        }
+                        ?>
                     </ul>
                 </div>
             </div>
@@ -17,12 +22,19 @@
             </script>
             <div class="admin-bar" id="admin-bar">
                 <ul>
+
                     <li><a href="/user/logout" title="Cerrar sesión"><i class="zmdi zmdi-power"></i>
                         </a>
                     </li>
-                    <li><a href="/user/change_pass" title="Cambiar contrase&ntilde;a" name="changepass" id="changepass"><i class="zmdi zmdi-key"></i>
-                        </a>
-                    </li>
+                    <?php
+                    if ($this->tank_auth->get_user_id() != "") {
+                    ?>
+                        <li><a href="/user/change_pass" title="Cambiar contrase&ntilde;a" name="changepass" id="changepass"><i class="zmdi zmdi-key"></i>
+                            </a>
+                        </li>
+                    <?php
+                    }
+                    ?>
                 </ul>
             </div>
         </div>

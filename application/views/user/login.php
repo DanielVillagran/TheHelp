@@ -72,7 +72,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </div>
                         </div>
 
-                        <div style="margin-top: 30px;" class="admin-form login-form-content">
+                        <div style="margin-top: 30px;" class="admin-form login-form-content" >
 
                             <!-- start login -->
                             <div class="unit">
@@ -106,8 +106,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="login-form-footer">
                             <button type="button" id="loginbtn" class="btn btn-entrar">Iniciar sesión</button>
                         </div>
+                        <br>
+                        <div class="login-form-footer">
+                            <button type="button" id="revisarHistorial" class="btn btn-entrar">Revisar Historial</button>
+                        </div>
 
                     </form>
+                    <div id="qr-reader" style="width: 250px"></div>
 
 
                 </div>
@@ -150,6 +155,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script src="assets/js/login.js?j=<?php echo uniqid(); ?>"></script>
     <script src="assets/js/jquery.parsley/dist/parsley.min.js"></script>
     <script src="assets/js/lib/sweetalert.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     
     <script type="text/javascript">
         $("#facebookbtn").click(function(e) {

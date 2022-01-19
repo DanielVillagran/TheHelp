@@ -47,6 +47,28 @@
 
                                             </div>
                                         </div>
+                                        <div class="form-group col-lg-6 col-md-6 pr-0 d-file-img">
+
+                                            <div class="input append-big-btn">
+                                                <!--file input example -->
+                                                <span class="control-fileupload">
+                                                    <label for="file" class="one-line">Seleccionar imagen</label>
+                                                    <input type="file" class="input-file-icon" id="file" name="users[evidencia]" accept="image/*;capture=camera">
+                                                </span>
+                                                <span class="hint">Formato recomendado PNG y SVG.</span>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="form-group col-lg-6 col-md-6 pr-0 d-file-img">
+
+
+
+                                            <div class="current_logo">
+                                                <img id="icon-preview" src="#" alt="Icono" />
+                                            </div>
+
+                                        </div>
                                         <legend></legend>
 
                                         <div style="margin-top: 15px" class="form-group col-lg-12 col-md-12 pl-0">
