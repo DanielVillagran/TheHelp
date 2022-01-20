@@ -34,7 +34,7 @@ class Home extends ANT_Controller
     {
         $data['user_id'] = $this->tank_auth->get_user_id();
         //$ids = $this->tank_auth->get_user_role();
-        $data['view'] = 'grids/Denuncias';
+        $data['view'] = 'forms/Home';
         $this->session->unset_userdata('pagina_previa');
         $this->_load_views('Home/dashboard', $data);
     }

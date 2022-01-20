@@ -26,7 +26,7 @@
                                     <p class="title-sec">Agregar vehiculo</p>
 
                                     <form id="Departamentos_info" enctype="multipart/form-data" onsubmit="save_Departamentos()" class="form-agendar-cita">
-                                        <input type="hidden" name="users[id]" id="id" class="form-control" value="<?php echo $id; ?>" />
+                                        <input type="hidden" name="users[id]" class="form-control" value="<?php echo $id; ?>" />
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
                                             <select class="form-control input-form input-contacto-principal" name="users[clienteId]">
                                                 <option hidden>Seleccionar Cliente</option>

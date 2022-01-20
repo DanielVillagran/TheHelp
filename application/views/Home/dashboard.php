@@ -3,79 +3,16 @@
 <section class="main-container">
     <div class="container-fluid">
 
-       <!-- <div class="row row-home-denuncias">
+        <div class="row row-home-denuncias">
             <div class="col-lg-12 col-md-12">
-
-
-
                 <div class="d-home">
-                    <div class="denuncias-entrantes">
-                        <p class="title-inicio">Denuncias entrantes</p>
-                        <div class="table-responsive table-borderless table-denuncias">
-                            <table class="table" id="noa_grid">
-                                <thead>
-                                    <tr>
-                                        <th class="th-foto">Foto</th>
-                                        <th class="th-descripcion">Descripción</th>
-                                        <th class="th-tipo">Tipo</th>
-                                        <th class="th-fecha">Fecha</th>
-                                        <th class="th-ubicacion">Ubicación</th>
-                                        <th class="th-btn"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                                <tfoot class="hide-if-no-paging">
-                                    <tr>
-                                        <td colspan="7" class="footable-visible">
-                                            <div class="pagination pagination-centered"></div>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-
-                    </div>
-                    <div class="denuncias-atendidas">
-                        <p class="title-inicio">Denuncias atendidas</p>
-
-
-                        <div class="table-responsive table-borderless table-denuncias">
-                            <table class="table" id="atendidas">
-                                <thead>
-                                    <tr>
-                                        <th class="th-foto">Foto</th>
-                                        <th class="th-descripcion">Descripción</th>
-                                        <th class="th-tipo">Tipo</th>
-                                        <th class="th-fecha">Fecha</th>
-                                        <th class="th-ubicacion">Ubicación</th>
-                                        <th class="th-btn"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                                <tfoot class="hide-if-no-paging">
-                                    <tr>
-                                        <td colspan="7" class="footable-visible">
-                                            <div class="pagination pagination-centered"></div>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-                    </div>
+                    <p class="title-sec">Buscar Vehiculo</p>
+                    <div id="qr-reader" style="width: 250px"></div>
                 </div>
             </div>
 
         </div>
-
-   
--->
- </div>
+    </div>
 
 
 </section>

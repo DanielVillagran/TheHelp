@@ -40,6 +40,9 @@ function get_info_Departamentos(id) {
             $("#tableServiciosDiv").show();
             $('#groups_grid thead').empty().append(data.head);
             $('#groups_grid tbody').empty().append(data.tableData).trigger('footable_redraw');
+            $("#tableTicketsDiv").show();
+            $('#tickets_grid thead').empty().append(data.head2);
+            $('#tickets_grid tbody').empty().append(data.tableData2).trigger('footable_redraw');
 
 
         }
@@ -55,12 +58,12 @@ function downloadAsImage() {
 
 }
 
-function save_Departamentos() {
+function save_Ticket() {
     event.preventDefault();
-    var data = new FormData(document.getElementById("Departamentos_info"));
+    var data = new FormData(document.getElementById("TicketsInfo"));
     $.ajax({
         type: "post",
-        url: "/Vehiculos/save_info",
+        url: "/ClienteVehiculos/save_ticket",
         data: data,
         processData: false,
         contentType: false,
@@ -72,12 +75,8 @@ function save_Departamentos() {
             });
         },
         success: function (data) {
-
             swal.close();
-
-            location.href = "/Vehiculos";
-
-
+            get_info_Departamentos($("#id").val());
         }
     });
 }
