@@ -75,6 +75,27 @@ class Vehiculos extends ANT_Controller
 		} else {
 			$data->tableData = '<tr><td colspan="5">Perdon, no hemos encontrado nada.</td></tr>';
 		}
+		$data->head2 = "<tr>
+				<th>Tipo de Servicio</th>
+				<th>Fecha</th>
+				<th>Descripción</th>
+				<th>Status</th>
+				</tr>";
+		$aux = Tickets_Model::get_grid_info_by_vehiculo($post['id']);
+		$data->tableData2 = '';
+		if ($aux) {
+			foreach ($aux as $a) {
+				$data->tableData2 .= '<tr>
+					
+						<td>' . $a['tipoServicio'] . '</td>
+						<td>' . $a['createdAt'] . '</td>
+						<td>' . $a['descripcion'] . '</td>
+						<td>' . $a['status'] . '</td>
+					</tr>';
+			}
+		} else {
+			$data->tableData2 = '<tr><td colspan="5">Perdon, no hemos encontrado nada.</td></tr>';
+		}
 		$this->output_json($data);
 	}
 	function get_Vehiculos()

@@ -1,7 +1,26 @@
 var states = "";
+let objetoScanner = null;
 $(document).ready(function () {
     if ($("#id").val() != 0) {
         get_info_Departamentos($("#id").val());
+    }
+    $(".input-file-icon").change(function () {
+        var t = $(this).val();
+        var labelText = 'Img: ' + t.substr(12, t.length);
+        $(this).prev('label').text(labelText);
+    });
+
+    var html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader", { fps: 10, qrbox: 250 });
+    objetoScanner = html5QrcodeScanner
+    html5QrcodeScanner.render(onScanSuccess);
+    function onScanSuccess(decodedText, decodedResult) {
+        //objetoScanner.stop();
+        if (decodedText.includes("vehiculos...")) {
+            let id = decodedText.split("vehiculos...")[1];
+            $('[name="users[vehiculoId]"]').val(id);
+            html5QrcodeScanner.clear();
+        }
     }
 
 });
@@ -10,7 +29,7 @@ function get_info_Departamentos(id) {
     console.log(id);
     $.ajax({
         type: "post",
-        url: "/Vehiculos/get_info_Vehiculos",
+        url: "/Tickets/get_info_Tickets",
         data: {
             id: id
         },
@@ -25,26 +44,13 @@ function get_info_Departamentos(id) {
         success: function (data) {
             swal.close();
             for (var key in data) {
-                if (key != 'logo') {
+                if (key != 'evidencia') {
                     $('[name="users[' + key + ']"]').val($.trim(data[key]));
+                } 
+                if (data.evidencia != null) {
+                    $(".current_logo").html('<img src="/assets/' + data.evidencia + '"/>');
                 }
             }
-
-            new QRCode(document.getElementById("qrcode"), {
-                text: "vehiculos..." + data['id'],
-                width: 300,
-                height: 300,
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            $("#qrCodeDiv").show();
-            $("#tableServiciosDiv").show();
-            $('#groups_grid thead').empty().append(data.head);
-            $('#groups_grid tbody').empty().append(data.tableData).trigger('footable_redraw');
-            $("#tableTicketsDiv").show();
-            $('#tickets_grid thead').empty().append(data.head2);
-            $('#tickets_grid tbody').empty().append(data.tableData2).trigger('footable_redraw');
-
-
         }
     });
 }
@@ -63,7 +69,7 @@ function save_Departamentos() {
     var data = new FormData(document.getElementById("Departamentos_info"));
     $.ajax({
         type: "post",
-        url: "/Vehiculos/save_info",
+        url: "/Tickets/save_info",
         data: data,
         processData: false,
         contentType: false,
@@ -77,11 +83,8 @@ function save_Departamentos() {
         success: function (data) {
 
             swal.close();
-            if (data.insert_id) {
-                location.href = "/Vehiculos/edit/" + data.insert_id;
-            } else {
-                location.href = "/Vehiculos";
-            }
+
+            location.href = "/Tickets";
 
 
         }
@@ -95,3 +98,20 @@ function format_date(date) {
     formated_date += array_date[2] + "-" + array_date[1] + "-" + array_date[0] + " " + array_hour[0] + ":" + array_hour[1] + ":00";
     return formated_date;
 }
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $(".current_logo").html('<img src="' + e.target.result + '"/>');
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$(".input-file-icon").change(function () {
+
+    readURL(this);
+    $("#icon-preview").show();
+});

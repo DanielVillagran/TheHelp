@@ -26,7 +26,7 @@
                                     <p class="title-sec">Agregar vehiculo</p>
 
                                     <form id="Departamentos_info" enctype="multipart/form-data" onsubmit="save_Departamentos()" class="form-agendar-cita">
-                                        <input type="hidden" name="users[id]" class="form-control" value="<?php echo $id; ?>" />
+                                        <input type="hidden" id="id" name="users[id]" class="form-control" value="<?php echo $id; ?>" />
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
                                             <select class="form-control input-form input-contacto-principal" name="users[clienteId]">
                                                 <option hidden>Seleccionar Cliente</option>
@@ -71,7 +71,10 @@
                                             <br><br>
                                             <div onclick="downloadAsImage()" id="qrcode"></div>
                                         </div>
+                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+                                        </div>
                                         <div id="tableServiciosDiv" style="display:none" class="form-group col-lg-6 col-md-6 pl-0">
+                                            <label>Servicios</label>
                                             <div class="table-responsive d-table-lg">
                                                 <table id="groups_grid" class="table table-lg" data-filter="#filter" data-filter-text-only="true" data-page-size="10" data-limit-navigation="10">
                                                     <thead>
@@ -96,6 +99,35 @@
                                                 </table>
                                             </div>
                                         </div>
+                                        <div id="tableTicketsDiv" style="display:none" class="form-group col-lg-6 col-md-6 pl-0">
+
+                                            <label>Tickets</label>
+
+                                            <div class="table-responsive d-table-lg">
+                                                <table id="tickets_grid" class="table table-lg" data-filter="#filter" data-filter-text-only="true" data-page-size="10" data-limit-navigation="10">
+                                                    <thead>
+                                                        <tr>
+
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td></td>
+                                                        </tr>
+                                                    </tbody>
+
+                                                    <tfoot class="hide-if-no-paging">
+                                                        <tr>
+                                                            <td colspan="7" class="footable-visible">
+                                                                <div class="pagination pagination-centered"></div>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+
                                         <legend></legend>
 
                                         <div style="margin-top: 15px" class="form-group col-lg-12 col-md-12 pl-0">

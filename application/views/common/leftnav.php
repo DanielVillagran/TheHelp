@@ -41,6 +41,13 @@
         <div id="MainMenu">
             <div class="list-group panel">
                 <a href="/home/" class="list-group-item">Inicio</a>
+                <?php if ($this->tank_auth->user_has_privilege('Tickets')) : ?>
+                    <a href="#tickets" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Tickets<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="tickets">
+                        <a href="/Tickets" class="list-group-item item-second-list">Ver Tickets</a>
+                        <a href="/Tickets/add" class="list-group-item item-second-list">Agregar Tickets</a>
+                    </div>
+                <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Servicios')) : ?>
                     <a href="#servicios" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Servicios<i class="fa fa-caret-down pull-right"></i> </a>
                     <div class="collapse list-group-submenu" id="servicios">
