@@ -18,6 +18,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
     <title>Luma Maquinaria</title>
+    
     <link type="text/css" rel="stylesheet" href="assets/css/font-awesome.css">
     <link type="text/css" rel="stylesheet" href="assets/css/animate.css">
     <link type="text/css" rel="stylesheet" href="assets/css/material-design-iconic-font.css">
