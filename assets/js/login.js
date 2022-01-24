@@ -23,7 +23,7 @@ $(document).ready(function () {
 function revisarHistorial() {
   $("#demo-form").hide();
   var html5QrcodeScanner = new Html5QrcodeScanner(
-    "qr-reader", { fps: 10, qrbox: 250 });
+    "qr-reader", { fps: 10, qrbox: 150 });
   objetoScanner = html5QrcodeScanner
   html5QrcodeScanner.render(onScanSuccess);
   function onScanSuccess(decodedText, decodedResult) {

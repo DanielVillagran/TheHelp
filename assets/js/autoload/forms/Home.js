@@ -1,6 +1,6 @@
 $(document).ready(function () {
   var html5QrcodeScanner = new Html5QrcodeScanner(
-    "qr-reader", { fps: 10, qrbox: 100 });
+    "qr-reader", { fps: 10, qrbox: 150 });
   objetoScanner = html5QrcodeScanner
   html5QrcodeScanner.render(onScanSuccess);
   function onScanSuccess(decodedText, decodedResult) {
