@@ -76,6 +76,9 @@ class Tickets extends ANT_Controller
 			foreach ($aux as $a) {
 				$botones = '<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>
 				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
+				if ($a['status'] == 'Pendiente') {
+					$botones .= '<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '" tipo="second"><i class="fa fa-check"></i></button>';
+				}
 				$data['table'] .= '<tr>
 				<td>' .  $a['marca'] . ' - ' . $a['modelo'] . ' - ' . $a['serie'] . '</td>
 				<td>' . $a['tipoServicio'] . '</td>
@@ -136,5 +139,10 @@ class Tickets extends ANT_Controller
 	{
 		$id = $this->input->post("id");
 		Tickets_Model::Delete('id=' . $id);
+	}
+	function completar()
+	{
+		$id = $this->input->post("id");
+		Tickets_Model::Update(array('status' => 'Completado'), 'id=' . $id);
 	}
 }
