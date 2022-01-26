@@ -111,7 +111,6 @@ class Servicios extends ANT_Controller
 			}
 		} else {
 			$evidencia = $this->is_valid_post_file($_FILES['users'], 'evidencia');
-			var_dump($evidencia);
 			if ($evidencia['exist'] && !$evidencia['error']) {
 				$filename_source = $_FILES['users']['tmp_name']['evidencia'];
 				$extension = strtolower(pathinfo($_FILES['users']['name']['evidencia'], PATHINFO_EXTENSION));
