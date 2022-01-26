@@ -104,7 +104,7 @@ class ClienteVehiculos extends ANT_Controller
 				'where' => 'id=' . $post['vehiculoId'],
 				'result' => '1row'
 			));
-			$datos = array('vehiculo' => $data->marca . ' - ' . $data->modelo . ' - ' . $data->serie, 'motivo' => $post['descripcion'], 'correo' => 'odvillagrana@gmail.com');
+			$datos = array('vehiculo' => $data->marca . ' - ' . $data->modelo . ' - ' . $data->serie, 'motivo' => $post['descripcion'], 'correo' => 'soporte@lumamaquinaria.com.mx');
 			$this->send_email($datos);
 		} else {
 
