@@ -279,7 +279,7 @@ class ANT_Controller extends CI_Controller
 	 * 					- boolean   error with the TRUE value if there is an error, any else is FALSE.
 	 * 					- string    message with a string of the error, if there is an error.
 	 */
-	function is_valid_post_file($filevar = NULL, $filename = '', $valid_types = array('image/gif','image/jpeg','image/png','image/pjpeg','image/jpg'), $max_size_allowed = 2097152)
+	function is_valid_post_file($filevar = NULL, $filename = '', $valid_types = array('image/gif','image/jpeg','image/png','image/pjpeg','image/jpg'), $max_size_allowed = 0)
 	{
 		$valid = array('exist'=>TRUE, 'error'=>FALSE, 'message'=>'');
 		if (!empty($filevar))
