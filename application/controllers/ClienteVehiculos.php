@@ -1,6 +1,7 @@
 <?php
 
 defined('BASEPATH') or exit('No direct script access allowed');
+
 use PHPMailer\PHPMailer\PHPMailer;
 
 require APPPATH . 'libraries/PHPMailer/src/Exception.php';
@@ -98,7 +99,12 @@ class ClienteVehiculos extends ANT_Controller
 
 		if ($post['id'] == 0) {
 			$result = Tickets_Model::Insert($post);
-			$datos = array('vehiculo' => 'La jeepeta', 'motivo' => $post['descripcion'], 'correo' => 'odvillagrana@gmail.com');
+			$data = Vehiculos_Model::Load(array(
+				'select' => "*",
+				'where' => 'id=' . $post['vehiculoId'],
+				'result' => '1row'
+			));
+			$datos = array('vehiculo' => $data->marca . ' - ' . $data->modelo . ' - ' . $data->serie, 'motivo' => $post['descripcion'], 'correo' => 'odvillagrana@gmail.com');
 			$this->send_email($datos);
 		} else {
 
@@ -245,7 +251,7 @@ class ClienteVehiculos extends ANT_Controller
         <!--<![endif]-->
         <div align="center" class="img-container center fixedwidth" style="padding-right: 00px;padding-left: 00px;">
         <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 00px;padding-left: 00px;" align="center"><![endif]-->
-        <div style="font-size:1px;line-height:30px"> </div><img align="center" alt="Alternate text" border="0" class="center fixedwidth" src="https://zumpango.vmcomp.com.mx/assets/images/logo-zumpango-horizontal-color.png" style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 150px; display: block;" title="Alternate text" width="150"/>
+        <div style="font-size:1px;line-height:30px"> </div><img align="center" alt="Alternate text" border="0" class="center fixedwidth" src="https://crm.lumamaquinaria.com.mx/assets/files/fotos/LogoLM.png" style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 150px; display: block;" title="Alternate text" width="150"/>
         <div style="font-size:1px;line-height:30px"> </div>
         <!--[if mso]></td></tr></table><![endif]-->
         </div>
@@ -272,7 +278,7 @@ class ClienteVehiculos extends ANT_Controller
         <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 20px; padding-left: 20px; padding-top: 20px; padding-bottom: 0px; font-family: Tahoma, Verdana, sans-serif"><![endif]-->
         <div style="color:#ffffff;font-family:\'Roboto\', Tahoma, Verdana, Segoe, sans-serif;line-height:2;padding-top:20px;padding-right:20px;padding-bottom:0px;padding-left:20px;">
         <div style="line-height: 2; font-size: 12px; font-family: \'Roboto\', Tahoma, Verdana, Segoe, sans-serif; color: #ffffff; mso-line-height-alt: 24px;">
-        <p style="font-size: 28px; line-height: 2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 56px; margin: 0; font-weight: 300;"><span style="font-size: 28px;">Cita confirmada</span></p>
+        <p style="font-size: 28px; line-height: 2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 56px; margin: 0; font-weight: 300;"><span style="font-size: 28px;">Ticket de servicio</span></p>
         </div>
         </div>
         <!--[if mso]></td></tr></table><![endif]-->
@@ -362,12 +368,7 @@ class ClienteVehiculos extends ANT_Controller
         <!--[if (!mso)&(!IE)]><!-->
         <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:40px; padding-bottom:40px; padding-right: 30px; padding-left: 30px;">
         <!--<![endif]-->
-        <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; font-family: Arial, sans-serif"><![endif]-->
-        <div style="color:#555555;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;line-height:1.2;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;">
-        <div style="line-height: 1.2; font-size: 12px; color: #555555; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 14px;">
-        <p style="text-align: center; line-height: 1.2; word-break: break-word; mso-line-height-alt: NaNpx; margin: 0;">Administración <strong><a href="http://zumpango.gob.mx/" target="_blank" style="text-decoration: none; color: #555555;">Zumpango</a></strong></p>
-        </div>
-        </div>
+      
         <!--[if mso]></td></tr></table><![endif]-->
         <!--[if (!mso)&(!IE)]><!-->
         </div>
