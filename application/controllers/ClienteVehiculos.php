@@ -305,7 +305,7 @@ class ClienteVehiculos extends ANT_Controller
         <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 20px; padding-left: 20px; padding-top: 50px; padding-bottom: 20px; font-family: Tahoma, Verdana, sans-serif"><![endif]-->
         <div style="color:#555555;font-family:\'Roboto\', Tahoma, Verdana, Segoe, sans-serif;line-height:1.2;padding-top:50px;padding-right:20px;padding-bottom:20px;padding-left:20px;">
         <div style="line-height: 1.2; font-size: 12px; font-family: \'Roboto\', Tahoma, Verdana, Segoe, sans-serif; color: #555555; mso-line-height-alt: 14px;">
-        <p style="line-height: 1.2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;">Hola <strong>Luma Maquinaria</strong>, hemos recibido un nuevo ticket para el vehiculo ' . $datos['vehiculo'] . ' con el motivo de: </span></p>
+        <p style="line-height: 1.2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;">Hola <strong>Luma Maquinaria</strong>, hemos recibido un nuevo ticket de servicio: </span></p>
         </div>
         </div>
         <!--[if mso]></td></tr></table><![endif]-->
@@ -324,6 +324,12 @@ class ClienteVehiculos extends ANT_Controller
         </tr>
         </tbody>
         </table>
+		<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 20px; padding-left: 20px; padding-top: 0px; padding-bottom: 5px; font-family: Tahoma, Verdana, sans-serif"><![endif]-->
+        <div style="color:#0081ff;font-family:\'Roboto\', Tahoma, Verdana, Segoe, sans-serif;line-height:1.2;padding-top:0px;padding-right:20px;padding-bottom:5px;padding-left:20px;">
+        <div style="line-height: 1.2; font-size: 12px; font-family: \'Roboto\', Tahoma, Verdana, Segoe, sans-serif; color: #0081ff; mso-line-height-alt: 14px;">
+        <p style="font-size: 18px; line-height: 1.2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 22px; margin: 0;">Vehiculo: <span style="font-size: 18px;">' . $datos['veiculo'] . '.</span></p>
+        </div>
+        </div>
         <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 20px; padding-left: 20px; padding-top: 0px; padding-bottom: 5px; font-family: Tahoma, Verdana, sans-serif"><![endif]-->
         <div style="color:#0081ff;font-family:\'Roboto\', Tahoma, Verdana, Segoe, sans-serif;line-height:1.2;padding-top:0px;padding-right:20px;padding-bottom:5px;padding-left:20px;">
         <div style="line-height: 1.2; font-size: 12px; font-family: \'Roboto\', Tahoma, Verdana, Segoe, sans-serif; color: #0081ff; mso-line-height-alt: 14px;">
@@ -401,7 +407,7 @@ class ClienteVehiculos extends ANT_Controller
 
 		//Recipients
 		$mail->setFrom('donotreply@lumamaquinaria.com.mx', 'Luma Maquinaria');
-		$mail->Subject = 'Nuevo Ticket de Servicio.';
+		$mail->Subject = 'Nuevo Ticket de Servicio. Vehiculo:' . $datos['vehiculo'];
 		$mail->isHTML(true);
 		$mail->Body = $message;
 		$mail->AddAddress($datos['correo']);
