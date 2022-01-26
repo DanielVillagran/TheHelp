@@ -398,13 +398,12 @@ class ClienteVehiculos extends ANT_Controller
 		$mail = new PHPMailer();
 		$mail->SMTPDebug = 0;
 		//$mail->isSMTP();
-		$mail->SMTPAuth = false;
-/*
+		$mail->SMTPAuth = true;
+
 		$mail->SMTPSecure = 'ssl';
 		$mail->Port = 465;
 		$mail->Username = 'lumamaquinaria@hotmail.com';
 		$mail->Password = 'Lu2022ma';
-		*/
 
 		//Recipients
 		$mail->setFrom('donotreply@lumamaquinaria.com.mx', 'Luma Maquinaria');
