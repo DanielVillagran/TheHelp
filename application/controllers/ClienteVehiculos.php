@@ -402,8 +402,8 @@ class ClienteVehiculos extends ANT_Controller
 
 		$mail->SMTPSecure = 'ssl';
 		$mail->Port = 465;
-		$mail->Username = 'odvillagrana@hotmail.com';
-		$mail->Password = 'daniel200796';
+		$mail->Username = 'lumamaquinaria@hotmail.com';
+		$mail->Password = 'Lu2022ma';
 
 		//Recipients
 		$mail->setFrom('donotreply@lumamaquinaria.com.mx', 'Luma Maquinaria');
