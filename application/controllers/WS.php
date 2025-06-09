@@ -18,6 +18,7 @@ class WS extends ANT_Controller
         parent::__construct();
         $this->load->database();
         $this->load->library('session');
+        $this->load->library('pdf');
     }
     public function get_departamentos($import = false, $tipo = null)
     {
@@ -1985,6 +1986,193 @@ class WS extends ANT_Controller
         }
         var_dump($query);
     }
+    public function update_matriz()
+    {
+        $archivo = fopen('assets/matriz.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $datos = array_map("utf8_encode", $datos);
+            if ($linea > 1 && $datos[1] != "" && $datos[0] != "") {
+                $colaborador = $datos[0];
+                $jefe = $datos[1];
+
+                $aux = Users_Model::Query("SELECT c.* FROM [ODS_Catalogs].[dbo].[MGA_PlazasMH] as m
+                INNER JOIN GestionDesempenoUnificada.dbo.Colaboradores as 
+                c on c.Id_MGA_PlazasMH=m.id
+                INNER JOIN GestionDesempenoUnificada.dbo.ColaboradorPeriodo as CP
+                ON CP.ColaboradorId=C.ID  and CP.PeriodoId=76
+                WHERE  m.plaza=" . $colaborador . " AND m.id != 0 and inMatriz=0;");
+                if ($aux) {
+                    $colaboradordata = $aux[0];
+
+                    $contador++;
+                    $query .= "UPDATE ColaboradorPeriodo set inMatriz=1 WHERE ColaboradorID=" .
+                        $colaboradordata['ID'] . " AND PeriodoId=76;";
+                    $query .= "UPDATE ColaboradorPeriodo set inMatriz=1 WHERE ColaboradorID=" .
+                        $colaboradordata['ID'] . " AND PeriodoId=78;";
+                }
+            } else {
+                var_dump($linea);
+            }
+
+            $linea++;
+        }
+        var_dump($contador);
+        var_dump($query);
+    }
+    public function find_by_file()
+    {
+        $archivo = fopen('assets/reading.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $datos = array_map("utf8_encode", $datos);
+            if ($linea >= 1 && $datos[1] != "" && $datos[0] != "") {
+                $colaborador = $datos[0];
+                $jefe = $datos[1];
+
+                $aux = Users_Model::Query("SELECT m.Id FROM [ODS_Catalogs].[dbo].[MGA_PlazasMH] as m
+                WHERE  m.empleado=" . $colaborador . " AND m.id != 0");
+                if ($aux) {
+                    $colaboradordata = $aux[0];
+
+
+
+                    $query .= "INSERT INTO [dbo].[itgov_ApplicationsUserConfigurations]
+                    ([UserId]
+                    ,[RoleId]
+                    ,[ApplicationId]
+                    
+                    ,[Online])
+              VALUES
+                    (" . $colaboradordata['Id'] . "
+                    ,21
+                    ,22
+                    ,0); ";
+                }
+            } else {
+                var_dump($linea);
+            }
+
+            $linea++;
+        }
+        var_dump($query);
+    }
+    public function construir()
+    {
+        $archivo = fopen('assets/Construir.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $datos = array_map("utf8_encode", $datos);
+            if ($linea > 1 && $datos[1] != "" && $datos[0] != "") {
+
+                $query .= "UPDATE [GestionDesempenoUnificada].[dbo].[ColaboradorPeriodo]
+                set NivelCompetencia=" . $datos[1] . "
+                where ColaboradorID=" . $datos[0] . "
+                ; ";
+            } else {
+                var_dump($linea);
+            }
+
+            $linea++;
+        }
+        var_dump($query);
+    }
+    public function updateMetas()
+    {
+        $archivo = fopen('assets/metas.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $datos = array_map("utf8_encode", $datos);
+            if ($linea >= 1) {
+                $aux = Users_Model::Query("
+                SELECT
+                o.Id
+                      
+                      ,[Meta]
+                  FROM [GestionDesempenoUnificada].[dbo].[Objetivo] as o
+                  LEFT JOIN [GestionDesempenoUnificada].[dbo].Colaboradores as c on c.Id=o.ColaboradorId
+                  LEFT JOIN [GestionDesempenoUnificada].[dbo].Colaboradores as C2 on c2.cve_puesto=o.CvePuesto
+                  WHERE (c.Puesto='" . $datos[0] . "' OR c2.Puesto='" . $datos[0] . "') AND o.[Nombre]='" . $datos[1] . "' AND META = 0");
+                if ($aux) {
+                    foreach ($aux as $key) {
+                        $query .= "UPDATE [GestionDesempenoUnificada].[dbo].[Objetivo]
+                    set Meta=" . $datos[2] . "
+                    where Id=" . $key['Id'] . "
+                    ; ";
+                    }
+                } else {
+                    var_dump("No encontre");
+                }
+            } else {
+                var_dump($linea);
+            }
+
+            $linea++;
+        }
+        var_dump($query);
+    }
+
+    public function find_by_file_cambios()
+    {
+        $archivo = fopen('assets/matriz2.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $datos = array_map("utf8_encode", $datos);
+            if ($linea >= 1) {
+
+
+                $aux = Users_Model::Query("SELECT TOP (1000) C.[ID]
+                ,[IdCorporativo]
+                ,[Username]
+                ,[CompaniaBI]
+                ,[Dominio]
+                ,[IsAdmin]
+                ,[Nombre]
+                ,[Area]
+                ,[estatus]
+                ,[Id_MGA_PlazasMH]
+                ,[IsObjetivoTemprano]
+                ,[Id_Autorizador]
+                ,[Nombre_Autorizador]
+                ,[Sistema]
+                ,[cve_puesto]
+                ,[Puesto]
+                ,CP.inMatriz
+            FROM [GestionDesempenoUnificada].[dbo].[Colaboradores] as C
+            INNER JOIN [GestionDesempenoUnificada].[dbo].ColaboradorPeriodo as CP on CP.ColaboradorID=C.ID and CP.PeriodoID=76
+            WHERE Id_MGA_PlazasMH=" . $datos[0]);
+                if ($aux) {
+                    $aux = $aux[0];
+                    if ($aux['inMatriz'] == 0) {
+                        var_dump($datos[0] . " Esta pero sin matriz");
+                    } else {
+                    }
+                } else {
+                    var_dump($datos[0] . " Lit, no esta");
+                }
+            } else {
+                var_dump($linea);
+            }
+
+            $linea++;
+        }
+        var_dump($query);
+    }
 
 
 
@@ -2017,5 +2205,385 @@ class WS extends ANT_Controller
 
 
         return $data;
+    }
+    public function find_by_file_permisos()
+    {
+        $archivo = fopen('assets/permisos.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            $colaborador = $datos[0];
+            $aux = Users_Model::Query("SELECT  Id
+            FROM itgov_ApplicationsUserConfigurations
+            WHERE ApplicationId=5 AND UserId=" . intval($colaborador));
+            if ($aux) {
+            } else {
+                $query .= "INSERT INTO [itgov_ApplicationsUserConfigurations]
+                    ([UserId]
+                    ,[RoleId]
+                    ,[ApplicationId]
+                    
+                    ,[Online])
+              VALUES
+                    (" . intval($colaborador) . "
+                    ,16
+                    ,5
+                    ,0); ";
+            }
+
+
+            $linea++;
+        }
+        var_dump($query);
+    }
+    public function insertMatrizComplementaria()
+    {
+        $archivo = fopen('assets/matrizC6.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+        $periodoId = 84;
+        $periodoEvaluacion = 127;
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            if ($linea > 0 && $datos[0] != "" && $datos[3] != "") {
+
+                $evaluado = Users_Model::Query("SELECT  c.Id, CP.NivelCompetencia
+            FROM Colaboradores as c
+            INNER JOIN ColaboradorPeriodo as CP on CP.ColaboradorID=c.Id and
+            CP.periodoId=" . $periodoId . "
+            WHERE estatus='Activos' AND Id_MGA_PlazasMH=" . $datos[0]);
+                if ($evaluado) {
+                    $tipoEvaluacion = 1;
+                    switch ($datos[5]) {
+                        case 'CLIENTE':
+                            $tipoEvaluacion = 3;
+                            break;
+                        case 'EQUIPO':
+                            $tipoEvaluacion = 2;
+                            break;
+                        case 'PAR':
+                            $tipoEvaluacion = 1;
+                            break;
+                    }
+                    $evaluador = Users_Model::Query("SELECT  Id
+                    FROM Colaboradores
+                    WHERE estatus='Activos' AND Id_MGA_PlazasMH=" . $datos[3]);
+                    $contador++;
+                    if ($evaluador) {
+                        $query .= "INSERT INTO [dbo].[MatrizEvaluacionesComplementarias]
+                        ([EvaluadorId]
+                        ,[EvaluadoId]
+                        ,[TipoEvaluacionId]
+                        ,[EstatusId]
+                        ,[NivelCompetencia]
+                        ,[PeriodoId]
+                        )
+                  VALUES
+                        (" . $evaluador[0]['Id'] . "
+                        ," . $evaluado[0]['Id'] . "
+                        ," . $tipoEvaluacion . "
+                        ,1
+                        ," . $evaluado[0]['NivelCompetencia'] . "
+                        ," . $periodoEvaluacion . ");";
+                    }
+                } else {
+                    /*  $query .= "INSERT INTO [itgov_ApplicationsUserConfigurations]
+                    ([UserId]
+                    ,[RoleId]
+                    ,[ApplicationId]
+                    
+                    ,[Online])
+              VALUES
+                    (" . intval($colaborador) . "
+                    ,16
+                    ,5
+                    ,0); ";
+                    */
+                }
+            }
+            $linea++;
+        }
+        var_dump($contador);
+        var_dump($query);
+    }
+    public function updateMatriz()
+    {
+        $archivo = fopen('assets/upMatriz3.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+        $periodoId = 84;
+        $periodoEvaluacion = 127;
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+            if ($linea > 0 && $datos[0] != "" && $datos[2] != "") {
+
+                $evaluado = Users_Model::Query("SELECT  CP.Id
+            FROM Colaboradores as c
+            INNER JOIN ColaboradorPeriodo as CP on CP.ColaboradorID=c.Id and
+            CP.periodoId=" . $periodoId . "
+            WHERE estatus='Activos' AND Id_MGA_PlazasMH=" . $datos[0]);
+                if ($evaluado) {
+
+                    $evaluador = Users_Model::Query("SELECT  Id
+                    FROM Colaboradores
+                    WHERE estatus='Activos' AND Id_MGA_PlazasMH=" . $datos[2]);
+                    $contador++;
+                    if ($evaluador) {
+                        $query .= "UPDATE ColaboradorPeriodo
+                       SET EvaluadorId=" . $evaluador[0]['Id'] . "
+                        WHERE Id=" . $evaluado[0]['Id'] . "
+                        ; ";
+                    }
+                } else {
+                    /*  $query .= "INSERT INTO [itgov_ApplicationsUserConfigurations]
+                    ([UserId]
+                    ,[RoleId]
+                    ,[ApplicationId]
+                    
+                    ,[Online])
+              VALUES
+                    (" . intval($colaborador) . "
+                    ,16
+                    ,5
+                    ,0); ";
+                    */
+                }
+            }
+            $linea++;
+        }
+        var_dump($contador);
+        var_dump($query);
+    }
+    public function listaAArreglo()
+    {
+        $archivo = fopen('assets/QuitarEvaluacion.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+        $periodoId = 84;
+        $periodoEvaluacion = 127;
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+
+            $query .=  $datos[0] . ",";
+            $linea++;
+        }
+        var_dump($contador);
+        var_dump($query);
+    }
+    public function eliminarMatriz()
+    {
+        $archivo = fopen('assets/QuitarEvaluacion.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+        $periodoId = 84;
+        $periodoEvaluacion = 127;
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+
+            if ($datos[3]) {
+                $query .= "UPDATE MatrizEvaluacionesComplementarias SET NivelCompetencia=" . $datos[3] . " WHERE EvaluadoId=" . intval($datos[0]) . " AND PeriodoId=127
+             ;";
+                $contador++;
+            }
+            $linea++;
+        }
+        var_dump($contador);
+        var_dump($query);
+    }
+
+    public function cambiosCuadrantes()
+    {
+        $archivo = fopen('assets/cambiosCuadrantes.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+        $periodoId = 84;
+        $periodoEvaluacion = 127;
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+
+            if ($datos[0] && $linea>0) {
+
+
+                $query .= " EXEC spr_InsertCompetenciasFaltantes 134,".$datos[0].",".$datos[2].";
+            ";
+                $contador++;
+            }
+            $linea++;
+        }
+        var_dump($contador);
+        var_dump($query);
+    }
+
+    public function quitaNoaplica()
+    {
+        $archivo = fopen('assets/PuestosNoAplica.csv', "r");
+        $linea = 0;
+        $contador = 0;
+        $query = "";
+        $periodoId = 84;
+        $periodoEvaluacion = 127;
+
+        while (($datos = fgetcsv($archivo, ",")) == true) {
+
+            if ($datos[0]) {
+                $evaluador = Users_Model::Query("SELECT
+
+                DISTINCT CP.Id
+            
+            FROM [dbo].[ColaboradorPeriodo] CP
+            LEFT JOIN [dbo].[Colaboradores] AS C ON C.ID = CP.ColaboradorID
+            LEFT JOIN [ODS_Catalogs].[dbo].[MGA_PlazasMH] AS AC ON C.Id_MGA_PlazasMH = AC.id AND AC.estatus='Activos'
+            
+            WHERE CP.PeriodoID = 84  and C.estatus='Activos' 
+            --and BOSS.estatus='Activos'
+            AND C.IsObjetivoTemprano = 0 
+            AND AC.descripcion_puesto='" . $datos[0] . "'");
+                if ($evaluador) {
+                    foreach ($evaluador as $key) {
+                        $query .= $key['Id'] . ",";
+                        $contador++;
+                    }
+                }
+                //var_dump($evaluador);
+
+            }
+            $linea++;
+        }
+        var_dump($contador);
+        var_dump($query);
+    }
+
+    public function completraArchivo()
+    {
+        $documento = Users_Model::Query("SELECT *,
+        CONVERT (varchar(10), FECHADOC, 103) as FDOC,
+        CONVERT (varchar(10), FECHACON, 103) as FCON
+        FROM POLHO1A
+        WHERE DOCUMENTO LIKE '90060078'
+        ");
+        if ($documento) {
+            $doc = $documento[0];
+            $pdf = new Pdf();
+            $this->contract_atributes($pdf);
+            $pdf->SetFillColor(255, 255, 255);
+            $pdf->SetDrawColor(255, 255, 255);
+            $pdf->SetTextColor(0);
+            $pdf->SetFont('');
+            $pdf->AddPage("L", "Letter");
+            $pdf->Cell(186, 6, "", 0, 1);
+            $w = array(20, 20, 20, 20, 20, 20);
+            $pdf->SetFont("Arial", "", 8);
+            $pdf->SetDrawColor(0, 0, 0);
+            $pdf->SetFillColor(224, 235, 255);
+            $pdf->Ln();
+            $pdf->Cell(120, 6, "C1. doc.  : RV ( Traspaso de facturas ) Documento normal", "LRT", 0, "L", 1);
+
+            $pdf->Ln();
+            $pdf->Cell($w[0], 6, "No. doc", "L");
+            $pdf->Cell($w[1], 6, $doc['DOCUMENTO'], 0);
+            $pdf->Cell($w[2], 6, "Sociedad", 0, 0, 'L');
+            $pdf->Cell($w[3], 6, $doc["SOC"], 0, 0, 'L');
+            $pdf->Cell($w[4], 6, "Ejercicio", 0, 0, 'L');
+            $pdf->Cell($w[5], 6, $doc["AÑO"], 'R', 0, 'L');
+            $pdf->Ln();
+            $pdf->Cell($w[0], 6, "Fe. docum.", "L");
+            $pdf->Cell($w[1], 6, str_replace("/", ".", $doc['FDOC']), 0);
+            $pdf->Cell($w[2], 6, "Fe. contab.", 0, 0, 'L');
+            $pdf->Cell($w[3], 6, str_replace("/", ".", $doc['FCON']), 0, 0, 'L');
+            $pdf->Cell($w[4], 6, "PERIODO", 0, 0, 'L');
+            $pdf->Cell($w[5], 6, $doc["PERIODO"], 'R', 0, 'L');
+            $pdf->Ln();
+            $pdf->Cell($w[0], 6, "Referen.", "L");
+            $pdf->Cell(100, 6, $doc['REFERENCIA'], 'R');
+            $pdf->Ln();
+            $pdf->Cell($w[0], 6, "Modeda doc.", "LB");
+            $pdf->Cell($w[1], 6, "MXN", 'B');
+            $pdf->Cell($w[2], 6, "Anulado por.", 'B', 0, 'L');
+            $pdf->Cell(60, 6, $doc['ANULA'], 'BR', 0, 'L');
+            $pdf->Ln();
+            $pdf->Ln();
+            $fill = false;
+            $w2 = array(8, 5, 13, 35, 13, 20, 20, 20, 14, 20, 13);
+            $facturas = Users_Model::Query("SELECT DOCUMENTO
+            ,AÑO
+            ,POSICION
+            ,CUENTA
+            ,NOMBRE=(SELECT TXT50 FROM SAPHO1A..SKAT WHERE SPRAS='E' AND KTOPL='0010' AND SAKNR=CONCAT('0000',PDH.CUENTA))
+            ,CARABO
+            ,TEXTO
+            ,CANTIDAD
+            ,CLAVE
+            ,MONEDA
+            ,IMPORTEMONEDA
+            ,IMPORTEMN
+            FROM POLDETHO1A PDH
+            WHERE DOCUMENTO='" . $doc['DOCUMENTO'] . "'
+            ORDER BY POSICION
+            ");
+            $pdf->SetDrawColor(0, 0, 0);
+            $pdf->SetFillColor(224, 235, 255);
+            $pdf->Cell($w2[0], 6, "POS", 1, 0, "R", $fill);
+            $pdf->Cell($w2[1], 6, "CT",  1, 0, "R", $fill);
+            $pdf->Cell($w2[2], 6, "Cuenta", 1, 0, "L", $fill);
+            $pdf->Cell($w2[3], 6,  "Texto breve cuenta", 1, 0, "L", $fill);
+            $pdf->Cell($w2[4], 6, "II", 1);
+            $pdf->Cell($w2[5], 6, "Texto", 1, 0, "L", $fill);
+            $pdf->Cell($w2[6], 6, "D", 1, 0, "R", $fill);
+            $pdf->Cell($w2[7], 6, "H", 1, 0, "R", $fill);
+
+            $pdf->Cell($w2[8], 6, "Ce. coste", 1, 0, "L", $fill);
+            $pdf->Cell($w2[9], 6, "Elem. PEP", 1, 0, "L", $fill);
+            $pdf->Cell($w2[10], 6,  "Base Ret.", 1, 0, "L", $fill);
+
+            $pdf->Ln();
+            $cargos = 0;
+            $abonos = 0;
+            if ($facturas) {
+                foreach ($facturas as $factura) {
+                    if ($factura['CARABO'] === "S") {
+                        $cargos += $factura['IMPORTEMN'];
+                    } else {
+                        $abonos += $factura['IMPORTEMN'];
+                    }
+                    $pdf->Cell($w2[0], 6, $factura['POSICION'], "LR", 0, "R", $fill);
+                    $pdf->Cell($w2[1], 6, $factura['CANTIDAD'],  "LR", 0, "R", $fill);
+                    $pdf->Cell($w2[2], 6, $factura['CUENTA'], "LR", 0, "L", $fill);
+                    $pdf->Cell($w2[3], 6, substr($factura['NOMBRE'], 0, 20), "LR", 0, "L", $fill);
+                    $pdf->Cell($w2[4], 6, "", "LR", 0, "L", $fill);
+                    $pdf->Cell($w2[5], 6, $factura['TEXTO'], "LR", 0, "R", $fill);
+                    $pdf->Cell($w2[6], 6, $factura['CARABO'] === "S" ? "" . number_format($factura['IMPORTEMN'], 2) : "", "LR", 0, "R", $fill);
+                    $pdf->Cell($w2[7], 6, $factura['CARABO'] === "H" ? "" . number_format($factura['IMPORTEMN'], 2) : "", "LR", 0, "R", $fill);
+
+
+                    $pdf->Cell($w2[8], 6, "", "LR", 0, "R", $fill);
+                    $pdf->Cell($w2[9], 6, "", "LR", 0, "R", $fill);
+                    $pdf->Cell($w2[10], 6, "", "LR", 0, "R", $fill);
+                    $pdf->Ln();
+                    $fill = !$fill;
+                }
+            }
+            $pdf->Cell($w2[0], 6, "**", 1, 0, "R", $fill);
+            $pdf->Cell($w2[1], 6, "",  1, 0, "R", $fill);
+            $pdf->Cell($w2[2], 6, "", 1, 0, "L", $fill);
+            $pdf->Cell($w2[3], 6, "", 1, 0, "L", $fill);
+            $pdf->Cell($w2[4], 6, "", 1, 0, "L", $fill);
+            $pdf->Cell($w2[5], 6, "", 1, 0, "R", $fill);
+            $pdf->Cell($w2[6], 6,  "" . number_format(0, 2), 1, 0, "R", $fill);
+            $pdf->Cell($w2[7], 6, "" . number_format(0, 2), 1, 0, "R", $fill);
+            $pdf->Cell($w2[8], 6, "", 1, 0, "R", $fill);
+            $pdf->Cell($w2[9], 6, "", 1, 0, "R", $fill);
+            $pdf->Cell($w2[10], 6, "", 1, 0, "R", $fill);
+            $pdf->Ln();
+            $pdf->Cell(array_sum($w2), 0, '', 'T');
+            $pdf->SetTitle('Polizas');
+            $pdf->Output("Poliza.pdf", "D");
+        }
     }
 }

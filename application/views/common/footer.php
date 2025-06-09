@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="footer-left">
-                    <span>Copyright © 2022 <a href="#">Luma Maquinaria</a></span>
+                    <span>Copyright © <?php echo date("Y") ?> <a href="#">The Help</a></span>
                 </div>
             </div>
         </div>

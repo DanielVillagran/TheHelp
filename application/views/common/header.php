@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <title>Luma Maquinaria | Panel de Adminitración</title>
+    <title>The Help | Panel de Administración</title>
     <link rel="apple-touch-icon" sizes="57x57" href="../../../assets/images/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="../../../assets/images/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="../../../assets/images/favicon/apple-icon-72x72.png">
@@ -133,7 +133,7 @@ switch ($this->tank_auth->get_user_type()) {
 
 
         <div class="d-top-name-sec">
-            <p class="p-name-sec">Administración <b>Luma Maquinaria App</b></p>
+            <p class="p-name-sec">Administración <b>The Help App</b></p>
         </div>
 
         <!--Topbar Right Start-->

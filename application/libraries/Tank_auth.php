@@ -217,6 +217,23 @@ class Tank_auth
         }
         return $name;
     }
+    public function get_user_role_id()
+    {
+        $id = $this->get_user_id();
+        $role_id = 0;
+        if ($id > 0) {
+            $options = array(
+                'select' => "user_role_id",
+                'clauses' => array('id' => $id),
+                'result' => '1row',
+            );
+            $user = Users_Model::Load($options);
+            if ($user) {
+                $role_id = $user->user_role_id;
+            }
+        }
+        return $role_id;
+    }
     public function get_user_avatar()
     {
         $avatar = '/assets/images/avatar/women.jpg';

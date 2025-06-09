@@ -133,7 +133,7 @@ class Notificaciones extends ANT_Controller
 		    </tr>';
             }
         } else {
-            $data['table'] = '<tr><td colspan="5">Perdon, no hemos encontrado nada.</td></tr>';
+            
         }
         $this->output_json($data);
     }

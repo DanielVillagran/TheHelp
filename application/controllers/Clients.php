@@ -33,6 +33,7 @@ class Clients extends ANT_Controller
         $data['styles'] = 'jquery.shuttle';
         $data['id'] = 0;
         $data['permissions'] = array();
+       
         $data['js_scripts'] = 'lib/jquery.shuttle';
         $data['user_id'] = $this->tank_auth->get_user_id();
         $this->_load_views('clients/add', $data);
@@ -76,7 +77,7 @@ class Clients extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
             }
         } else {
-            $data['table'] = '<tr><td colspan="5">Perdon, no hemos encontrado nada.</td></tr>';
+            
         }
         $this->output_json($data);
     }

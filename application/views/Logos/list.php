@@ -26,8 +26,7 @@
                                 <p class="title-sec"><?php echo $title; ?></p>
                                 <div class="row row-buscar-agregar">
                                     <div class="col-lg-6 col-md-6">
-                                        <input class="form-control input-search" id="filter" type="text" placeholder="Buscar" />
-                                    </div>
+                                          </div>
                                     <div class="col-lg-6 col-md-6 col-xs-6">
                                                 <span class="btn-excel" onclick="descarga_excel()"><img src="/assets/images/icon-excel.svg" alt=""> Descargar Excel</span>
                                                 </div>
@@ -35,13 +34,17 @@
                             </div>
 
                             <div class="table-responsive d-table-lg">
-                                <table id="groups_grid" class="table table-lg" data-filter="#filter" data-filter-text-only="true" data-page-size="10" data-limit-navigation="10">
+                                <table id="groups_grid" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
 
                                         </tr>
                                     </thead>
-
+                                    <tfoot>
+                                        <tr>
+                                            
+                                        </tr>
+                                    </tfoot>
                                     <tbody>
                                         <tr>
                                             <td></td>

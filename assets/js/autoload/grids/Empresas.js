@@ -1,8 +1,9 @@
-$(document).ready(function() {
+var tabla = null;
+$(document).ready(function () {
     grid_load_data();
 
 });
-$("#btn_add_new").click(function() {
+$("#btn_add_new").click(function () {
     window.location.href = '/Empresas/add';
 });
 
@@ -14,22 +15,29 @@ function grid_load_data() {
             'search': $.trim($('#filter').val())
         },
         dataType: 'json',
-        beforeSend: function(e) {
+        beforeSend: function (e) {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
                 imageUrl: "/assets/images/loader.gif"
             });
         },
-        success: function(data) {
-            swal.close();
-            $('#groups_grid thead').empty().append(data.head);
-            $('#groups_grid tbody').empty().append(data.table).trigger('footable_redraw');
+        success: function (data) {
+            if ($.fn.DataTable.isDataTable('#groups_grid')) {
+                $('#groups_grid').DataTable().destroy();
+            }
+           $('#groups_grid thead').empty().append(data.head);
+            $('#groups_grid tbody').empty().append(data.table);
             $('#groups_grid').show();
+            inicializarDatatable('#groups_grid');
+
         }
     });
 }
-$('#groups_grid').footable().on('click', '.row-delete', function(e) {
+$('#filter').on('keyup change', function () {
+    tabla.search(this.value).draw();
+});
+$('#groups_grid').footable().on('click', '.row-delete', function (e) {
     e.preventDefault();
     var idemp = $(this).attr('rel');
     swal({
@@ -41,27 +49,27 @@ $('#groups_grid').footable().on('click', '.row-delete', function(e) {
         cancelButtonColor: "#d33",
         confirmButtonText: "Aceptar",
         cancelButtonText: "Cancelar"
-      }, function() {
-        
-            $.ajax({
-                url: "/Empresas/eliminar",
-                type: 'POST',
-                data: {
-                    'id': idemp
-                },
-                dataType: 'json',
-                beforeSend: function(e) {
-                    
-                },
-                success: function(data) {
-                    //swal('Listo!',"El elemento ha sido eliminado con exito.",'success');
-                    grid_load_data();
-                }
-            });
-        
+    }, function () {
+
+        $.ajax({
+            url: "/Empresas/eliminar",
+            type: 'POST',
+            data: {
+                'id': idemp
+            },
+            dataType: 'json',
+            beforeSend: function (e) {
+
+            },
+            success: function (data) {
+                //swal('Listo!',"El elemento ha sido eliminado con exito.",'success');
+                grid_load_data();
+            }
+        });
+
     });
 });
-$('#groups_grid').footable().on('click', '.row-edit', function(e) {
+$('#groups_grid').footable().on('click', '.row-edit', function (e) {
     e.preventDefault();
     var idemp = $(this).attr('rel');
     var Nombre = $(this).attr('nom');

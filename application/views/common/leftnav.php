@@ -48,6 +48,7 @@
                         <a href="/Tickets/add" class="list-group-item item-second-list">Agregar Tickets</a>
                     </div>
                 <?php endif; ?>
+
                 <?php if ($this->tank_auth->user_has_privilege('Servicios')) : ?>
                     <a href="#servicios" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Servicios<i class="fa fa-caret-down pull-right"></i> </a>
                     <div class="collapse list-group-submenu" id="servicios">
@@ -60,13 +61,44 @@
                     <div class="collapse list-group-submenu" id="empresas">
                         <a href="/Empresas" class="list-group-item item-second-list">Ver Empresas</a>
                         <a href="/Empresas/add" class="list-group-item item-second-list">Agregar Empresas</a>
+                        <?php if ($this->tank_auth->user_has_privilege('Asignación empresas')) : ?>
+                            <a href="/Empresas/assign" class="list-group-item item-second-list">Asignar Empresas</a>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
-                <?php if ($this->tank_auth->user_has_privilege('Clientes')) : ?>
-                    <a href="#clientes" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Clientes<i class="fa fa-caret-down pull-right"></i> </a>
+                <?php if ($this->tank_auth->user_has_privilege('Colaboradores')) : ?>
+                    <a href="#clientes" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Colaboradores<i class="fa fa-caret-down pull-right"></i> </a>
                     <div class="collapse list-group-submenu" id="clientes">
-                        <a href="/Clientes" class="list-group-item item-second-list">Ver Clientes</a>
-                        <a href="/Clientes/add" class="list-group-item item-second-list">Agregar Clientes</a>
+                        <a href="/Colaboradores" class="list-group-item item-second-list">Ver Colaboradores</a>
+                        <a href="/Colaboradores/add" class="list-group-item item-second-list">Agregar Colaboradores</a>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->tank_auth->user_has_privilege('Horarios Colaboradores')) : ?>
+                    <a href="#hcolaboradores" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Horarios colaboradores<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="hcolaboradores">
+                        <a href="/Horarios" class="list-group-item item-second-list">Ver Horarios colaboradores</a>
+                        <a href="/Horarios/add" class="list-group-item item-second-list">Agregar Horarios colaboradores</a>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->tank_auth->user_has_privilege('Asistencias')) : ?>
+                    <a href="#asistencias" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Asistencias<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="asistencias">
+                        <a href="/Asistencias" class="list-group-item item-second-list">Ver lista de asistencias</a>
+                        <a href="/Asistencias/add" class="list-group-item item-second-list">Agregar asistencias</a>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->tank_auth->user_has_privilege('Encuestas')) : ?>
+                    <a href="#encuestas" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Encuestas<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="encuestas">
+                        <a href="/Encuestas" class="list-group-item item-second-list">Ver Encuestas</a>
+                        <a href="/Encuestas/add" class="list-group-item item-second-list">Agregar Encuestas</a>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->tank_auth->user_has_privilege('Respuestas Encuestas')) : ?>
+                    <a href="#rencuestas" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Respuestas Encuestas<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="rencuestas">
+                        <a href="/Encuestas/Respuestas" class="list-group-item item-second-list">Ver Respuestas</a>
+                        <a href="/Encuestas/RespuestasAdd" class="list-group-item item-second-list">Agregar Respuestas</a>
                     </div>
                 <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Vehiculos')) : ?>
@@ -74,6 +106,14 @@
                     <div class="collapse list-group-submenu" id="vehiculos">
                         <a href="/Vehiculos" class="list-group-item item-second-list">Ver Vehiculos</a>
                         <a href="/Vehiculos/add" class="list-group-item item-second-list">Agregar Vehiculos</a>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->tank_auth->user_has_privilege('Configuración')) : ?>
+                    <a href="#configuracion" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Configuración<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="configuracion">
+                        <a href="/Municipios" class="list-group-item item-second-list">Ver Municipios</a>
+                        <a href="/Zonas" class="list-group-item item-second-list">Ver Zonas</a>
+                        <a href="/Puestos" class="list-group-item item-second-list">Ver Puestos</a>
                     </div>
                 <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Usuarios')) : ?>

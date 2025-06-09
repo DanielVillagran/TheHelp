@@ -2,11 +2,11 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
 
 .topbar .topbar-left {
-    background-color: #337737;
+    background-color: #d9411d;
 }
 
 a {
-    color: #a10b14;
+    color: #ec6d0a;
 }
 
 body {
@@ -14,18 +14,18 @@ body {
     font-family: "Roboto" !important
 }
 
-.leftbar.material-leftbar .list-accordion > li > a:hover,
-.leftbar.material-leftbar .list-accordion > li > a:focus {
-    color: #a10b14;
+.leftbar.material-leftbar .list-accordion>li>a:hover,
+.leftbar.material-leftbar .list-accordion>li>a:focus {
+    color: #ec6d0a;
 }
 
-.leftbar.material-leftbar .list-accordion > li > a.acc-parent.active {
-    color: #a10b14;
+.leftbar.material-leftbar .list-accordion>li>a.acc-parent.active {
+    color: #ec6d0a;
 }
 
 .leftbar.material-leftbar .list-accordion li ul li a:hover,
 .leftbar.material-leftbar .list-accordion li ul li a:focus {
-    color: #a10b14;
+    color: #ec6d0a;
 }
 
 .p-menu {
@@ -142,7 +142,7 @@ body {
 }
 
 .p-name-sec b {
-    color: #337737;
+    color: #d9411d;
     font-weight: 700;
 }
 
@@ -266,10 +266,10 @@ body {
 }
 
 .btn.add-row:hover {
-    color: #921922;
+    color: #ec6d0a;
 }
 
-.btn.add-row > i {
+.btn.add-row>i {
     margin-right: 6px;
 }
 
@@ -428,8 +428,8 @@ body {
     font-family: "Roboto";
 }
 
-input:focus ~ .floating-label,
-input:not(:focus):valid ~ .floating-label {
+input:focus~.floating-label,
+input:not(:focus):valid~.floating-label {
     top: -20px;
     bottom: 0px;
     left: 0px;
@@ -438,8 +438,8 @@ input:not(:focus):valid ~ .floating-label {
     font-weight: 400 !important;
 }
 
-textarea:focus ~ .floating-label,
-textarea:not(:focus):valid ~ .floating-label {
+textarea:focus~.floating-label,
+textarea:not(:focus):valid~.floating-label {
     top: -23px;
     bottom: 0px;
     left: 0px;
@@ -463,7 +463,7 @@ textarea:not(:focus):valid ~ .floating-label {
 }
 
 .form-control.input-form {
-    background-color: #F4F4F4;
+    background-color: #E4E4E4;
     border: none;
     border-radius: 4px;
     height: 45px;
@@ -476,15 +476,19 @@ textarea:not(:focus):valid ~ .floating-label {
 
 .form-control.input-form:active,
 .form-control.input-form:focus {
-    background-color: #F4F4F4;
+    background-color: #E4E4E4;
     box-shadow: none;
     outline: 0;
     color: black;
 
 }
 
+.color-principal {
+    color: #d9411d;
+}
+
 .form-control.input-form-area {
-    background-color: #F4F4F4;
+    background-color: #E4E4E4;
     border: none;
     border-radius: 4px;
     font-size: 14px;
@@ -496,7 +500,7 @@ textarea:not(:focus):valid ~ .floating-label {
 
 .form-control.input-form-area:active,
 .form-control.input-form-area:focus {
-    background-color: #F4F4F4;
+    background-color: #E4E4E4;
     box-shadow: none;
     outline: 0;
     color: black;
@@ -574,7 +578,7 @@ input[type=file] {
 
 /* File upload button */
 .control-fileupload:hover::before {
-    background-color: #921922;
+    background-color: #ec6d0a;
     color: #FFFFFF;
 }
 
@@ -609,10 +613,10 @@ input[type=file] {
 }
 
 .btn.btn-nuevo-servicio:hover {
-    color: #921922;
+    color: #ec6d0a;
 }
 
-.btn.btn-nuevo-servicio > i {
+.btn.btn-nuevo-servicio>i {
     margin-right: 6px;
 }
 
@@ -674,7 +678,7 @@ input[type=file] {
 }
 
 .modal-servicios .modal-footer .btn-primary {
-    background-color: #921922;
+    background-color: #ec6d0a;
     box-shadow: none;
     font-size: 12px;
     color: rgba(255, 255, 255, .9);
@@ -728,7 +732,7 @@ input[type=file] {
 }
 
 .btn.btn-guardar {
-    background-color: #337737;
+    background-color: #d9411d;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -739,7 +743,7 @@ input[type=file] {
 }
 
 .btn.btn-guardar:hover {
-    background-color: #921922;
+    background-color: #ec6d0a;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -751,7 +755,7 @@ input[type=file] {
 
 .btn.btn-guardar:active,
 .btn.btn-guardar:focus {
-    background-color: #921922;
+    background-color: #ec6d0a;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -765,7 +769,7 @@ input[type=file] {
     padding-right: 50px;
 }
 
-.current_logo > img {
+.current_logo>img {
     width: 250px;
 }
 
@@ -782,7 +786,7 @@ legend {
     border-bottom: none !important;
 }
 
-.emojionearea.emojionearea-inline > .emojionearea-editor {
+.emojionearea.emojionearea-inline>.emojionearea-editor {
     height: 40px;
     min-height: 40px;
     overflow: hidden;
@@ -794,7 +798,7 @@ legend {
     padding-top: 13px;
 }
 
-.emojionearea.emojionearea-inline > .emojionearea-button {
+.emojionearea.emojionearea-inline>.emojionearea-button {
     top: 10px;
     right: 7px;
 }
@@ -872,7 +876,7 @@ legend {
     padding-left: 10px;
 }
 
-.logo-header a > img {
+.logo-header a>img {
     width: 120px;
 }
 
@@ -932,7 +936,7 @@ legend {
 .btn-default:focus,
 .btn-default:active,
 .btn-default.active,
-.open > .dropdown-toggle.btn-default {
+.open>.dropdown-toggle.btn-default {
     color: rgba(0, 0, 0, .6);
     background-color: #F4F4F4;
 }
@@ -950,7 +954,7 @@ legend {
     border-radius: 0px;
 }
 
-.multiselect-container.dropdown-menu > li > a.multiselect-all label {
+.multiselect-container.dropdown-menu>li>a.multiselect-all label {
     font-weight: 500 !important;
 }
 
@@ -1000,7 +1004,7 @@ legend {
 }
 
 .btn.btn-entrar {
-    background-color: #337737;
+    background-color: #d9411d;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -1012,7 +1016,7 @@ legend {
 }
 
 .btn.btn-entrar:hover {
-    background-color: #86c440;
+    background-color: #ec6d0a;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -1024,7 +1028,7 @@ legend {
 
 .btn.btn-entrar:active,
 .btn.btn-entrar:focus {
-    background-color: #337737;
+    background-color: #d9411d;
     border: none;
     border-radius: 5px;
     box-shadow: none;
@@ -1043,7 +1047,7 @@ legend {
 
 .login-frm-input:active,
 .login-frm-input:focus {
-    border: 1px solid #337737;
+    border: 1px solid #d9411d;
     box-shadow: none;
 
 }
@@ -1091,7 +1095,7 @@ legend {
     font-family: "Roboto";
 }
 
-.td-foto > img {
+.td-foto>img {
     width: 100px;
     max-width: 100px;
     max-height: 100px;
@@ -1150,7 +1154,7 @@ legend {
     color: #000000;
 }
 
-.btn.btn-ver-ubicacion > img {
+.btn.btn-ver-ubicacion>img {
     width: 15px;
     margin-right: 5px;
 }
@@ -1211,7 +1215,7 @@ legend {
 }
 
 .modal-ubicacion .modal-footer .btn-primary {
-    background-color: #921922;
+    background-color: #ec6d0a;
     box-shadow: none;
     font-size: 12px;
     color: rgba(255, 255, 255, .9);
@@ -1271,12 +1275,12 @@ legend {
     background-color: rgba(0, 0, 0, .54118);
     transition: .2s ease opacity;
     will-change: opacity;
-    
+
 }
 
-.datepicker > div {
+.datepicker>div {
     display: block !important;
-    padding: 10px!important;
+    padding: 10px !important;
 }
 
 
@@ -1285,9 +1289,9 @@ legend {
 .datepicker table tr td.today.disabled,
 .datepicker table tr td.today.disabled:hover {
     color: #000000;
-    background-color: rgba(33,150,243,.2)!important;
+    background-color: rgba(33, 150, 243, .2) !important;
     border-color: #ffb733;
-    font-weight: 600!important;
+    font-weight: 600 !important;
 }
 
 
@@ -1296,31 +1300,31 @@ legend {
     text-align: center;
     width: 30px;
     height: 30px;
-    border-radius:100px;
+    border-radius: 100px;
     border: none;
 }
 
-.input-date{
+.input-date {
     width: 100%;
-    background-color: #F4F4F4!important;
-    border-radius: 5px!important;
-    border: none!important;
+    background-color: #F4F4F4 !important;
+    border-radius: 5px !important;
+    border: none !important;
     height: 40px;
-    font-size: 14px!important;
-    color: #000000!important;
-    padding-left: 15px!important;
-    }
+    font-size: 14px !important;
+    color: #000000 !important;
+    padding-left: 15px !important;
+}
 
-.p-citas{
+.p-citas {
     font-size: 16px;
     font-weight: 300;
 }
 
-.row-nueva-cita{
+.row-nueva-cita {
     margin-top: 30px;
 }
 
-.form-nueva-cita .t1{
+.form-nueva-cita .t1 {
     font-size: 14px;
     font-weight: 400;
     margin-bottom: 10px;
@@ -1329,55 +1333,55 @@ legend {
 .gj-datepicker-md [role=right-icon] {
     cursor: pointer;
     position: absolute;
-    right: 12px!important;
-    top: 7px!important;
+    right: 12px !important;
+    top: 7px !important;
     font-size: 24px;
-    color: rgba(0,0,0,.5);
+    color: rgba(0, 0, 0, .5);
     transition: .3s;
 }
 
 .gj-datepicker-md:hover [role=right-icon] {
     cursor: pointer;
     position: absolute;
-    right: 12px!important;
-    top: 7px!important;
+    right: 12px !important;
+    top: 7px !important;
     font-size: 24px;
-    color: rgba(0,0,0,1);
+    color: rgba(0, 0, 0, 1);
 }
 
 .gj-timepicker-md [role=right-icon] {
     cursor: pointer;
     position: absolute;
-    right: 12px!important;
-    top: 7px!important;
+    right: 12px !important;
+    top: 7px !important;
     font-size: 24px;
-    color: rgba(0,0,0,.5);
+    color: rgba(0, 0, 0, .5);
     transition: .3s;
 }
 
 .gj-timepicker-md:hover [role=right-icon] {
     cursor: pointer;
     position: absolute;
-    right: 12px!important;
-    top: 7px!important;
+    right: 12px !important;
+    top: 7px !important;
     font-size: 24px;
-    color: rgba(0,0,0,1);
+    color: rgba(0, 0, 0, 1);
     transition: .3s;
 }
 
 .datepicker {
-    padding: 5px!important;
-    border-radius: 5px!important; 
+    padding: 5px !important;
+    border-radius: 5px !important;
     direction: ltr;
 }
 
-.timepicker{
-    padding: 5px!important;
-    border-radius: 5px!important; 
+.timepicker {
+    padding: 5px !important;
+    border-radius: 5px !important;
     direction: ltr;
 }
 
-.btn-excel{
+.btn-excel {
     background-color: #209F62;
     padding-left: 16px;
     padding-right: 15px;
@@ -1385,49 +1389,49 @@ legend {
     padding-bottom: 12px;
     border-radius: 5px;
     font-size: 12px;
-    color: rgba(255,255,255,.8);
+    color: rgba(255, 255, 255, .8);
     letter-spacing: .4px;
     cursor: pointer;
     transition: .3s;
 
 }
 
-.btn-excel > img{
+.btn-excel>img {
     width: 19px;
     margin-right: 10px;
     opacity: .9;
     transition: .3s;
 }
 
-.btn-excel:hover{
+.btn-excel:hover {
     color: #FFFFFF;
     cursor: pointer;
 }
 
-.btn-excel:hover > img{
+.btn-excel:hover>img {
     opacity: 1;
 }
 
-.btn-excel.btn-excel-encuesta{
+.btn-excel.btn-excel-encuesta {
     margin-bottom: 30px;
 }
 
-.d-btn-nuevo-pregunta{
+.d-btn-nuevo-pregunta {
 
     margin-bottom: 20px;
 }
 
-.row-table-preguntas{
+.row-table-preguntas {
     margin-top: 20px;
 }
 
-.d-item-file-logo{
+.d-item-file-logo {
     padding-bottom: 40px;
-    border-bottom: 1px solid rgba(0,0,0,.1);
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
     margin-bottom: 40px;
 }
 
-.d-img-file-logo{
+.d-img-file-logo {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top;
@@ -1436,18 +1440,18 @@ legend {
     margin-bottom: 15px;
 }
 
-.d-item-file-logo .t1{
+.d-item-file-logo .t1 {
     font-size: 16px;
     color: #000000;
     margin-bottom: 0px;
 }
 
-.d-item-file-logo .t2{
+.d-item-file-logo .t2 {
     font-size: 12px;
-    color: rgba(0,0,0,.5);
+    color: rgba(0, 0, 0, .5);
     margin-top: 3px;
 }
 
-.d-item-file-logo .control-fileupload label{
-    font-size: 12px!important;
+.d-item-file-logo .control-fileupload label {
+    font-size: 12px !important;
 }

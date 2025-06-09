@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <link rel="manifest" href="/site.webmanifest"> 
 
 
-    <title>Luma Maquinaria </title>
+    <title>The Help </title>
 
     <link type="text/css" rel="stylesheet" href="assets/css/font-awesome.css">
     <link type="text/css" rel="stylesheet" href="assets/css/animate.css">
@@ -87,9 +87,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <i class="zmdi zmdi-key"></i>
                                     </label>
                                     <input class="form-control login-frm-input" type="password" id="password" name="password" placeholder="Contraseña" required="" />
-                                    <span class="hint" style="padding-top:10px;">
+                                    <!--<span class="hint" style="padding-top:10px;">
                                         <a href="user/forgot" class="link">¿Olvidaste la contrase&ntilde;a?</a>
-                                    </span>
+                                    </span>-->
                                 </div>
                             </div>
                             <!-- end password -->
@@ -101,10 +101,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="login-form-footer">
                             <button type="button" id="loginbtn" class="btn btn-entrar">Iniciar sesión</button>
                         </div>
-                        <br>
-                        <div class="login-form-footer">
-                            <button type="button" id="revisarHistorial" class="btn btn-entrar">Revisar Historial</button>
-                        </div>
+                       
 
                     </form>
                     <div id="qr-reader" style="width: 250px"></div>

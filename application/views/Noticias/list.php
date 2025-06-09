@@ -25,8 +25,7 @@
                                 <p class="title-sec"><?php echo $title; ?></p>
                                 <div class="row row-buscar-agregar">
                                     <div class="col-lg-6 col-md-6">
-                                        <input class="form-control input-search" id="filter" type="text" placeholder="Buscar" />
-                                    </div>
+                                          </div>
 
                                     <div class="col-lg-6 col-md-6">
                                         <div class="d-btn-agregar">

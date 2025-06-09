@@ -54,6 +54,24 @@
                                                     <label class="floating-label">Contraseña *</label>
                                                 </div>
                                             </div>
+                                            <div class="form-group col-lg-12 col-md-12 pl-0">
+
+                                                <span class="floating-label-text">Rol *</span>
+                                                <select class="form-control input-form " name="users[user_role_id]">
+                                                    <option hidden>Seleccionar rol</option>
+                                                    <option value="1">Director</option>
+                                                    <option value="2">Gerente</option>
+                                                    <option value="3">Jefe de Operaciones</option>
+                                                    <option value="4">Supervisor de cuenta</option>
+                                                    <option value="5">Jefe de Reclutamiento</option>
+                                                    <option value="6">Finanzas</option>
+                                                </select>
+
+
+
+
+                                            </div>
+
                                         </div>
 
                                         <div id="permisos_div" style="display:<?php echo ($id > 0 ? 'block' : 'none'); ?>">
@@ -67,33 +85,35 @@
 
 
                                             <div class="row">
-                                                <?php 
+                                                <?php
                                                 echo '<script>var permissions=[];</script>';
-                                                    foreach ($permissions as $key) {
-                                                        $checked="";
-                                                        $respuesta=0;
-                                                        if($key['has']!=""){
-                                                            $checked="checked";
-                                                            $respuesta=1;
-                                                        }
-                                                        echo '<div class="form-group col-lg-6 col-md-6 col-xs-6">
+                                                foreach ($permissions as $key) {
+                                                    $checked = "";
+                                                    $respuesta = 0;
+                                                    if ($key['has'] != "") {
+                                                        $checked = "checked";
+                                                        $respuesta = 1;
+                                                    }
+                                                    echo '<div class="form-group col-lg-6 col-md-6 col-xs-6">
                                                         <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input" id="'.$key['id'].'i" onchange="cambio('.$key['id'].')" '.$checked.'>
-                                                            <label class="form-check-label" for="'.$key['id'].'i">'.$key['nombre'].'</label>
+                                                            <input type="checkbox" class="form-check-input" id="' . $key['id'] . 'i" onchange="cambio(' . $key['id'] . ')" ' . $checked . '>
+                                                            <label class="form-check-label" for="' . $key['id'] . 'i">' . $key['nombre'] . '</label>
                                                         </div>
                                                     </div>';
-                                                    echo '<script> permissions.push({ module_id: '.$key['id'].', respuesta: '.$respuesta.' });</script>';
-                                                    
-                                                    }
+                                                    echo '<script> permissions.push({ module_id: ' . $key['id'] . ', respuesta: ' . $respuesta . ' });</script>';
+                                                }
                                                 ?>
                                             </div>
                                         </div>
-
-                                        <legend></legend>
-                                        <ul class="list-inline">
-                                            <li><button type="submit" class="btn btn-guardar next-step">Guardar</button>
-                                            </li>
-                                        </ul>
+                                        <div class="col-12">
+                                            <div class="d-form-agregar-dep">
+                                                <legend></legend>
+                                                <ul class="list-inline">
+                                                    <li><button type="submit" class="btn btn-guardar next-step">Guardar</button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </form>
 
 
@@ -101,6 +121,7 @@
 
 
                             </div>
+
                         </div>
                     </div>
                 </div>

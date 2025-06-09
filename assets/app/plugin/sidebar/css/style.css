@@ -370,7 +370,7 @@ select {
 }
 
 .dropdown-select .dd-searchbox:focus {
-    border-color: #921922;
+    border-color: #ec6d0a;
 }
 
 .dropdown-select .list ul {
@@ -407,7 +407,7 @@ select {
 }
 
 .select-form {
-    color: #921922;
+    color: #ec6d0a;
     padding-left: 12px;
     border: none;
 }
@@ -418,7 +418,7 @@ select {
 
 .select-form:active,
 .select-form:focus {
-    color: #921922;
+    color: #ec6d0a;
 }
 
 .form-group-select {

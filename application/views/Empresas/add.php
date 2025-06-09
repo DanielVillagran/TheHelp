@@ -26,15 +26,70 @@
                                     <p class="title-sec">Agregar empresa</p>
 
                                     <form id="Departamentos_info" enctype="multipart/form-data" onsubmit="save_Departamentos()" class="form-agregar-Intereses">
-                                        <input type="hidden" name="users[id]" id="id" class="form-control" value="<?php echo $id;?>" />
-
-                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+                                        <input type="hidden" name="users[id]" id="id" class="form-control" value="<?php echo $id; ?>" />
+                                        <div class="form-group col-lg-12 col-md-12 pl-0">
+                                            <span class="floating-label-text">Razon social *</span>
+                                            <select class="form-control input-form " name="users[razon_social_id]">
+                                                <option hidden>Seleccionar empresa</option>
+                                                <?php echo $razones; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-lg-12 col-md-12 pl-0">
                                             <div class="floating-label-group">
-                                                <input type="text" id="" name="users[nombre]" class="form-control input-form" required />
-                                                <label class="floating-label">Nombre de la empresa *</label>
+                                                <input type="text" name="users[nombre]" class="form-control input-form" required />
+                                                <label class="floating-label">Nombre del cliente *</label>
                                             </div>
                                         </div>
 
+                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+                                            <span class="floating-label-text">Tipo de nómina *</span>
+                                            <select class="form-control input-form " name="users[tipo_nomina]">
+                                                <option hidden>Seleccionar tipo de nómina</option>
+                                                <?php echo $nominas; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+
+                                            <span class="floating-label-text">Tipo de facturación *</span>
+                                            <select class="form-control input-form " name="users[tipo_facturacion]">
+                                                <option hidden>Seleccionar tipo de facturación</option>
+                                                <?php echo $facturacion; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-lg-12 col-md-12 pl-0">
+                                            <div class="floating-label-group">
+                                                <textarea name="users[comentarios]" class="form-control input-form-area" rows="2"></textarea>
+                                                <label class="floating-label">Comentarios</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-lg-4 col-md-4 pl-0">
+                                            <div class="floating-label-group">
+                                                <span class="floating-label-text">Días de crédito *</span>
+                                                <input type="number" name="users[dias_credito]" class="form-control input-form" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-4 col-md-4 pl-0">
+                                            <span class="floating-label-text">Responsable *</span>
+                                            <select class="form-control input-form " name="users[responsable]">
+                                                <option hidden>Seleccionar responsable</option>
+                                                <?php echo $responsables; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-lg-4 col-md-4 pl-0">
+                                            <span class="floating-label-text">Municipio *</span>
+                                            <select class="form-control input-form " name="users[municipio]">
+                                                <option hidden>Seleccionar municipio</option>
+                                                <?php echo $municipios; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+                                            <span class="floating-label-text">Zona *</span>
+                                            <select class="form-control input-form " name="users[zona]">
+                                                <option hidden>Seleccionar zona</option>
+                                                <?php echo $zonas; ?>
+                                            </select>
+                                        </div>
 
                                         <legend></legend>
 
@@ -42,6 +97,7 @@
                                             <button type="submit" class="btn btn-guardar next-step">Guardar</button>
                                         </div>
                                     </form>
+
                                 </div>
                             </div>
                         </div>

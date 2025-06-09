@@ -24,9 +24,13 @@ function grid_load_data() {
         },
         success: function(data) {
             swal.close();
-            $('#groups_grid thead').empty().append(data.head);
-            $('#groups_grid tbody').empty().append(data.table).trigger('footable_redraw');
+           if ($.fn.DataTable.isDataTable('#groups_grid')) {
+                $('#groups_grid').DataTable().destroy();
+            }
+           $('#groups_grid thead').empty().append(data.head);
+            $('#groups_grid tbody').empty().append(data.table);
             $('#groups_grid').show();
+            inicializarDatatable('#groups_grid');
         }
     });
 }

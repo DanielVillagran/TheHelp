@@ -88,7 +88,7 @@ class Citas extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
             }
         } else {
-            $data['table'] = '<tr><td colspan="5">Perdon, no hemos encontrado nada.</td></tr>';
+            
         }
 
         $this->output_json($data);

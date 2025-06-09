@@ -4,16 +4,19 @@ if (!defined('BASEPATH')) {
 	exit('No direct script access allowed');
 }
 
-class Users_Model extends ANT_Model {
+class Users_Model extends ANT_Model
+{
 
 	protected static $table = 'users_user';
 	protected static $uk = array('id');
 
-	function __construct() {
+	function __construct()
+	{
 		parent::__construct();
 	}
 
-	static function get_grid_info($where = NULL, $list = NULL, $agent = NULL) {
+	static function get_grid_info($where = NULL, $list = NULL, $agent = NULL)
+	{
 		$lista = '';
 		$result = array();
 		$options = array(
@@ -26,14 +29,33 @@ class Users_Model extends ANT_Model {
 		return $result;
 	}
 
-	static function get_by_id($id = 0) {
+	static function get_by_id($id = 0)
+	{
 		return Users_Model::Load(array('joinsLeft' => array('erp_contacts' => 'erp_contacts.id = users.erp_account_id'), 'clauses' => array('users.id' => $id), 'result' => '1row'));
 	}
 
-	static function get_by_email($email = '') {
+	static function get_by_email($email = '')
+	{
 		return Erp_Contacts_Model::Load(array('clauses' => array('email' => $email), 'result' => '1row'));
 	}
-	static function user_has_privilege($id_privilege = '', $userid = 0) {
+	static function get_select($where = NULL, $list = NULL, $agent = NULL)
+	{
+		$lista = '<option value="all">-- Todos los empresas --</option>';
+		$lista = "";
+		$result = array();
+		$options = array(
+			'select' => '*',
+			'result' => 'array'
+		);
+
+		$result = Users_Model::Load($options);
+		foreach ($result as $key) {
+			$lista .= '<option value="' . $key['id'] . '">' . $key['name'] . ' ' . $key['middle_name']. ' - ' . $key['user_name'] . '</option>';
+		}
+		return $lista;
+	}
+	static function user_has_privilege($id_privilege = '', $userid = 0)
+	{
 		$result['has'] = false;
 		if ($userid != 0) {
 			$aux = Users_model::Query("SELECT 'true' as has_privilege,usuariosTCE_permisos.id_tipo_permiso from users_user
@@ -49,7 +71,8 @@ class Users_Model extends ANT_Model {
 		}
 		return $result;
 	}
-	static function user_has_special_privilege($id_privilege = '', $userid = 0) {
+	static function user_has_special_privilege($id_privilege = '', $userid = 0)
+	{
 		$result['has'] = false;
 		if ($userid != 0) {
 			$aux = Users_model::Query("SELECT 'true' as has_privilege, usuariosTCE_permisos_especiales.id_tipo_permiso from users_user
@@ -67,7 +90,8 @@ class Users_Model extends ANT_Model {
 		return $result;
 	}
 
-	static function get_profile_info($id = 0, $onlyAddress = FALSE) {
+	static function get_profile_info($id = 0, $onlyAddress = FALSE)
+	{
 		$info = array(
 			'account' => FALSE,
 			'contact' => FALSE,
@@ -114,7 +138,8 @@ class Users_Model extends ANT_Model {
 					if ($info['user']) {
 						$options = array(
 							'select' => 'users_groups.id,users_groups.user_id,users_groups.group_id,groups.name as role',
-							'joins' => array('groups' => 'groups.id = users_groups.group_id'), 'clauses' => array('users_groups.user_id' => $info['user']->id),
+							'joins' => array('groups' => 'groups.id = users_groups.group_id'),
+							'clauses' => array('users_groups.user_id' => $info['user']->id),
 							'result' => '1row',
 						);
 						$info['group'] = Users_Groups_Model::Load($options);
@@ -144,7 +169,8 @@ class Users_Model extends ANT_Model {
 		return $info;
 	}
 
-	static function get_list_campaigns($ant_account_id) {
+	static function get_list_campaigns($ant_account_id)
+	{
 		$options = array(
 			'select' => "users.id,
             concat(
@@ -171,20 +197,24 @@ class Users_Model extends ANT_Model {
 		return $lista;
 	}
 
-	static function get_modules_users($id_user) {
+	static function get_modules_users($id_user)
+	{
 		$options = array(
 			'select' => "users.email, groups.name, modules.name, groups.name as grupo",
-			'joins' => array('users_groups' => 'users.id = users_groups.user_id',
+			'joins' => array(
+				'users_groups' => 'users.id = users_groups.user_id',
 				'groups' => 'groups.id = users_groups.group_id',
 				'group_has_module' => 'groups.id = group_has_module.group_id',
-				'modules' => 'modules.id = group_has_module.module_id'),
+				'modules' => 'modules.id = group_has_module.module_id'
+			),
 			'where' => "users.id='$id_user'",
 		);
 		$aux = Users_Model::Load($options);
 		return $aux;
 	}
 
-	static function get_modules($modulo, $userid = 0) {
+	static function get_modules($modulo, $userid = 0)
+	{
 		$options = array(
 			'select' => 'modules.name',
 			'joins' => array(
@@ -200,7 +230,8 @@ class Users_Model extends ANT_Model {
 		return $aux;
 	}
 
-	static function get_by_group($group = '') {
+	static function get_by_group($group = '')
+	{
 		$options = array(
 			'select' => "users.id, concat(trim(erp_contacts.first_name),' ',trim(erp_contacts.last_name),' ',trim(erp_contacts.second_last_name)) as name, groups.name as rol, erp_contacts.id as contact_id",
 			'joins' => array(
@@ -223,7 +254,8 @@ class Users_Model extends ANT_Model {
 		return $users;
 	}
 
-	static function get_by_many_groups($groups) {
+	static function get_by_many_groups($groups)
+	{
 		$options = array(
 			'select' => "users.id, concat(trim(erp_contacts.first_name),' ',trim(erp_contacts.last_name),' ',trim(erp_contacts.second_last_name)) as name, groups.name as rol, erp_contacts.id as contact_id",
 			'joins' => array(
@@ -242,7 +274,8 @@ class Users_Model extends ANT_Model {
 		return $users;
 	}
 
-	static function get_by_group_and_by_sucursal($group = '', $sucursal = '') {
+	static function get_by_group_and_by_sucursal($group = '', $sucursal = '')
+	{
 		$options = array(
 			'select' => "users.id, concat(trim(erp_contacts.first_name),' ',trim(erp_contacts.last_name),' ',trim(erp_contacts.second_last_name)) as name, groups.name as rol, erp_contacts.id as contact_id",
 			'joins' => array(
@@ -265,7 +298,8 @@ class Users_Model extends ANT_Model {
 		return $users;
 	}
 
-	static function get_group_ventas_by_sucursal($sucursal = '') {
+	static function get_group_ventas_by_sucursal($sucursal = '')
+	{
 		$options = array(
 			'select' => "users.id, concat(trim(erp_contacts.first_name),' ',trim(erp_contacts.last_name),' ',trim(erp_contacts.second_last_name)) as name, groups.name as rol, erp_contacts.id as contact_id",
 			'joins' => array(
@@ -286,7 +320,8 @@ class Users_Model extends ANT_Model {
 		return $users;
 	}
 
-	static function get_group_recepcion_by_sucursal($sucursal = '') {
+	static function get_group_recepcion_by_sucursal($sucursal = '')
+	{
 		$options = array(
 			'select' => "users.id, concat(trim(erp_contacts.first_name),' ',trim(erp_contacts.last_name),' ',trim(erp_contacts.second_last_name)) as name, groups.name as rol, erp_contacts.id as contact_id",
 			'joins' => array(
@@ -307,7 +342,8 @@ class Users_Model extends ANT_Model {
 		return $users;
 	}
 
-	static function get_module($userid = 0) {
+	static function get_module($userid = 0)
+	{
 		$options = array(
 			'select' => 'erp_contacts.id, groups.name',
 			'joins' => array(
@@ -322,7 +358,8 @@ class Users_Model extends ANT_Model {
 		return $aux;
 	}
 
-	static function get_asignado($where = NULL, $list = NULL, $agent = NULL) {
+	static function get_asignado($where = NULL, $list = NULL, $agent = NULL)
+	{
 		$lista = '';
 		$options = array(
 			'select' => 'users.id, users.active, erp_contacts.first_name, erp_contacts.last_name, erp_contacts.second_last_name, erp_contacts.email, erp_contacts.notes, groups.name as rol, erp_contacts.id as erp_contact_id',
@@ -359,7 +396,8 @@ class Users_Model extends ANT_Model {
 		return $result;
 	}
 
-	static function get_agents($list = false, $ant_account_id = 0, $obj = false, $fechaI = '', $fechaF = '', $agent_id = '') {
+	static function get_agents($list = false, $ant_account_id = 0, $obj = false, $fechaI = '', $fechaF = '', $agent_id = '')
+	{
 		$options = array(
 			'select' => "users.id, users.active, concat(erp_contacts.first_name, ' ', erp_contacts.last_name, ' ', erp_contacts.second_last_name) as agent_name, erp_contacts.email, erp_contacts.notes, groups.name as rol, erp_contacts.id as erp_contact_id, users.agent_target as target",
 			'joinsLeft' => array(
@@ -402,7 +440,8 @@ class Users_Model extends ANT_Model {
 		return $result;
 	}
 
-	static function get_commissions($post) {
+	static function get_commissions($post)
+	{
 		$ant_account_id = isset($post['ant_account_id']) ? $post['ant_account_id'] : 0;
 		$fechaI = $post['fecha_inicio'];
 		$fechaF = $post['fecha_final'];
@@ -416,11 +455,34 @@ class Users_Model extends ANT_Model {
 				if ($get_commissions) {
 					$agent['month'] = str_replace(
 						array(
-							'1', '2', '3', '4', '5', '5', '7', '8', '9', '10', '11', '12', '/',
+							'1',
+							'2',
+							'3',
+							'4',
+							'5',
+							'5',
+							'7',
+							'8',
+							'9',
+							'10',
+							'11',
+							'12',
+							'/',
 						),
 						array(
-							'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
-							'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', ' de ',
+							'Enero',
+							'Febrero',
+							'Marzo',
+							'Abril',
+							'Mayo',
+							'Junio',
+							'Julio',
+							'Agosto',
+							'Septiembre',
+							'Octubre',
+							'Noviembre',
+							'Diciembre',
+							' de ',
 						),
 						$agent['month']
 					);
@@ -435,5 +497,4 @@ class Users_Model extends ANT_Model {
         die();*/
 		return $data;
 	}
-
 }

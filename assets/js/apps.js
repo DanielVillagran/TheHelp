@@ -1,30 +1,30 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     "use strict";
-    $( document ).ajaxError(function(event, jqxhr, settings, thrownError) {
-      if( jqxhr.status >= 400 || jqxhr.status == 0)
-        swal(jqxhr.status == 0 ? "No hay conexión a internet." : jqxhr.statusText, "", "warning")
+    $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
+        if (jqxhr.status >= 400 || jqxhr.status == 0)
+            swal(jqxhr.status == 0 ? "No hay conexión a internet." : jqxhr.statusText, "", "warning")
     });
     var plugin_exists = true;
-//    **----------
-//    Google Fonts
-//    **----------
-        var WebFontConfig = {
-            google: {
-                families: [
-                    'Open+Sans:400italic,400,300,600:latin',
-                    'Roboto:400,300,400italic,500:latin'
-                ]
-            }
-        };
-        (function() {
-            var wf = document.createElement('script');
-            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-                '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-            wf.type = 'text/javascript';
-            wf.async = 'true';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(wf, s);
-        })();
+    //    **----------
+    //    Google Fonts
+    //    **----------
+    var WebFontConfig = {
+        google: {
+            families: [
+                'Open+Sans:400italic,400,300,600:latin',
+                'Roboto:400,300,400italic,500:latin'
+            ]
+        }
+    };
+    (function () {
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+            '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+    })();
 
     // **---------------------------------------
     // Left Bar and Right Bar Height Calculation
@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
             railBorderRadius: '0px',
             allowPageScroll: false
         });
-         $('.left-aside-container').css('overflow-y', 'scroll');
+        $('.left-aside-container').css('overflow-y', 'scroll');
     }
 
 
@@ -170,8 +170,8 @@ jQuery(document).ready(function($) {
     // **------------------
     // Popover Hide onClick
     // **------------------
-    $('body').on('click', function(e) {
-        $('.chat-user-list > li > a').each(function() {
+    $('body').on('click', function (e) {
+        $('.chat-user-list > li > a').each(function () {
             //the 'is' for buttons that trigger popups
             //the 'has' for icons within a button that triggers a popup
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
@@ -197,7 +197,7 @@ jQuery(document).ready(function($) {
     // **------------
     // Leftbar Toggle
     // **------------
-    $(".left-toggle-switch").hammer().on("click touchstart", function(e) {
+    $(".left-toggle-switch").hammer().on("click touchstart", function (e) {
         e.preventDefault();
         if ($("body").hasClass("left-aside-toggle")) {
             $("body").removeClass("left-aside-toggle");
@@ -209,7 +209,7 @@ jQuery(document).ready(function($) {
     // **-------------
     // Rightbar Toggle
     // **-------------
-    $(".right-toggle-switch").hammer().on("click touchstart", function(e) {
+    $(".right-toggle-switch").hammer().on("click touchstart", function (e) {
         e.preventDefault();
         if ($(".rightbar").hasClass("right-aside-toggle")) {
             $(".rightbar").removeClass("right-aside-toggle");
@@ -222,7 +222,7 @@ jQuery(document).ready(function($) {
     // **-----------
     // Mobile Topbar
     // **-----------
-    $(".btn-mobile-bar").hammer().on("click touchstart", function(e) {
+    $(".btn-mobile-bar").hammer().on("click touchstart", function (e) {
         e.preventDefault();
         if ($(".topbar-right").hasClass("bar-toggle")) {
             $(".topbar-right").removeClass("bar-toggle");
@@ -234,7 +234,7 @@ jQuery(document).ready(function($) {
     // **--------
     // Search Bar
     // **--------
-    $(".btn-top-search").hammer().on("click touchstart", function(e) {
+    $(".btn-top-search").hammer().on("click touchstart", function (e) {
         e.preventDefault();
         if ($(".top-search-bar").hasClass("search-bar-toggle")) {
             $(".top-search-bar").removeClass("search-bar-toggle");
@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
     // **------------------
     // Individual Chat Open
     // **------------------
-    $(".chat-user-list > li > div, .chat-back").hammer().on("click touchstart", function(e) {
+    $(".chat-user-list > li > div, .chat-back").hammer().on("click touchstart", function (e) {
         e.preventDefault();
         if ($(".aside-chat-box").hasClass("right-chat-toggle")) {
             $(".aside-chat-box").removeClass("right-chat-toggle");
@@ -258,7 +258,7 @@ jQuery(document).ready(function($) {
     // **-------------------------
     // Hide Elements On Body Click
     // **-------------------------
-    $(document).on('click touchstart', function(e) {
+    $(document).on('click touchstart', function (e) {
         if ($(e.target).closest(".right-aside-toggle").length === 0 && $(e.target).closest(".right-toggle-switch").length === 0) {
             $(".rightbar").removeClass("right-aside-toggle");
         }
@@ -278,12 +278,12 @@ jQuery(document).ready(function($) {
     // **-----------------------------------------------
     // Notification Dropdpown Tab Will Not Close onClick
     // **-----------------------------------------------
-    $('.notifications-tabs').on('click touchstart', '.nav-tabs a', function(e) {
+    $('.notifications-tabs').on('click touchstart', '.nav-tabs a', function (e) {
         e.preventDefault();
         $(this).closest('.dropdown').addClass('dontClose');
     });
 
-    $('.notifications-dropdown').on('hide.bs.dropdown', function(e) {
+    $('.notifications-dropdown').on('hide.bs.dropdown', function (e) {
         if ($(this).hasClass('dontClose')) {
             e.preventDefault();
         }
@@ -295,7 +295,7 @@ jQuery(document).ready(function($) {
     // **---------------
 
     if ($.fn.navAccordion) {
-        $('.list-accordion').each(function() {
+        $('.list-accordion').each(function () {
             $(this).navAccordion({
                 eventType: 'click',
                 hoverDelay: 100,
@@ -309,7 +309,7 @@ jQuery(document).ready(function($) {
             });
         });
     }
-    $(document).on("mouseleave", ".iconic-leftbar", function() {
+    $(document).on("mouseleave", ".iconic-leftbar", function () {
         $(".list-accordion .dcjq-parent").removeClass('active');
         $(".list-accordion .acc-parent-li .acc-parent").removeClass('active');
         $(".list-accordion ul").hide();
@@ -318,7 +318,7 @@ jQuery(document).ready(function($) {
     // **--------
     // Scroll Top
     // **--------
-    if($.fn.scrollUp){
+    if ($.fn.scrollUp) {
         $.scrollUp({
             scrollName: 'scrollTop', // Element ID
             topDistance: '300', // Distance from top before showing element (px)
@@ -349,7 +349,7 @@ jQuery(document).ready(function($) {
     // **-----------
     // Window Resize
     // **-----------
-    $(window).smartresize(function() {
+    $(window).smartresize(function () {
         AsideHeight();
         ChatHeight();
     });
@@ -376,11 +376,11 @@ jQuery(document).ready(function($) {
 
     jRes.addFunc({
         breakpoint: 'handheld',
-        enter: function() {
+        enter: function () {
             $(".dropdown").removeClass("open");
             $(".rightbar").removeClass("right-aside-toggle");
             $("body").addClass("isMobile");
-            $(document).on('click touchstart', function(e) {
+            $(document).on('click touchstart', function (e) {
                 if ($("body").hasClass("overlay-leftbar") || $("body").hasClass("isMobile")) {
                     if ($(e.target).closest(".leftbar").length === 0 && $(e.target).closest(".left-toggle-switch").length === 0) {
                         $("body").removeClass("left-aside-toggle");
@@ -388,7 +388,7 @@ jQuery(document).ready(function($) {
                 }
             });
         },
-        exit: function() {
+        exit: function () {
             $(".isMobile").removeClass("left-aside-toggle");
             $(".rightbar").removeClass("right-aside-toggle");
             $("body").removeClass("isMobile");
@@ -404,7 +404,7 @@ jQuery(document).ready(function($) {
      * tagsinput.css
      * */
     if ($.fn.tagsInput) {
-        $('.tags-input').each(function() {
+        $('.tags-input').each(function () {
             var tagsType = $(this).data('type')
             var highlightColor = $(this).data('highlight-color')
             if (tagsType === 'tags') {
@@ -415,9 +415,9 @@ jQuery(document).ready(function($) {
             if (tagsType === 'highlighted-tags') {
                 $(this).tagsInput({
                     width: 'auto',
-                    onChange: function(elem, elem_tags) {
+                    onChange: function (elem, elem_tags) {
                         var languages = ['php', 'ruby', 'javascript'];
-                        $('.tag', elem_tags).each(function() {
+                        $('.tag', elem_tags).each(function () {
                             if ($(this).text().search(new RegExp('\\b(' + languages.join('|') + ')\\b')) >= 0) $(this).css('background-color', highlightColor);
                         });
                     }
@@ -570,14 +570,14 @@ jQuery(document).ready(function($) {
     function TaskDone() {
         var TaskCheckbox = $('input.task-i-check');
 
-        TaskCheckbox.each(function() {
+        TaskCheckbox.each(function () {
             if ($(this).parents('.task-action').parents('.task-entry').hasClass('task-done')) {
 
                 $(this).iCheck('check');
             }
         });
 
-        TaskCheckbox.on('ifChecked ifUnchecked', function(event) {
+        TaskCheckbox.on('ifChecked ifUnchecked', function (event) {
             if (event.type == 'ifChecked') {
                 $(this).iCheck('check');
                 $(this).parents('.task-action').parents('.task-entry').addClass('task-done');
@@ -603,11 +603,11 @@ jQuery(document).ready(function($) {
             allowClear: true,
             placeholder: placeholder
         });
-        $('button[data-select2-open]').click(function() {
+        $('button[data-select2-open]').click(function () {
             $('#' + $(this).data('select2-open')).select2('open');
         });
         var select2OpenEventName = "select2-open";
-        $(':checkbox').on("click", function() {
+        $(':checkbox').on("click", function () {
             $(this).parent().nextAll('select').select2("enable", this.checked);
         });
 
@@ -644,13 +644,13 @@ jQuery(document).ready(function($) {
                 url: "https://api.github.com/search/repositories",
                 dataType: 'json',
                 delay: 250,
-                data: function(params) {
+                data: function (params) {
                     return {
                         q: params.term, // search term
                         page: params.page
                     };
                 },
-                processResults: function(data, page) {
+                processResults: function (data, page) {
                     // parse the results into the format expected by Select2.
                     // since we are using custom formatting functions we do not need to
                     // alter the remote JSON data
@@ -660,7 +660,7 @@ jQuery(document).ready(function($) {
                 },
                 cache: true
             },
-            escapeMarkup: function(markup) {
+            escapeMarkup: function (markup) {
                 return markup;
             }, // let our custom formatter work
             minimumInputLength: 1,
@@ -781,7 +781,7 @@ jQuery(document).ready(function($) {
                 monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 firstDay: 1
             }
-        }, function(start, end, label) {
+        }, function (start, end, label) {
             //console.log(start.toISOString(), end.toISOString(), label);
             $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         });
@@ -832,24 +832,24 @@ jQuery(document).ready(function($) {
         $('.foo-data-table-filterable').footable({
             phone: 767,
             tablet: 1024
-        }).bind('footable_filtering', function(e) {
-                var selected = $('.filter-status').find(':selected').text();
-                if (selected && selected.length > 0) {
-                    e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
-                    e.clear = !e.filter;
-                }
-            });
+        }).bind('footable_filtering', function (e) {
+            var selected = $('.filter-status').find(':selected').text();
+            if (selected && selected.length > 0) {
+                e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
+                e.clear = !e.filter;
+            }
+        });
 
 
 
 
-        $('.clear-filter').click(function(e) {
+        $('.clear-filter').click(function (e) {
             e.preventDefault();
             $('.filter-status').val('');
             $('table.foo-data-table-filterable').trigger('footable_clear_filter');
         });
 
-        $('.filter-status').change(function(e) {
+        $('.filter-status').change(function (e) {
             e.preventDefault();
             $('table.foo-data-table-filterable').trigger('footable_filter', {
                 filter: $('#filter').val()
@@ -859,7 +859,7 @@ jQuery(document).ready(function($) {
 
 
 
-        $('.foo-data-table-filterable').footable().on('click', '.row-delete', function(e) {
+        $('.foo-data-table-filterable').footable().on('click', '.row-delete', function (e) {
             e.preventDefault();
             //get the footable object
             var footable = $('.foo-data-table-filterable').data('footable');
@@ -871,7 +871,7 @@ jQuery(document).ready(function($) {
             footable.removeRow(row);
         });
 
-        $('#change-page-size').change(function(e) {
+        $('#change-page-size').change(function (e) {
             e.preventDefault();
             var pageSize = $(this).val();
             $('.foo-data-table-filterable').data('page-size', pageSize);
@@ -881,8 +881,8 @@ jQuery(document).ready(function($) {
 
 
     if ($.fn.sparkline) {
-        var sparkLine = function() {
-            $('.sparkline').each(function() {
+        var sparkLine = function () {
+            $('.sparkline').each(function () {
                 var data = $(this).data();
                 data.valueSpots = {
                     '0:': data.spotColor
@@ -898,16 +898,16 @@ jQuery(document).ready(function($) {
                         sptRadius = $(this).attr("data-stack-spot-radius");
 
                     $(this).sparkline(composite, {
-                            composite: true,
-                            lineColor: stlColor,
-                            fillColor: stfColor,
-                            spotColor: sptColor,
-                            highlightSpotColor: sptColor,
-                            spotRadius: sptRadius,
-                            valueSpots: {
-                                '0:': sptColor
-                            }
+                        composite: true,
+                        lineColor: stlColor,
+                        fillColor: stfColor,
+                        spotColor: sptColor,
+                        highlightSpotColor: sptColor,
+                        spotRadius: sptRadius,
+                        valueSpots: {
+                            '0:': sptColor
                         }
+                    }
 
                     );
                 };
@@ -915,9 +915,9 @@ jQuery(document).ready(function($) {
         };
 
         var sparkResize;
-        $(window).smartresize(function(e) {
+        $(window).smartresize(function (e) {
             clearTimeout(sparkResize);
-            sparkResize = setTimeout(function() {
+            sparkResize = setTimeout(function () {
                 sparkLine(true)
             }, 100);
         });
@@ -927,7 +927,7 @@ jQuery(document).ready(function($) {
     // **----------
     // Progress Bar
     // **----------
-    $('.progress-bar').each(function() {
+    $('.progress-bar').each(function () {
         var PbarWidth = $(this).data("progress");
         if (PbarWidth) {
             $(this).css('width', PbarWidth + '%');
@@ -1330,7 +1330,7 @@ jQuery(document).ready(function($) {
     // Recent Users Widgets
     // **------------------
 
-    $(".user-details-toggle").each(function() {
+    $(".user-details-toggle").each(function () {
         var $user = $(this).parents(".user-intro").next(".users-details");
         var $ui = $(this).children("i");
         if ($user.is(':visible')) {
@@ -1342,7 +1342,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    $(".user-details-toggle").on("click", function() {
+    $(".user-details-toggle").on("click", function () {
         var $user = $(this).parents(".user-intro").next(".users-details");
         var $ui = $(this).children("i");
         if ($user.is(':visible')) {
@@ -1361,7 +1361,7 @@ jQuery(document).ready(function($) {
     // **----------
     // Task Widgets
     // **----------
-    $(".task-title").on("click", function() {
+    $(".task-title").on("click", function () {
         var $task = $(this).parents(".task-intro").next(".task-details");
         if ($task.is(':visible')) {
             $task.slideUp();
@@ -1373,7 +1373,7 @@ jQuery(document).ready(function($) {
     // **------------
     // Widgets Toggle
     // **------------
-    $(".widget-toggle").on("click", function(e) {
+    $(".widget-toggle").on("click", function (e) {
         e.preventDefault();
         var $welem = $(this).parentsUntil(".widget-action-bar").parentsUntil(".w-action").parents(".widget-header").next(".widget-container");
         if ($welem.is(':visible')) {
@@ -1390,7 +1390,7 @@ jQuery(document).ready(function($) {
     // **----------------
     // Widgets Fullscreen
     // **----------------
-    $(".widget-fullscreen").on("click", function(e) {
+    $(".widget-fullscreen").on("click", function (e) {
         e.preventDefault();
         var $welem = $(this).parentsUntil(".widget-action-bar").parentsUntil(".w-action").parents(".widget-header").parents(".widget-wrap");
         if ($welem.hasClass("w-fullscreen")) {
@@ -1402,7 +1402,7 @@ jQuery(document).ready(function($) {
     // **-----------
     // Widgets Close
     // **-----------
-    $(".widget-exit").on("click", function(e) {
+    $(".widget-exit").on("click", function (e) {
         e.preventDefault();
         var $welem = $(this).parentsUntil(".widget-action-bar").parentsUntil(".w-action").parents(".widget-header").parents(".widget-wrap").parent("div");
         $welem.remove();
@@ -1415,7 +1415,7 @@ jQuery(document).ready(function($) {
 
     var ThisLoad;
 
-    $(".widget-reload").on("click", function(e) {
+    $(".widget-reload").on("click", function (e) {
         e.preventDefault();
         ThisLoad = $(this);
         $(this).parentsUntil(".widget-action-bar").parentsUntil(".w-action").parents(".widget-header").parents(".widget-wrap").mask("Loading");
@@ -1440,7 +1440,7 @@ jQuery(document).ready(function($) {
     if ($.fn.dataTable) {
         $('.data-tbl').DataTable({
             responsive: true,
-            "columnDefs": [ { "targets": [1, 2], "orderable": false }],
+            "columnDefs": [{ "targets": [1, 2], "orderable": false }],
             "oLanguage": {
                 "sLengthMenu": '<select class="tbl-data-select">' +
                     '<option value="10">10</option>' +
@@ -1456,7 +1456,7 @@ jQuery(document).ready(function($) {
 
         $('.data-tb2').DataTable({
             responsive: true,
-            "order": [[ 1, "desc" ]],
+            "order": [[1, "desc"]],
             "oLanguage": {
                 "sLengthMenu": '<select class="tbl-data-select">' +
                     '<option value="10">10</option>' +
@@ -1498,16 +1498,16 @@ jQuery(document).ready(function($) {
                         sptRadius = $(this).attr("data-stack-spot-radius");
 
                     $(this).sparkline(composite, {
-                            composite: true,
-                            lineColor: stlColor,
-                            fillColor: stfColor,
-                            spotColor: sptColor,
-                            highlightSpotColor: sptColor,
-                            spotRadius: sptRadius,
-                            valueSpots: {
-                                '0:': sptColor
-                            }
+                        composite: true,
+                        lineColor: stlColor,
+                        fillColor: stfColor,
+                        spotColor: sptColor,
+                        highlightSpotColor: sptColor,
+                        spotRadius: sptRadius,
+                        valueSpots: {
+                            '0:': sptColor
                         }
+                    }
 
                     );
                 };
@@ -1524,20 +1524,20 @@ jQuery(document).ready(function($) {
         sparkLine(false);
     }
 
-$(".spark-pie-chart").each(function(){
-    var SparkType = $(this).data("spark-type"),
-        sparkData = $(this).data("spark-data").split(','),
-        SparkWidth = $(this).data("spark-width"),
-        SparkHeight = $(this).data("spark-height"),
-        SparkSlice = $(this).data("spark-slicecolors").split(',');
-    $(this).sparkline(sparkData, {
-        type: SparkType,
-        width: SparkWidth,
-        height: SparkHeight,
-        sliceColors:SparkSlice
-    });
+    $(".spark-pie-chart").each(function () {
+        var SparkType = $(this).data("spark-type"),
+            sparkData = $(this).data("spark-data").split(','),
+            SparkWidth = $(this).data("spark-width"),
+            SparkHeight = $(this).data("spark-height"),
+            SparkSlice = $(this).data("spark-slicecolors").split(',');
+        $(this).sparkline(sparkData, {
+            type: SparkType,
+            width: SparkWidth,
+            height: SparkHeight,
+            sliceColors: SparkSlice
+        });
 
-})
+    })
 
 
 
@@ -1548,7 +1548,7 @@ $(".spark-pie-chart").each(function(){
 
     if ($.noty) {
         var n_dom = [];
-            n_dom[0] = '<div class="activity-item"> <i class="zmdi zmdi-check-all"></i> <div class="activity"> There are <a href="#">6 new tasks</a> waiting for you. Don\'t forget! <span>About 3 hours ago</span> </div> </div>',
+        n_dom[0] = '<div class="activity-item"> <i class="zmdi zmdi-check-all"></i> <div class="activity"> There are <a href="#">6 new tasks</a> waiting for you. Don\'t forget! <span>About 3 hours ago</span> </div> </div>',
             n_dom[1] = '<div class="activity-item"> <i class="zmdi zmdi-alert-polygon"></i> <div class="activity"> Mail server was updated. See <a href="#">changelog</a> <span>About 2 hours ago</span> </div> </div>',
             n_dom[2] = '<div class="activity-item"> <i class="zmdi zmdi-email"></i> <div class="activity"> Your <a href="#">latest post</a> was liked by <a href="#">Audrey Mall</a> <span>35 minutes ago</span> </div> </div>',
             n_dom[3] = '<div class="activity-item"> <i class="zmdi zmdi-shopping-cart-plus"></i> <div class="activity"> <a href="#">Eugene</a> ordered 2 copies of <a href="#">OEM license</a> <span>14 minutes ago</span> </div> </div>',
@@ -1584,9 +1584,9 @@ $(".spark-pie-chart").each(function(){
                 }
 
             });
-                    setTimeout(function () {
-                        n.close();
-                    },5000);
+            setTimeout(function () {
+                n.close();
+            }, 5000);
 
         }
 
@@ -1599,9 +1599,9 @@ $(".spark-pie-chart").each(function(){
             nGen('alert', n_dom[4], 'topRight');
         }
 
-                setTimeout(function () {
-                    nGenAll();
-                }, 3000);
+        setTimeout(function () {
+            nGenAll();
+        }, 3000);
 
 
 
@@ -2012,8 +2012,8 @@ $(".spark-pie-chart").each(function(){
             show_labels: false,			// Should we show the on and off labels?
             on_label: 'C',
             off_label: 'F',
-//      on_callback: wc, //callback function that will be executed after going to on state
-//      off_callback: wf,
+            //      on_callback: wc, //callback function that will be executed after going to on state
+            //      off_callback: wf,
             width: 25,                 // Width of the button in pixels
             height: 15,                // Height of the button in pixels
             button_width: 15          // Width of the sliding part in pixels
@@ -2023,8 +2023,8 @@ $(".spark-pie-chart").each(function(){
             show_labels: false,			// Should we show the on and off labels?
             on_label: 'C',
             off_label: 'F',
-//      on_callback: wc, //callback function that will be executed after going to on state
-//      off_callback: wf,
+            //      on_callback: wc, //callback function that will be executed after going to on state
+            //      off_callback: wf,
             width: 30,                 // Width of the button in pixels
             height: 20,                // Height of the button in pixels
             button_width: 20          // Width of the sliding part in pixels
@@ -2035,8 +2035,8 @@ $(".spark-pie-chart").each(function(){
             show_labels: false,			// Should we show the on and off labels?
             on_label: 'C',
             off_label: 'F',
-//      on_callback: wc, //callback function that will be executed after going to on state
-//      off_callback: wf,
+            //      on_callback: wc, //callback function that will be executed after going to on state
+            //      off_callback: wf,
             width: 50,                 // Width of the button in pixels
             height: 30,                // Height of the button in pixels
             button_width: 30          // Width of the sliding part in pixels
@@ -2046,8 +2046,8 @@ $(".spark-pie-chart").each(function(){
             show_labels: false,			// Should we show the on and off labels?
             on_label: 'C',
             off_label: 'F',
-//      on_callback: wc, //callback function that will be executed after going to on state
-//      off_callback: wf,
+            //      on_callback: wc, //callback function that will be executed after going to on state
+            //      off_callback: wf,
             width: 40,                 // Width of the button in pixels
             height: 25,                // Height of the button in pixels
             button_width: 25          // Width of the sliding part in pixels
@@ -2374,59 +2374,96 @@ $(".spark-pie-chart").each(function(){
 
     }
 
-    if($.simpleWeather){
+    if ($.simpleWeather) {
         var html = html;
         $.simpleWeather({
             woeid: '2357536', //2357536
-            location:'',
+            location: '',
             unit: 'f',
-            success: function(weather) {
-                html =  '<div class="weather-widget-wall w_bg_cyan">';
-                html += '<div class="weather-city">'+weather.city+','+weather.region+'</div>';
-                html += '<div class="weather-status">'+weather.currently+'</div>';
+            success: function (weather) {
+                html = '<div class="weather-widget-wall w_bg_cyan">';
+                html += '<div class="weather-city">' + weather.city + ',' + weather.region + '</div>';
+                html += '<div class="weather-status">' + weather.currently + '</div>';
                 html += '<div class="weather-temperature">';
-                html += '<div class="weather-icon"><i class="icon-'+weather.code+'"></i></div>';
+                html += '<div class="weather-icon"><i class="icon-' + weather.code + '"></i></div>';
                 html += '<div class="temperature">';
-                html += '<div class="date-time"><span class="w-date">'+weather.forecast[0].date+'</span><span class="w-day">'+weather.forecast[0].day+'</span></div>';
-                html += '<div class="w-meter"><span class="temperature-f">'+weather.temp+'&deg;'+weather.units.temp+'</span><span class="temperature-c">'+weather.alt.temp+'&deg;C</span></div>';
+                html += '<div class="date-time"><span class="w-date">' + weather.forecast[0].date + '</span><span class="w-day">' + weather.forecast[0].day + '</span></div>';
+                html += '<div class="w-meter"><span class="temperature-f">' + weather.temp + '&deg;' + weather.units.temp + '</span><span class="temperature-c">' + weather.alt.temp + '&deg;C</span></div>';
                 html += '</div>';
                 html += '</div>';
                 html += '</div>';
                 html += '<div class="forecast">';
-                html += '<div class="sun-r-s"><span><label>Sunrise:</label> '+weather.sunrise+' </span><span><label>Sunset:</label> '+weather.sunset+' </span></div>';
+                html += '<div class="sun-r-s"><span><label>Sunrise:</label> ' + weather.sunrise + ' </span><span><label>Sunset:</label> ' + weather.sunset + ' </span></div>';
                 html += '<ul>';
-                for(var i=0;i<weather.forecast.length;i++) {
-                    html += '<li><span class="w-day">'+weather.forecast[i].day+'</span><span class="day-w-icon">' +'<i class="icon-'+weather.forecast[i].code+'"></i>'+'</span><span class="day-temperature">'+weather.forecast[i].high+'</span></li>';
+                for (var i = 0; i < weather.forecast.length; i++) {
+                    html += '<li><span class="w-day">' + weather.forecast[i].day + '</span><span class="day-w-icon">' + '<i class="icon-' + weather.forecast[i].code + '"></i>' + '</span><span class="day-temperature">' + weather.forecast[i].high + '</span></li>';
                 }
                 html += '</ul>';
                 html += '</div>';
                 $("#weather").html(html);
             },
-            error: function(error) {
-                $("#weather").html('<p>'+error+'</p>');
+            error: function (error) {
+                $("#weather").html('<p>' + error + '</p>');
             }
         });
     }
 });
 function perfil() {
-	$.ajax({
-		url: '/user/get_user_perfil',
-		type: 'post',
-		dataType: 'json',
-		success: function(resp) {
-			if (resp.result==true) {
-				location.href = '/user/profile/' + resp.perfil_id;
-			} else {
-				swal("Error", resp.message, "error");
-			}
-		},
-	});
+    $.ajax({
+        url: '/user/get_user_perfil',
+        type: 'post',
+        dataType: 'json',
+        success: function (resp) {
+            if (resp.result == true) {
+                location.href = '/user/profile/' + resp.perfil_id;
+            } else {
+                swal("Error", resp.message, "error");
+            }
+        },
+    });
 }
 function add_contact() {
-	if (account_id>0) {
-		$('#forma_contact').empty().append('<input type="hidden" name="erp_account_id" value="'+account_id+'" readonly="readonly" />');
-		$('#forma_contact').submit();
-	} else {
-		swal("Error", "Cuenta no identificada, consulte con el administrador del sistema.", "error");
-	}
+    if (account_id > 0) {
+        $('#forma_contact').empty().append('<input type="hidden" name="erp_account_id" value="' + account_id + '" readonly="readonly" />');
+        $('#forma_contact').submit();
+    } else {
+        swal("Error", "Cuenta no identificada, consulte con el administrador del sistema.", "error");
+    }
 }
+
+function inicializarDatatable(id) {
+    swal.close();
+    var thead = $(id + ' thead');
+    var headers = thead.find('tr:first th');
+    var filterRow = $('<tr class="filters"></tr>');
+
+    headers.each(function () {
+        if ($(this).hasClass('th-editar-colonia')) {
+            filterRow.append('<th></th>');
+        } else {
+            filterRow.append('<th><input type="text" class="form-control input-sm" placeholder="Buscar" /></th>');
+        }
+    });
+
+    thead.append(filterRow);
+
+    var tabla = $(id).DataTable({
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.10.13/i18n/Spanish.json"
+        },
+        dom: 'lrtip',
+        orderCellsTop: true,
+        fixedHeader: true
+    });
+
+    $(id + ' thead tr.filters th').each(function (i) {
+        $('input', this).on('keyup change clear', function () {
+            if (tabla.column(i).search() !== this.value) {
+                tabla.column(i).search(this.value).draw();
+            }
+        });
+    });
+}
+
+
+

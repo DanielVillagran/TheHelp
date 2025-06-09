@@ -3,7 +3,7 @@
 <section class="main-container">
     <div class="container-fluid">
 
-        <div class="row row-home-denuncias">
+       <!-- <div class="row row-home-denuncias">
             <div class="col-lg-12 col-md-12">
                 <div class="d-home">
                     <p class="title-sec">Buscar Vehiculo</p>
@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-        </div>
+        </div>-->
     </div>
 
 
