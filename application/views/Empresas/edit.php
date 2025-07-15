@@ -26,6 +26,8 @@
                             <li><a class="color-principal" data-toggle="tab" href="#funciones">Horarios</a></li>
                             <li><a class="color-principal" data-toggle="tab" href="#puestos">Puestos por horario</a></li>
                             <li><a class="color-principal" data-toggle="tab" href="#asists">Asistencias</a></li>
+                            <li><a class="color-principal" data-toggle="tab" href="#encuestas_tab">Encuestas</a></li>
+
 
                         </ul>
 
@@ -120,11 +122,10 @@
                                             <a id="btn_add_new" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar sede</a>
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="table-responsive d-table-lg">
-                                    <table id="sedes_grid" class="table table-striped table-bordered">
-                                        <thead>
+                                    <table id="sedes_grid" style="width:100%" class="datatable_wr datatable_wrapper table table-striped table-bordered">
+                                        <thead class="datatable_wrapper">
                                             <tr>
 
                                             </tr>
@@ -162,9 +163,10 @@
                                     </div>
 
                                 </div>
+                                <br>
                                 <div class="table-responsive d-table-lg">
-                                    <table id="horarios_grid"class="table table-striped table-bordered">
-                                        <thead>
+                                    <table id="horarios_grid" style="width:100%" class="datatable_wr datatable_wrapper table table-striped table-bordered">
+                                        <thead class="datatable_wrapper">
                                             <tr>
 
                                             </tr>
@@ -202,9 +204,10 @@
                                     </div>
 
                                 </div>
+                                <br>
                                 <div class="table-responsive d-table-lg">
-                                    <table id="puestos_grid" class="table table-striped table-bordered">
-                                        <thead>
+                                    <table id="puestos_grid" style="width:100%" class="datatable_wr datatable_wrapper table table-striped table-bordered">
+                                        <thead class="datatable_wrapper">
                                             <tr>
 
                                             </tr>
@@ -236,8 +239,41 @@
                                     <p class="title-sec">Asistencias</p>
                                 </div>
                                 <div class="table-responsive d-table-lg">
-                                    <table id="asistencias_grid" class="table table-striped table-bordered">
-                                        <thead>
+                                    <table id="asistencias_grid" style="width:100%" class="datatable_wr datatable_wrapper table table-striped table-bordered">
+                                        <thead class="datatable_wrapper">
+                                            <tr>
+
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+
+                                            </tr>
+                                        </tfoot>
+
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tfoot class="hide-if-no-paging">
+                                            <tr>
+                                                <td colspan="7" class="footable-visible">
+                                                    <div class="pagination pagination-centered"></div>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="encuestas_tab" class="tab-pane">
+                                <div class="d-form-agregar-dep">
+                                    <p class="title-sec">Encuestas</p>
+                                </div>
+                                <div class="table-responsive d-table-lg">
+                                    <table id="encuestas_grid" style="width:100%" class="datatable_wr datatable_wrapper table table-striped table-bordered">
+                                        <thead class="datatable_wrapper">
                                             <tr>
 
                                             </tr>
@@ -409,8 +445,71 @@
                                     <?php echo $puestos; ?>
                                 </select>
                             </div>
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <span class="floating-label-text">Tipo de nómina *</span>
+                                <select class="form-control input-form" name="puesto[tipo_nomina]">
+                                    <option hidden>Seleccionar tipo de nómina</option>
+                                    <option value="Con bonos">Con bonos</option>
+                                    <option value="Sin bonos">Sin bonos</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <div class="floating-label-group">
+                                    <input type="number" name="puesto[salario_diario]" class="form-control input-form" required />
+                                    <label class="floating-label">Salario Diario*</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <div class="floating-label-group">
+                                    <input type="number" name="puesto[sueldo_neto_semanal]" class="form-control input-form" required />
+                                    <label class="floating-label">Sueldo Neto Semanal*</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <div class="floating-label-group">
+                                    <input type="number" name="puesto[costo_unitario]" id="costo_unitario" class="form-control input-form" required />
+                                    <label class="floating-label">Costo Unitario*</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <div class="floating-label-group">
+
+                                    <input type="number" name="puesto[costo_por_dia]" readonly class="form-control input-form" required />
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <div class="floating-label-group">
+                                    <span class="floating-label-text">Costo por Descanso Laborado*</span>
+                                    <input type="number" name="puesto[costo_descanso_laborado]" readonly class="form-control input-form" required />
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <div class="floating-label-group">
+                                    <span class="floating-label-text">Costo por Día Festivo*</span>
+                                    <input type="number" name="puesto[costo_dia_festivo]" readonly class="form-control input-form" required />
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                                <div class="floating-label-group">
+                                    <span class="floating-label-text">Costo Hora Extra*</span>
+                                    <input type="number" name="puesto[costo_hora_extra]" readonly class="form-control input-form" required />
+
+                                </div>
+                            </div>
+
+
                             <div class="form-group ol-lg-12 col-md-12 pl-0">
                                 <div class="floating-label-group">
+                                    <input type="hidden" name="puesto[id]" class="form-control" />
                                     <input type="hidden" name="puesto[empresa_id]" class="form-control" value="<?php echo $id; ?>" />
                                     <input type="number" name="puesto[cantidad]" class="form-control input-form" required />
                                     <label class="floating-label">Cantidad*</label>

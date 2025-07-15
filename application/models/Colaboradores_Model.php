@@ -21,9 +21,8 @@ class Colaboradores_Model extends ANT_Model
 		$result = array();
 		$options = array(
 			'select' => '*',
-
 			'result' => 'array',
-
+			'where' =>  $where ? $where . " AND estatus=1" : "estatus=1"
 		);
 
 		$result = Colaboradores_Model::Load($options);
@@ -36,11 +35,9 @@ class Colaboradores_Model extends ANT_Model
 		$result = array();
 		$options = array(
 			'select' => '*',
-			'result' => 'array'
+			'result' => 'array',
+			'where' =>  $where ? $where . " AND estatus=1" : "estatus=1"
 		);
-		if ($where) {
-			$options['where'] = $where;
-		}
 
 		$result = Colaboradores_Model::Load($options);
 		foreach ($result as $key) {

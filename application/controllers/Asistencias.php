@@ -85,23 +85,28 @@ class Asistencias extends ANT_Controller
 			'result' => '1row'
 		));
 		$aux = Empresas_Horarios_Cubiertos_Detalle_Model::Load(array(
-			'select' => "empresas_horarios_cubiertos_detalle.*,c.*, p.nombre as puesto",
+			'select' => "empresas_horarios_cubiertos_detalle.*,c.*, p.nombre as puesto, concat(at.prefijo,' - ',at.nombre) as asistencia_tipo, eh.nombre as horario",
 			'where' => 'empresas_horarios_cubiertos_detalle.horario_cubierto_id=' . $id,
 			'joinsLeft' => array(
 				'empresas_puestos_horarios as ep' => 'ep.id=empresas_horarios_cubiertos_detalle.puesto_horario_id',
+				'empresas_horarios as eh' => 'eh.id=ep.horario_id',
 				'puestos as p' => 'p.id=ep.puesto_id',
+				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id',
 				'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id'
 			),
 			'sortBy' => 'c.id',
 			'sortDirection' => 'desc',
 			'result' => 'array'
 		));
-		$data['head'] = "<tr><th>Código</th>
+		$data['head'] = "<tr>
+		<th>Horario</th>
+		<th>Código</th>
 		<th>Nombre</th>
 		<th>Apellido Paterno</th>
 		<th>Apellido Materno</th>
 		<th>Puesto</th>
-		
+		<th>Tipo incidencia</th>
+		<th>Horas extras</th>
 		</tr>";
 		$data['table'] = '';
 		if ($aux) {
@@ -110,11 +115,14 @@ class Asistencias extends ANT_Controller
 				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
 				$clase = (empty($a['codigo'])) ? 'style="background-color:#f8d7da !important;"' : '';
 				$data['table'] .= '<tr >
+				<td ' . $clase . '>' . (empty($a['horario']) ? " FALTA" : $a['horario']) . '</td>
 				<td ' . $clase . '>' . (empty($a['codigo']) ? " FALTA" : $a['codigo']) . '</td>
 				<td ' . $clase . '>' . $a['nombre'] . '</td>
 				<td ' . $clase . '>' . $a['apellido_paterno'] . '</td>
 				<td ' . $clase . '>' . $a['apellido_materno'] . '</td>
 				<td ' . $clase . '>' . $a['puesto'] . '</td>
+				<td ' . $clase . '>' . $a['asistencia_tipo'] . '</td>
+				<td ' . $clase . '>' . ($a['asistencia_tipo'] == 'HE - Hora Extra' ? $a['horas_extras'] : "") . '</td>
 			</tr>';
 			}
 		}
@@ -126,17 +134,19 @@ class Asistencias extends ANT_Controller
 				foreach ($aux as $a) {
 					$clase = 'style="background-color:#aedcae !important;"';
 					$data['table'] .= '<tr>
+					<td ' . $clase . '>' . (empty($a['horario']) ? " FALTA" : $a['horario']) . '</td>
 					<td ' . $clase . '>' . (empty($a['codigo']) ? " FALTA" : $a['codigo']) . '</td>
 					<td ' . $clase . '>' . $a['nombre'] . '</td>
 					<td ' . $clase . '>' . $a['apellido_paterno'] . '</td>
 					<td ' . $clase . '>' . $a['apellido_materno'] . '</td>
 					<td ' . $clase . '>' . $a['puesto'] . ' - EXTRA' .  '</td>
+					<td ' . $clase . '>' . '</td>
+					<td ' . $clase . '>' . '</td>
 					</tr>';
 				}
 			}
 		}
 		if ($data['table'] == "") {
-			
 		}
 		$this->output_json($data);
 	}
@@ -171,7 +181,6 @@ class Asistencias extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
 		}
 		$this->output_json($data);
 	}
@@ -196,6 +205,7 @@ class Asistencias extends ANT_Controller
 	{
 		$post = $this->input->post();
 		$diaSemana = strtolower(date('l', strtotime($post['fecha'])));
+		$tipoAsistencias = Asistencias_Tipo_Model::get_select();
 		$mapaDias = [
 			'monday' => 'lunes',
 			'tuesday' => 'martes',
@@ -210,6 +220,8 @@ class Asistencias extends ANT_Controller
 		$data['head'] = "<tr><th>Horario</th>
 		<th>Puesto</th>
 		<th>Persona que cubre</th>
+		<th>Tipo incidencia</th>
+		<th>Cantidad HE</th>
 		<th></th>
 		</tr>";
 		$data['table'] = '';
@@ -221,7 +233,8 @@ class Asistencias extends ANT_Controller
 			),
 			'where' => 'empresas_puestos_horarios.empresa_id=' . $post['empresa_id'] .
 				' AND empresas_puestos_horarios.sede_id=' . $post['sede_id'] .
-				' AND eh.' . $campoDia . "=1",
+				' AND eh.' . $campoDia . "=1 AND empresas_puestos_horarios.status=1"
+				. ($post['horario_id'] != 'Seleccionar horario' ? (" AND empresas_puestos_horarios.horario_id=" . $post['horario_id']) : ""),
 			'result' => 'array'
 		));
 		$colaboradores = Colaboradores_Model::get_select("departamento=" . $post['empresa_id']);
@@ -232,10 +245,17 @@ class Asistencias extends ANT_Controller
 					$data['table'] .= '<tr>
 					<td>' . $a['horario'] . '</td>
 					<td>' . $a['puesto'] . '</td>
-					<td><select class="form-control input-form" name="cubiertos[' . $a['id'] . '][]" >
+					<td><select class="form-control input-form"  name="cubiertos[' . $a['id'] . '][]" >
 					<option hidden>Seleccionar colaborador</option>
 					' . $colaboradores . '
 					</select>
+					</td>
+					<td><select class="form-control input-form" style="margin-left:10px;" name="tipos[' . $a['id'] . '][]" >
+					<option hidden>Seleccionar tipo asistencia</option>
+					' . $tipoAsistencias . '
+					</select>
+					</td>
+					<td><input type="number" class="form-control input-form" style="margin-left:10px;" name="he[' . $a['id'] . '][]" readonly >
 					</td>
 					<td></td>
 					</tr>';
@@ -254,6 +274,8 @@ class Asistencias extends ANT_Controller
 						<td>' . $a['horario'] . '</td>
 						<td>' . $a['puesto'] . '</td>
 						<td>' . $a['colaborador'] . '</td>
+						<td></td>
+						<td></td>
 						<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td>
 						</tr>';
 			}
@@ -270,6 +292,8 @@ class Asistencias extends ANT_Controller
 		$empresa_id = $post['users']['empresa'];
 		$sede_id = $post['users']['sede'];
 		$asignaciones = $post['cubiertos'];
+		$tipos = $post['tipos'];
+		$he = $post['he'];
 		$id = 0;
 		$hasValue = Empresas_Horarios_Cubiertos_Model::Load(array(
 			'select' => '*',
@@ -288,16 +312,21 @@ class Asistencias extends ANT_Controller
 			$id = $inserted['insert_id'];
 		}
 		foreach ($asignaciones as $puesto_horario_id => $colaboradores) {
-			foreach ($colaboradores as $colaborador_id) {
+			foreach ($colaboradores as $index => $colaborador_id) {
 				if (!empty($colaborador_id)) {
+					$tipo_asistencia = isset($tipos[$puesto_horario_id][$index]) ? $tipos[$puesto_horario_id][$index] : null;
+					$horas_extras = isset($he[$puesto_horario_id][$index]) ? $he[$puesto_horario_id][$index] : null;
 					Empresas_Horarios_Cubiertos_Detalle_Model::Insert([
 						'horario_cubierto_id' => $id,
 						'puesto_horario_id' => $puesto_horario_id,
-						'colaborador_id' => $colaborador_id
+						'colaborador_id' => $colaborador_id,
+						'asistencia_tipo_id' => $tipo_asistencia,
+						'horas_extras' => $horas_extras
 					]);
 				}
 			}
 		}
+
 
 		$this->output_json(['status' => 'ok']);
 	}
@@ -326,5 +355,74 @@ class Asistencias extends ANT_Controller
 	{
 		$id = $this->input->post("id");
 		Empresas_Horarios_Cubiertos_Extras_Model::Delete('id=' . $id);
+	}
+	function get_Asistencias_globales()
+	{
+		$user_role_id = $this->tank_auth->get_user_role_id();
+		$user_id = $this->tank_auth->get_user_id();
+		$where = "";
+		if ($user_role_id > 2) {
+			$where = "empresas.id in (SELECT empresa_id from empresas_has_users where user_id=$user_id)";
+		}
+		$query = array(
+			'select' => "empresas_horarios_cubiertos.*, s.nombre as sede, e.nombre as empresa",
+
+			'joins' => array(
+				'empresas_sedes as s' => 's.id=empresas_horarios_cubiertos.sede_id',
+				'empresas as e' => 'e.id=empresas_horarios_cubiertos.empresa_id'
+			),
+			'result' => 'array'
+		);
+		if ($where) {
+			$query['where'] = $where;
+		}
+		$aux = Empresas_Horarios_Cubiertos_Model::Load($query);
+		$data['head'] = "<tr>
+		<th>Empresa</th>
+		<th>Sede</th>
+		<th>Fecha</th>
+		<th>Asistencias</th>
+		<th>Faltas</th>
+		<th>Extras</th>
+		<th class='th-editar-colonia'>Ver</th>
+		</tr>";
+		$data['table'] = '';
+		if ($aux) {
+			foreach ($aux as $a) {
+				$conteo = Empresas_Horarios_Cubiertos_Detalle_Model::Load(array(
+					'select' => "
+						SUM(CASE WHEN empresas_horarios_cubiertos_detalle.colaborador_id = 0 THEN 1 ELSE 0 END) AS faltas,
+						SUM(CASE WHEN empresas_horarios_cubiertos_detalle.colaborador_id != 0 THEN 1 ELSE 0 END) AS asistencias,
+						COUNT(*) AS total
+					",
+					'where' => 'empresas_horarios_cubiertos_detalle.horario_cubierto_id=' . intval($a['id']),
+					'joinsLeft' => array(
+						'empresas_puestos_horarios as ep' => 'ep.id=empresas_horarios_cubiertos_detalle.puesto_horario_id',
+						'puestos as p' => 'p.id=ep.puesto_id',
+						'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id'
+					),
+					'result' => '1row'
+				));
+				$conteoExtras = Empresas_Horarios_Cubiertos_Extras_Model::Load(array(
+					'select' => "COUNT(*) as extras",
+					"where" => 'empresas_horarios_cubiertos_extras.empresa_id=' . $a['empresa_id'] .
+						' AND empresas_horarios_cubiertos_extras.sede_id=' . $a['sede_id'] .
+						' AND empresas_horarios_cubiertos_extras.fecha="' .  $a['fecha'] . '"',
+					'result' => '1row'
+				));
+				$botones = '
+				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-eye"></i></button>';
+				$data['table'] .= '<tr>
+				<td>' . $a['empresa'] . '</td>
+				<td>' . $a['sede'] . '</td>
+				<td>' . $a['fecha'] . '</td>
+				<td>' . $conteo->asistencias . '</td>
+				<td>' . $conteo->faltas . '</td>
+				<td>' . $conteoExtras->extras . '</td>
+				<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
+			}
+		} else {
+		}
+		$this->output_json($data);
 	}
 }

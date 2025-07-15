@@ -34,7 +34,7 @@
                             </div>
 
                             <div class="table-responsive d-table-lg">
-                                <table id="groups_grid" class="table table-striped table-bordered">
+                                <table id="groups_grid" style="width:100%" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
 

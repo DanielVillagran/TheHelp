@@ -41,6 +41,13 @@
         <div id="MainMenu">
             <div class="list-group panel">
                 <a href="/home/" class="list-group-item">Inicio</a>
+                <?php if ($this->tank_auth->user_has_privilege('Reportes')) : ?>
+                    <a href="#reportes" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Reportes<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="reportes">
+                        <a href="/Reportes/asistencias" class="list-group-item item-second-list">Reporte Asistencias</a>
+                        <a href="/Reportes/asistencias_facturacion" class="list-group-item item-second-list">Reporte Asistencias-Facturación</a>
+                    </div>
+                <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Tickets')) : ?>
                     <a href="#tickets" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Tickets<i class="fa fa-caret-down pull-right"></i> </a>
                     <div class="collapse list-group-submenu" id="tickets">
@@ -92,6 +99,7 @@
                     <div class="collapse list-group-submenu" id="encuestas">
                         <a href="/Encuestas" class="list-group-item item-second-list">Ver Encuestas</a>
                         <a href="/Encuestas/add" class="list-group-item item-second-list">Agregar Encuestas</a>
+                        <a href="/Encuestas/reporte" class="list-group-item item-second-list">Reporte</a>
                     </div>
                 <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Respuestas Encuestas')) : ?>
@@ -114,6 +122,7 @@
                         <a href="/Municipios" class="list-group-item item-second-list">Ver Municipios</a>
                         <a href="/Zonas" class="list-group-item item-second-list">Ver Zonas</a>
                         <a href="/Puestos" class="list-group-item item-second-list">Ver Puestos</a>
+                        <a href="/FechasFestivas" class="list-group-item item-second-list">Ver Fechas Festivas</a>
                     </div>
                 <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Usuarios')) : ?>

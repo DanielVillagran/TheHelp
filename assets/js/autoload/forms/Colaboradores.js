@@ -1,9 +1,9 @@
 var states = "";
-$(document).ready(function() {
-    if ($("#id").val()!=0) {
+$(document).ready(function () {
+    if ($("#id").val() != 0) {
         get_info_Departamentos($("#id").val());
     }
-  
+
 });
 
 function get_info_Departamentos(id) {
@@ -15,22 +15,39 @@ function get_info_Departamentos(id) {
             id: id
         },
         dataType: "json",
-        beforeSend: function() {
+        beforeSend: function () {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
                 imageUrl: "/assets/images/loader.gif"
             });
         },
-        success: function(data) {
+        success: function (data) {
             swal.close();
             for (var key in data) {
-                if(key!='logo'){
-                $('[name="users[' + key + ']"]').val($.trim(data[key]));
+                if (key != 'logo') {
+                    $('[name="users[' + key + ']"]').val($.trim(data[key]));
                 }
             }
-            
-           
+            let horario_id= data.horario_id;
+            if ($("#empresa_select").val()) {
+                $.ajax({
+                    type: "post",
+                    url: "/Empresas/get_Empresas_horarios_select",
+                    data: { id: $("#empresa_select").val() },
+                    dataType: "json",
+                    beforeSend: function () {
+
+                    },
+                    success: function (data) {
+                        $("#horario_select").empty().append(data.select);
+                        $("#horario_select").val(horario_id);
+                    }
+                });
+            }
+
+
+
         }
     });
 }
@@ -44,24 +61,38 @@ function save_Departamentos() {
         data: data,
         processData: false,
         contentType: false,
-        beforeSend: function() {
+        beforeSend: function () {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
                 imageUrl: "/assets/images/loader.gif"
             });
         },
-        success: function(data) {
-            
+        success: function (data) {
+
             swal.close();
-          
-                location.href="/Colaboradores";
-           
-           
+
+            location.href = "/Colaboradores";
+
+
         }
     });
 }
+$("#empresa_select").change(function () {
+    $.ajax({
+        type: "post",
+        url: "/Empresas/get_Empresas_horarios_select",
+        data: { id: $("#empresa_select").val() },
+        dataType: "json",
+        beforeSend: function () {
 
+        },
+        success: function (data) {
+            $("#horario_select").empty().append(data.select);
+            $("#horario_select").val("1");
+        }
+    });
+})
 function format_date(date) {
     var formated_date = "";
     var array_date = date.split('T')[0].split('-');

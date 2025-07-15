@@ -25,7 +25,7 @@
                             <div class="data-action-bar">
                                 <p class="title-sec"><?php echo $title; ?></p>
                                 <p class="title" style="font-weight: bold;"><?php echo $hc->empresa; ?></p>
-                                <p class="title" style="font-weight: bold;"><?php echo $hc->sede; ?></p>
+                                <p class="title" style="font-weight: bold;"><?php echo $hc->encuesta; ?></p>
                                 <p class="title" style="font-weight: bold;"><?php echo $hc->fecha; ?></p>
                                 <div class="row row-buscar-agregar">
 
@@ -34,7 +34,7 @@
                             </div>
 
                             <div class="table-responsive d-table-lg">
-                                <table id="groups_grid" class="table table-striped table-bordered">
+                                <table id="groups_grid" style="width:100%" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
 

@@ -91,6 +91,28 @@ $("#empresa_select").change(function () {
         }
     });
 });
+$("#select_sede").change(function () {
+    $.ajax({
+        url: "/Empresas/get_Sedes_horarios",
+        type: 'POST',
+        data: {
+            id: $("#select_sede").val()
+        },
+        dataType: 'json',
+        beforeSend: function (e) {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif"
+            });
+        },
+        success: function (data) {
+            swal.close();
+            $("#select_horarios").empty().append(data.select);
+
+        }
+    });
+});
 $("#search").click(function () {
     grid_load_data();
 })
@@ -100,6 +122,7 @@ function grid_load_data() {
         type: 'POST',
         data: {
             empresa_id: $("#empresa_select").val(),
+            horario_id: $("#select_horarios").val(),
             sede_id: $("#select_sede").val(),
             fecha: $("#fecha").val()
         },
@@ -225,3 +248,14 @@ function delete_extra(idemp) {
 
     });
 }
+$(document).on('change', 'select[name^="tipos["]', function () {
+    var selectedValue = $(this).val();
+    var $row = $(this).closest('tr');
+    var $heInput = $row.find('input[name^="he["]');
+
+    if (selectedValue == '7') {
+        $heInput.prop('readonly', false);
+    } else {
+        $heInput.prop('readonly', true).val('');
+    }
+});

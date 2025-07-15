@@ -83,7 +83,6 @@ class Colaboradores extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
 		}
 		$this->output_json($data);
 	}
@@ -102,6 +101,57 @@ class Colaboradores extends ANT_Controller
 	function eliminar()
 	{
 		$id = $this->input->post("id");
-		Colaboradores_Model::Delete('id=' . $id);
+		$result = Colaboradores_Model::Update(['estatus' => 0], 'id=' . $id);
+		$this->output_json($result);
+	}
+	function carga_masiva()
+	{
+		$json = file_get_contents("php://input");
+		$data = json_decode($json, true);
+
+		if (!isset($data['usuarios'])) {
+			show_error("Datos inválidos", 400);
+		}
+		foreach ($data['usuarios'] as $row) {
+			$existUser = Colaboradores_Model::Load(array(
+				'select' => "*",
+				'where' => "codigo='" . $row['codigo'] . "'",
+				'result' => '1row'
+			));
+
+			$empresa = Empresas_Model::Load(array(
+				'select' => "*",
+				'where' => "nombre='" . $row['departamento'] . "'",
+				'result' => '1row'
+			));
+			$horario_id = null;
+			if ($empresa) {
+				$horario = Empresas_Horarios_Model::Load(array(
+					'select' => "*",
+					'where' => "nombre='" . $row['horario_id'] . "' AND empresa_id=" . $empresa->id,
+					'result' => '1row'
+				));
+				$horario_id = $horario ? $horario->id : null;
+			}
+
+			$usuario = [
+				'codigo' => $row['codigo'] ?? '',
+				'apellido_paterno' => $row['apellido_paterno'] ?? '',
+				'apellido_materno' => $row['apellido_materno'] ?? '',
+				'nombre' => $row['nombre'] ?? '',
+				'tipo_periodo' => $row['tipo_periodo'] ?? '',
+				'departamento' => $empresa ? $empresa->id : null,
+				'horario_id' => $horario_id,
+				'nomina_nomipaq' => $row['nomina_nomipaq'] ?? '',
+				'estatus' => $row['estatus'] == 'Activo' ? 1 : 0
+			];
+			if (!$existUser) {
+				$result = Colaboradores_Model::Insert($usuario);
+			} else {
+				$result = Colaboradores_Model::Update($usuario, 'id=' . $existUser->id);
+			}
+		}
+
+		$this->output_json(["status" => "ok"]);
 	}
 }

@@ -42,14 +42,21 @@
                                                 <?php echo $empresas; ?>
                                             </select>
                                         </div>
-                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+                                        <div class="form-group col-lg-4 col-md-4 pl-0">
                                             <span class="floating-label-text">Sede *</span>
                                             <select class="form-control input-form" id="select_sede" name="users[sede]">
                                                 <option hidden>Seleccionar sede</option>
 
                                             </select>
                                         </div>
-                                        <div style="margin-top: 15px" class="form-group col-lg-6 col-md-6 pl-0 text-right">
+                                        <div class="form-group col-lg-4 col-md-4 pl-0">
+                                            <span class="floating-label-text">Horario *</span>
+                                            <select class="form-control input-form" id="select_horarios" name="users[horario]">
+                                                <option hidden>Seleccionar horario</option>
+
+                                            </select>
+                                        </div>
+                                        <div style="margin-top: 15px" class="form-group col-lg-4 col-md-4 pl-0 text-right">
                                             <button type="button" id="search" class="btn btn-guardar next-step">Buscar asistencias</button>
                                         </div>
                                         <legend></legend>

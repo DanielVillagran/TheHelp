@@ -61,13 +61,14 @@
                                             <select class="form-control input-form " name="users[tipo_periodo]">
                                                 <option hidden>Seleccionar tipo de periodo</option>
                                                 <option value="Quincenal">Quincenal</option>
+                                                <option value="Semanal">Semanal</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
 
                                             <span class="floating-label-text">Departamento *</span>
-                                            <select class="form-control input-form " name="users[departamento]">
+                                            <select class="form-control input-form " id="empresa_select" name="users[departamento]">
                                                 <option hidden>Seleccionar departamento</option>
                                                 <?php echo $departamentos; ?>
                                             </select>
@@ -75,11 +76,26 @@
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
 
                                             <span class="floating-label-text">Horario *</span>
-                                            <select class="form-control input-form " name="users[horario_id]">
+                                            <select class="form-control input-form " id="horario_select" name="users[horario_id]">
                                                 <option hidden>Seleccionar horario</option>
-                                                <?php echo $horarios; ?>
+                                                
                                             </select>
                                         </div>
+                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+
+                                            <span class="floating-label-text">Nombre de nomina en Nomipaq *</span>
+                                            <select class="form-control input-form " name="users[nomina_nomipaq]">
+                                                <option hidden>Seleccionar nomina</option>
+                                                <option value="Operativa 1">Operativa 1</option>
+                                                <option value="Operativa 2">Operativa 2</option>
+                                                <option value="Comude">Comude</option>
+                                                <option value="12 Horas">12 Horas</option>
+                                                <option value="FMC">FMC</option>
+                                                <option value="Pisa 12 horas">Pisa 12 horas</option>
+                                                <option value="Rush">Rush</option>
+                                            </select>
+                                        </div>
+
 
 
                                         <legend></legend>

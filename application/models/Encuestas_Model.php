@@ -21,8 +21,8 @@ class Encuestas_Model extends ANT_Model
 		$result = array();
 		$options = array(
 			'select' => '*',
-
 			'result' => 'array',
+			'where' =>  $where ? $where . " AND status=1" : "status=1"
 
 		);
 
@@ -36,7 +36,8 @@ class Encuestas_Model extends ANT_Model
 		$result = array();
 		$options = array(
 			'select' => '*',
-			'result' => 'array'
+			'result' => 'array',
+			'where' =>  $where ? $where . " AND status=1" : "status=1"
 		);
 		if ($where) {
 			$options['where'] = $where;

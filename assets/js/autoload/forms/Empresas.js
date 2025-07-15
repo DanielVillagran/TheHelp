@@ -35,6 +35,7 @@ function get_info_Departamentos(id) {
             grid_load_horarios();
             grid_load_puestos();
             grid_load_asistencias();
+            grid_load_encuestas();
         }
     });
 }
@@ -208,12 +209,13 @@ function grid_load_horarios() {
             $(id + ' tbody').empty().append(data.table);
             $(id).show();
             inicializarDatatable(id);
-            
+
         }
     });
 }
 
 $("#btn_add_new_puesto").click(function () {
+    $('[name="puesto[id]"]').val(0);
     $("#modalPuesto").modal("show");
 });
 function save_puesto() {
@@ -320,3 +322,179 @@ $('#asistencias_grid').footable().on('click', '.row-delete', function (e) {
     var idemp = $(this).attr('rel');
     window.location.href = "/asistencias/view/" + idemp;
 });
+
+function grid_load_encuestas() {
+    $.ajax({
+        url: "/Empresas/get_Empresas_encuestas",
+        type: 'POST',
+        data: {
+            id: id_global
+        },
+        dataType: 'json',
+        beforeSend: function (e) {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif"
+            });
+        },
+        success: function (data) {
+            swal.close();
+            let id = "#encuestas_grid";
+            if ($.fn.DataTable.isDataTable(id)) {
+                $(id).DataTable().destroy();
+            }
+            $(id + ' thead').empty().append(data.head);
+            $(id + ' tbody').empty().append(data.table);
+            $(id).show();
+            inicializarDatatable(id);
+        }
+    });
+}
+$('#encuestas_grid').footable().on('click', '.row-delete', function (e) {
+    e.preventDefault();
+    var idemp = $(this).attr('rel');
+    window.location.href = "/encuestas/respuestaView/" + idemp;
+});
+$('#puestos_grid').footable().on('click', '.row-edit', function (e) {
+    e.preventDefault();
+    var idemp = $(this).attr('rel');
+    $.ajax({
+        url: "/Empresas/get_Empresas_puesto_id",
+        type: 'POST',
+        data: {
+            id: idemp
+        },
+        dataType: 'json',
+        beforeSend: function (e) {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif"
+            });
+        },
+        success: function (data) {
+            swal.close();
+            for (var key in data) {
+                if (key != 'logo') {
+                    $('[name="puesto[' + key + ']"]').val($.trim(data[key]));
+                }
+            }
+            $("#modalPuesto").modal("show");
+        }
+    });
+});
+$('#puestos_grid').footable().on('click', '.row-delete', function (e) {
+    e.preventDefault();
+    var idemp = $(this).attr('rel');
+    swal({
+        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#0066D1",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar"
+    }, function () {
+
+        $.ajax({
+            url: "/Empresas/eliminar_Empresas_puesto_id",
+            type: 'POST',
+            data: {
+                'id': idemp
+            },
+            dataType: 'json',
+            beforeSend: function (e) {
+
+            },
+            success: function (data) {
+                grid_load_puestos();
+            }
+        });
+
+    });
+});
+$('#horarios_grid').footable().on('click', '.row-delete', function (e) {
+    e.preventDefault();
+    var idemp = $(this).attr('rel');
+    swal({
+        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#0066D1",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar"
+    }, function () {
+
+        $.ajax({
+            url: "/Empresas/eliminar_Empresas_horario_id",
+            type: 'POST',
+            data: {
+                'id': idemp
+            },
+            dataType: 'json',
+            beforeSend: function (e) {
+
+            },
+            success: function (data) {
+                grid_load_horarios();
+            }
+        });
+
+    });
+});
+$('#sedes_grid').footable().on('click', '.row-delete', function (e) {
+    e.preventDefault();
+    var idemp = $(this).attr('rel');
+    swal({
+        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#0066D1",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar"
+    }, function () {
+
+        $.ajax({
+            url: "/Empresas/eliminar_Empresas_sede_id",
+            type: 'POST',
+            data: {
+                'id': idemp
+            },
+            dataType: 'json',
+            beforeSend: function (e) {
+
+            },
+            success: function (data) {
+                grid_load_sedes();
+            }
+        });
+
+    });
+});
+function actualizarCostos() {
+    const valor = parseFloat($("#costo_unitario").val());
+    if (!isNaN(valor)) {
+        const costo_por_dia = parseFloat((valor / 30.4).toFixed(2));
+        $('[name="puesto[costo_por_dia]"]').val(costo_por_dia);
+        const costo_descanso = parseFloat((costo_por_dia * 2).toFixed(2));
+        $('[name="puesto[costo_descanso_laborado]"]').val(costo_descanso);
+        const costo_festivo = parseFloat((costo_por_dia * 3).toFixed(2));
+        $('[name="puesto[costo_dia_festivo]"]').val(costo_festivo);
+        const costo_extra = parseFloat((costo_por_dia / 4).toFixed(2));
+        $('[name="puesto[costo_hora_extra]"]').val(costo_extra);
+    }
+}
+
+let debounceTimer;
+$("#costo_unitario").on('input', function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(actualizarCostos, 2000);
+});
+
+$("#costo_unitario").change(actualizarCostos);

@@ -2430,8 +2430,8 @@ function add_contact() {
         swal("Error", "Cuenta no identificada, consulte con el administrador del sistema.", "error");
     }
 }
-
-function inicializarDatatable(id) {
+var pageLengthDatatable = 10;
+function inicializarDatatable(id, scroll = false) {
     swal.close();
     var thead = $(id + ' thead');
     var headers = thead.find('tr:first th');
@@ -2451,7 +2451,17 @@ function inicializarDatatable(id) {
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.10.13/i18n/Spanish.json"
         },
-        dom: 'lrtip',
+        dom: '<"pull-right" B>rltip',
+        pageLength: pageLengthDatatable,
+        lengthMenu: [[5, 10, 25, -1], [5, 10, 25, "Todos"]],
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: 'Exportar a Excel',
+                title: 'Reporte',
+                className: 'btn btn-success'
+            }
+        ],
         orderCellsTop: true,
         fixedHeader: true
     });
@@ -2464,6 +2474,7 @@ function inicializarDatatable(id) {
         });
     });
 }
+
 
 
 

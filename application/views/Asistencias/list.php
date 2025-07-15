@@ -29,14 +29,14 @@
 
                                     <div class="col-lg-6 col-md-6">
                                         <div class="d-btn-agregar">
-                                            <a id="btn_add_new" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar Colaborador</a>
+                                            <a id="btn_add_new" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar asistencias</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="table-responsive d-table-lg">
-                                <table id="groups_grid" class="table table-striped table-bordered">
+                                <table id="groups_grid" style="width:100%" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
 

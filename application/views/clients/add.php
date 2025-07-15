@@ -65,6 +65,7 @@
                                                     <option value="4">Supervisor de cuenta</option>
                                                     <option value="5">Jefe de Reclutamiento</option>
                                                     <option value="6">Finanzas</option>
+                                                    <option value="7">Reclutador</option>
                                                 </select>
 
 

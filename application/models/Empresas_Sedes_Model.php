@@ -22,7 +22,7 @@ class Empresas_Sedes_Model extends ANT_Model
 		$options = array(
 			'select' => "*",
 			'result' => 'array',
-			'where' => $where
+			'where' =>  $where ? $where . " AND status=1" : "status=1"
 		);
 
 		$result = Empresas_Sedes_Model::Load($options);
@@ -35,7 +35,7 @@ class Empresas_Sedes_Model extends ANT_Model
 		$options = array(
 			'select' => "*",
 			'result' => 'array',
-			'where' => $where
+			'where' =>  $where ? $where . " AND status=1" : "status=1"
 		);
 
 		$result = Empresas_Sedes_Model::Load($options);

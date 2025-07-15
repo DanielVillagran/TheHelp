@@ -8,7 +8,7 @@ $("#btn_add_new").click(function() {
 
 function grid_load_data() {
     $.ajax({
-        url: "/Asistencias/get_Asistencias",
+        url: "/Asistencias/get_Asistencias_globales",
         type: 'POST',
         data: {
             'search': $.trim($('#filter').val())

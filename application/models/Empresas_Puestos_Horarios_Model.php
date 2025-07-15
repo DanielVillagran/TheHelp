@@ -27,7 +27,7 @@ class Empresas_Puestos_Horarios_Model extends ANT_Model
 				'empresas_horarios h' => 'h.id=empresas_puestos_horarios.horario_id',
 			),
 			'result' => 'array',
-			'where' => $where
+			'where' => $where ? $where . " AND empresas_puestos_horarios.status=1" : "empresas_puestos_horarios.status=1"
 		);
 
 		$result = Empresas_Puestos_Horarios_Model::Load($options);
@@ -38,12 +38,15 @@ class Empresas_Puestos_Horarios_Model extends ANT_Model
 		$lista = '<option hidden>Seleccionar horario</option>';
 		$result = array();
 		$options = array(
-			'select' => "*",
+			'select' => "h.*",
 			'result' => 'array',
-			'where' => $where
+			'joinsLeft' => array(
+				"empresas_horarios as h"=>'h.id=empresas_puestos_horarios.horario_id'
+			),
+			'where' =>  $where ? $where . " AND empresas_puestos_horarios.status=1" : "empresas_puestos_horarios.status=1"
 		);
 
-		$result = Empresas_Horarios_Model::Load($options);
+		$result = Empresas_Puestos_Horarios_Model::Load($options);
 		foreach ($result as $key) {
 			$lista .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
 		}

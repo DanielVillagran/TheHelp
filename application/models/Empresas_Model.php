@@ -26,11 +26,9 @@ class Empresas_Model extends ANT_Model
 				'users_user as u' => 'u.id=empresas.responsable',
 			),
 			'result' => 'array',
-
+			'where' => $where ? $where . " AND empresas.status=1" : "empresas.status=1"
 		);
-		if ($where) {
-			$options['where'] = $where;
-		}
+		
 
 		$result = Empresas_Model::Load($options);
 		return $result;
@@ -42,11 +40,9 @@ class Empresas_Model extends ANT_Model
 		$result = array();
 		$options = array(
 			'select' => '*',
-			'result' => 'array'
+			'result' => 'array',
+			'where' => $where ? $where . " AND empresas.status=1" : "empresas.status=1"
 		);
-		if ($where) {
-			$options['where'] = $where;
-		}
 
 		$result = Empresas_Model::Load($options);
 		foreach ($result as $key) {

@@ -107,7 +107,6 @@ class Empresas extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
 		}
 		$this->output_json($data);
 	}
@@ -128,7 +127,6 @@ class Empresas extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
 		}
 		$this->output_json($data);
 	}
@@ -162,7 +160,8 @@ class Empresas extends ANT_Controller
 	function eliminar()
 	{
 		$id = $this->input->post("id");
-		Empresas_Model::Delete('id=' . $id);
+		$result = Empresas_Model::Update(['status' => 0], "id=" . $id);
+		$this->output_json($result);
 	}
 	function eliminar_assign()
 	{
@@ -202,7 +201,6 @@ class Empresas extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
 		}
 		$this->output_json($data);
 	}
@@ -254,28 +252,38 @@ class Empresas extends ANT_Controller
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
 		}
+		$this->output_json($data);
+	}
+	function get_Empresas_horarios_select()
+	{
+		$id = $this->input->post('id');
+		$data['select'] = Empresas_Horarios_Model::get_select("empresa_id=" . $id);
 		$this->output_json($data);
 	}
 
 	function save_puesto()
 	{
 		$post = $this->input->post('puesto');
-		$hasValue = Empresas_Puestos_Horarios_Model::Load(array(
-			'select' => '*',
-			'result' => '1row',
-			'where' =>
-			"empresa_id = " . intval($post['empresa_id']) .
-				" AND puesto_id = " . intval($post['puesto_id']) .
-				" AND sede_id = " . intval($post['sede_id']) .
-				" AND horario_id = " . intval($post['horario_id'])
-		));
-		if ($hasValue) {
-			$this->output_json(false);
-		} else {
-			$result = Empresas_Puestos_Horarios_Model::Insert($post);
+		if ($post['id'] != null && $post['id'] != 0) {
+			$result = Empresas_Puestos_Horarios_Model::Update($post, "id=" . $post['id']);
 			$this->output_json($result);
+		} else {
+			$hasValue = Empresas_Puestos_Horarios_Model::Load(array(
+				'select' => '*',
+				'result' => '1row',
+				'where' =>
+				"empresa_id = " . intval($post['empresa_id']) .
+					" AND puesto_id = " . intval($post['puesto_id']) .
+					" AND sede_id = " . intval($post['sede_id']) .
+					" AND horario_id = " . intval($post['horario_id'])
+			));
+			if ($hasValue) {
+				$this->output_json(false);
+			} else {
+				$result = Empresas_Puestos_Horarios_Model::Insert($post);
+				$this->output_json($result);
+			}
 		}
 	}
 	function get_Empresas_puestos()
@@ -295,7 +303,8 @@ class Empresas extends ANT_Controller
 		if ($aux) {
 			foreach ($aux as $a) {
 				$botones = '
-				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
+				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>
+				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>';
 				$data['table'] .= '<tr>
 				<td>' . $a['puesto'] . '</td>
 				<td>' . $a['horario'] . '</td>
@@ -304,7 +313,17 @@ class Empresas extends ANT_Controller
 				<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
+		}
+		$this->output_json($data);
+	}
+	function get_Empresas_puesto_id()
+	{
+		$id = $this->input->post('id');
+		$aux = Empresas_Puestos_Horarios_Model::get_grid_info("empresas_puestos_horarios.id=" . $id);
+		$data = null;
+		if ($aux) {
+			$data = $aux[0];
+		} else {
 		}
 		$this->output_json($data);
 	}
@@ -362,8 +381,135 @@ class Empresas extends ANT_Controller
 				<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
 		} else {
-			
 		}
 		$this->output_json($data);
+	}
+	function get_Empresas_encuestas()
+	{
+		$id = $this->input->post('id');
+		$aux = Encuestas_Preguntas_Respuestas_Model::Load(array(
+			'select' => "encuestas_preguntas_respuestas.*, s.nombre as encuesta",
+			'where' => 'encuestas_preguntas_respuestas.empresa_id=' . $id,
+			'joins' => array(
+				'encuestas as s' => 's.id=encuestas_preguntas_respuestas.encuesta_id'
+			),
+			'result' => 'array'
+		));
+		$data['head'] = "<tr>
+		<th>Encuesta</th>
+		<th>Fecha</th>
+		<th class='th-editar-colonia'>Ver</th>
+		</tr>";
+		$data['table'] = '';
+		if ($aux) {
+			foreach ($aux as $a) {
+				$botones = '
+				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-eye"></i></button>';
+				$data['table'] .= '<tr>
+				<td>' . $a['encuesta'] . '</td>
+				<td>' . $a['fecha'] . '</td>
+				<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
+			}
+		} else {
+		}
+		$this->output_json($data);
+	}
+	function eliminar_Empresas_puesto_id()
+	{
+		$id = $this->input->post('id');
+		$result = Empresas_Puestos_Horarios_Model::Update(['status' => 0], "id=" . $id);
+		$this->output_json($result);
+	}
+	function eliminar_Empresas_horario_id()
+	{
+		$id = $this->input->post('id');
+		$result = Empresas_Horarios_Model::Update(['status' => 0], "id=" . $id);
+		$this->output_json($result);
+	}
+	function eliminar_Empresas_sede_id()
+	{
+		$id = $this->input->post('id');
+		$result = Empresas_Sedes_Model::Update(['status' => 0], "id=" . $id);
+		$this->output_json($result);
+	}
+	function get_Sedes_horarios()
+	{
+		$id = $this->input->post('id');
+		$data['select'] = Empresas_Puestos_Horarios_Model::get_select("sede_id=" . $id);
+		$this->output_json($data);
+	}
+	function carga_masiva()
+	{
+		$json = file_get_contents("php://input");
+		$data = json_decode($json, true);
+
+		if (!isset($data['usuarios'])) {
+			show_error("Datos inválidos", 400);
+		}
+		foreach ($data['usuarios'] as $row) {
+			$razon_social = Razones_Sociales_Model::Load(array(
+				'select' => "*",
+				'where' => "name='" .  $row['razon_social_id'] . "'",
+				'result' => '1row'
+			));
+			$tipo_nomina = Tipos_Nominas_Model::Load(array(
+				'select' => "*",
+				'where' => "nombre='" .  $row['tipo_nomina'] . "'",
+				'result' => '1row'
+			));
+			$tipo_facturacion = Tipos_Facturacion_Model::Load(array(
+				'select' => "*",
+				'where' => "nombre='" .  $row['tipo_facturacion'] . "'",
+				'result' => '1row'
+			));
+			$zona = Zonas_Model::Load(array(
+				'select' => "*",
+				'where' => "nombre='" .  $row['zona'] . "'",
+				'result' => '1row'
+			));
+			$municipio = Municipios_Model::Load(array(
+				'select' => "*",
+				'where' => "nombre='" .  $row['municipio'] . "'",
+				'result' => '1row'
+			));
+			$responsable = Users_Model::Load(array(
+				'select' => "*",
+				'where' => "user_name='" .  $row['responsable'] . "'",
+				'result' => '1row'
+			));
+
+			$exist = Empresas_Model::Load([
+				'select' => '*',
+				'where' => "nombre='" . $row['nombre'] . "'",
+				'result' => '1row'
+			]);
+
+			$registro = [
+				'razon_social_id'  => $razon_social  ? $razon_social->id : null,
+				'nombre'           => $row['nombre'] ?? '',
+				'tipo_nomina'      => $tipo_nomina  ? $tipo_nomina->id : null,
+				'tipo_facturacion' => $tipo_facturacion  ? $tipo_facturacion->id : null,
+				'comentarios'      => $row['comentarios'] ?? '',
+				'dias_credito'     => $row['dias_credito'] ?? 0,
+				'responsable'      => $responsable  ? $responsable->id : null,
+				'municipio'        => $municipio  ? $municipio->id : null,
+				'zona'             => $zona  ? $zona->id : null
+			];
+
+			if (!$exist) {
+
+				$dato = Empresas_Model::Insert($registro);
+				if (isset($row['sedes'])) {
+					$sedes = explode(",", $row['sedes'] ?? '');
+					foreach ($sedes as $key => $value) {
+						Empresas_Sedes_Model::Insert(['nombre' => $value, 'empresa_id' => $dato['insert_id']]);
+					}
+				}
+			} else {
+				Empresas_Model::Update($registro, 'id=' . $exist->id);
+			}
+		}
+
+		$this->output_json(['status' => 'ok']);
 	}
 }

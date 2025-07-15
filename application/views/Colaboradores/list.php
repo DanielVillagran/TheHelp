@@ -25,47 +25,56 @@
                                 <p class="title-sec"><?php echo $title; ?></p>
                                 <div class="row row-buscar-agregar">
                                     <div class="col-lg-6 col-md-6">
-                                          </div>
+                                        <!-- Espacio para búsqueda u otros filtros si los necesitas -->
+                                    </div>
 
-                                    <div class="col-lg-6 col-md-6">
+                                    <div class="col-lg-6 col-md-6 d-flex justify-content-end align-items-center gap-2 flex-wrap">
                                         <div class="d-btn-agregar">
-                                            <a id="btn_add_new" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar Colaborador</a>
+                                            <form method="post" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
+                                                <input type="file" id="archivo_excel" accept=".xlsx" style="display:none">
+                                                <button type="button" id="carga_masiva" class="btn btn-sm  add-row">Carga Masiva</button>
+                                            </form>
+                                            <br>
+                                            <a id="btn_add_new" class="btn btn-sm add-row"><i class="fa fa-plus"></i> Agregar Colaborador</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="table-responsive d-table-lg">
-                                <table id="groups_grid" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
 
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        <tr>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
+                        <div class="table-responsive d-table-lg">
+                            <table id="groups_grid" style="width:100%" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
 
-                                    <tfoot class="hide-if-no-paging">
-                                        <tr>
-                                            <td colspan="7" class="footable-visible">
-                                                <div class="pagination pagination-centered"></div>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+
+                                <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="footable-visible">
+                                            <div class="pagination pagination-centered"></div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 </section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

@@ -33,6 +33,10 @@ class Home extends ANT_Controller
     public function index()
     {
         $data['user_id'] = $this->tank_auth->get_user_id();
+        $data['razones'] = Razones_Sociales_Model::get_select();
+        $data['empresas'] = Empresas_Model::get_select();
+        $data['fecha_inicio'] = "2025-06-08";//date("Y-m-d");
+        $data['fecha_fin'] = date("Y-m-d");
         //$ids = $this->tank_auth->get_user_role();
         $data['view'] = 'forms/Home';
         $this->session->unset_userdata('pagina_previa');

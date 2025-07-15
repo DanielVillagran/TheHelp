@@ -1455,3 +1455,11 @@ legend {
 .d-item-file-logo .control-fileupload label {
     font-size: 12px !important;
 }
+.datatable_wrapper {
+    width: 100% !important;
+}
+
+.datatable_wr {
+    width: 100% !important;
+    table-layout: auto;
+}

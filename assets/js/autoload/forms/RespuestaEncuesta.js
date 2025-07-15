@@ -115,9 +115,6 @@ function grid_load_data() {
             $('#respuestas_grid thead').empty().append(data.head);
             $('#respuestas_grid tbody').empty().append(data.table).trigger('footable_redraw');
             $('#respuestas_grid').show();
-            $("#addExtra").show();
-            $("#select_horario").empty().append(data.select_horarios);
-            $("#select_colaboradores").empty().append(data.select_colaboradores);
             swal.close();
             //$("#select_sede").empty().append(data.select);
 
@@ -128,7 +125,7 @@ $('#form-respuestas').on('submit', function (e) {
     e.preventDefault();
     const data = $(this).serialize();
     $.ajax({
-        url: "/Encuestas/save_puestos_cubiertos",
+        url: "/Encuestas/save_respuestas_encuestas",
         type: 'POST',
         data: data,
         dataType: 'json',
