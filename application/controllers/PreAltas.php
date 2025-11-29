@@ -39,6 +39,7 @@ class PreAltas extends ANT_Controller
 		$data['razones'] = Razones_Sociales_Model::get_select();
 		$data['clientes'] = Empresas_Model::get_select();
 		$data['horarios'] = Horarios_Model::get_select();
+		$data['nominas'] = Tipos_Nominas_Model::get_select();
 		$data['estados_mexico'] = $this->get_estados();
 
 		$this->_load_views('PreAltas/add', $data);
@@ -55,6 +56,7 @@ class PreAltas extends ANT_Controller
 		$data['estados_mexico'] = $this->get_estados();
 		$data['razones'] = Razones_Sociales_Model::get_select();
 		$data['clientes'] = Empresas_Model::get_select();
+		$data['nominas'] = Tipos_Nominas_Model::get_select();
 
 		$this->_load_views('PreAltas/add', $data);
 	}

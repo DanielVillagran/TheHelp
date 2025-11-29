@@ -38,6 +38,7 @@ class Colaboradores extends ANT_Controller
 		$data['departamentos'] = Empresas_Model::get_select();
 		$data['estados_mexico'] = $this->get_estados();
 		$data['razones'] = Razones_Sociales_Model::get_select();
+		$data['nominas'] = Tipos_Nominas_Model::get_select();
 		$data['clientes'] = Empresas_Model::get_select();
 		$this->_load_views('Colaboradores/add', $data);
 	}
@@ -52,6 +53,7 @@ class Colaboradores extends ANT_Controller
 		$data['user_id'] = $this->tank_auth->get_user_id();
 		$data['departamentos'] = Empresas_Model::get_select();
 		$data['horarios'] = Horarios_Model::get_select();
+		$data['nominas'] = Tipos_Nominas_Model::get_select();
 		$data['estados_mexico'] = $this->get_estados();
 		$data['razones'] = Razones_Sociales_Model::get_select();
 		$data['clientes'] = Empresas_Model::get_select();
