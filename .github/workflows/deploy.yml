@@ -1,0 +1,42 @@
+name: CI/CD FTP Deploy
+
+on:
+  push:
+    branches:
+      - master # se ejecuta al hacer push a la rama principal
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache FTP deploy state
+        uses: actions/cache@v3
+        with:
+          path: .ftp-deploy-sync-state.json
+          key: ftp-deploy-${{ github.ref }}
+
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /
+          local-dir: ./   # Directorio local que se subirá
+          state-name: .ftp-deploy-sync-state.json
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
+            **/vendor/**
+            **/mobile/**
+            **/plugin/**
+            **/plugins/**
+            **/res/**
+            **/storage/**
+            **/core/controller/**
+            **/application/config/database.php
