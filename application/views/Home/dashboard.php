@@ -30,133 +30,196 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+    .green {
+        color: #0f415a;
+        /* Verde */
+    }
+
+    .yellow {
+        color: #ffc107;
+        /* Amarillo */
+    }
+
+    .red {
+        color: #ec6d0a;
+        /* Rojo */
+    }
 </style>
 <section class="main-container">
-    <div class="container-fluid">
-        <div class="row" style="margin-top: 20px;">
-            <!--Grafica Asistencias vs Faltas -->
-            <div class="col-md-6" style="margin-top: 20px;">
-                <div class="card-custom">
-                    <h4 class="text-center">Asistencias vs Faltas</h4>
-                    <form id="form_filtros_asistencias" class="form-inline text-center" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <label for="asistencias_razon_social">Razón social</label>
-                            <select id="asistencias_razon_social" name="razon_social" class="form-control">
-                                <option value="">Todos</option>
-                                <?php echo $razones; ?>
-                            </select>
-                        </div>
+    <?php if ($this->tank_auth->get_user_role_id() <= 2) { ?>
+        <div class="container-fluid">
+            <div class="row" style="margin-top: 20px;">
+                <!--Grafica Asistencias vs Faltas -->
+                <div class="col-md-6" style="margin-top: 20px;">
+                    <div class="card-custom">
+                        <h4 class="text-center">Asistencias vs Faltas</h4>
+                        <form id="form_filtros_asistencias" class="form-inline text-center" style="margin-bottom: 20px;">
+                            <div class="form-group">
+                                <label for="asistencias_razon_social">Razón social</label>
+                                <select id="asistencias_razon_social" name="razon_social" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $razones; ?>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="asistencias_empresa">Empresa</label>
-                            <select id="asistencias_empresa" name="empresa_id" class="form-control">
-                                <option value="">Todos</option>
-                                <?php echo $empresas; ?>
-                            </select>
-                        </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="asistencias_empresa">Empresa</label>
+                                <select id="asistencias_empresa" name="empresa_id" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $empresas; ?>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="asistencias_sede">Sede</label>
-                            <select id="asistencias_sede" name="sede_id" class="form-control">
-                                <option value="">Todos</option>
-                            </select>
-                        </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="asistencias_sede">Sede</label>
+                                <select id="asistencias_sede" name="sede_id" class="form-control">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="asistencias_fecha_inicio">Fecha Inicio</label>
-                            <input type="date" value="<?php echo $fecha_inicio; ?>" id="asistencias_fecha_inicio" name="fecha_inicio" class="form-control">
-                        </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="asistencias_fecha_inicio">Fecha Inicio</label>
+                                <input type="date" value="<?php echo $fecha_inicio; ?>" id="asistencias_fecha_inicio" name="fecha_inicio" class="form-control">
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="asistencias_fecha_fin">Fecha Fin</label>
-                            <input type="date" value="<?php echo $fecha_fin; ?>" id="asistencias_fecha_fin" name="fecha_fin" class="form-control">
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="asistencias_fecha_fin">Fecha Fin</label>
+                                <input type="date" value="<?php echo $fecha_fin; ?>" id="asistencias_fecha_fin" name="fecha_fin" class="form-control">
+                            </div>
+                        </form>
+                        <div class="chart-container">
+                            <canvas id="grafica_asistencias" width="100%"></canvas>
                         </div>
-                    </form>
-                    <div class="chart-container">
-                        <canvas id="grafica_asistencias" width="100%"></canvas>
                     </div>
                 </div>
-            </div>
-            <!--Grafica Facturado -->
-            <div class="col-md-6" style="margin-top: 20px;">
-                <div class="card-custom">
-                    <h4 class="text-center">Facturado</h4>
-                    <form id="form_filtros_facturados" class="form-inline text-center" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <label for="facturados_razon_social">Razón social</label>
-                            <select id="facturados_razon_social" name="razon_social" class="form-control">
-                                <option value="">Todos</option>
-                                <?php echo $razones; ?>
-                            </select>
-                        </div>
+                <!--Grafica Facturado -->
+                <div class="col-md-6" style="margin-top: 20px;">
+                    <div class="card-custom">
+                        <h4 class="text-center">Facturado</h4>
+                        <form id="form_filtros_facturados" class="form-inline text-center" style="margin-bottom: 20px;">
+                            <div class="form-group">
+                                <label for="facturados_razon_social">Razón social</label>
+                                <select id="facturados_razon_social" name="razon_social" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $razones; ?>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="facturados_empresa">Empresa</label>
-                            <select id="facturados_empresa" name="empresa_id" class="form-control">
-                                <option value="">Todos</option>
-                                <?php echo $empresas; ?>
-                            </select>
-                        </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="facturados_empresa">Empresa</label>
+                                <select id="facturados_empresa" name="empresa_id" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $empresas; ?>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="facturados_sede">Sede</label>
-                            <select id="facturados_sede" name="sede_id" class="form-control">
-                                <option value="">Todos</option>
-                            </select>
-                        </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="facturados_sede">Sede</label>
+                                <select id="facturados_sede" name="sede_id" class="form-control">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="facturados_fecha_inicio">Fecha Inicio</label>
-                            <input type="date" value="<?php echo $fecha_inicio; ?>" id="facturados_fecha_inicio" name="fecha_inicio" class="form-control">
-                        </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="facturados_fecha_inicio">Fecha Inicio</label>
+                                <input type="date" value="<?php echo $fecha_inicio; ?>" id="facturados_fecha_inicio" name="fecha_inicio" class="form-control">
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="facturados_fecha_fin">Fecha Fin</label>
-                            <input type="date" value="<?php echo $fecha_fin; ?>" id="facturados_fecha_fin" name="fecha_fin" class="form-control">
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="facturados_fecha_fin">Fecha Fin</label>
+                                <input type="date" value="<?php echo $fecha_fin; ?>" id="facturados_fecha_fin" name="fecha_fin" class="form-control">
+                            </div>
+                        </form>
+                        <div class="chart-container">
+                            <canvas id="grafica_facturados" width="100%"></canvas>
                         </div>
-                    </form>
-                    <div class="chart-container">
-                        <canvas id="grafica_facturados" width="100%"></canvas>
                     </div>
                 </div>
-            </div>
-            <!--Grafica Head Count -->
-            <div class="col-md-6" style="margin-top: 20px;">
-                <div class="card-custom">
-                    <h4 class="text-center">Head Count</h4>
-                    <h4 class="text-center">Activos vs Vacantes</h4>
-                    <form id="form_filtros_hc" class="form-inline text-center" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <label for="hc_razon_social">Razón social</label>
-                            <select id="hc_razon_social" name="razon_social" class="form-control">
-                                <option value="">Todos</option>
-                                <?php echo $razones; ?>
-                            </select>
-                        </div>
+                <!--Grafica Head Count -->
+                <div class="col-md-6" style="margin-top: 20px;">
+                    <div class="card-custom">
+                        <h4 class="text-center">Head Count</h4>
+                        <h4 class="text-center">Activos vs Vacantes</h4>
+                        <form id="form_filtros_hc" class="form-inline text-center" style="margin-bottom: 20px;">
+                            <div class="form-group">
+                                <label for="hc_razon_social">Razón social</label>
+                                <select id="hc_razon_social" name="razon_social" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $razones; ?>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="hc_empresa">Empresa</label>
-                            <select id="hc_empresa" name="empresa_id" class="form-control">
-                                <option value="">Todos</option>
-                                <?php echo $empresas; ?>
-                            </select>
-                        </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="hc_empresa">Empresa</label>
+                                <select id="hc_empresa" name="empresa_id" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $empresas; ?>
+                                </select>
+                            </div>
 
-                        <div class="form-group" style="margin-left: 10px;">
-                            <label for="hc_sede">Sede</label>
-                            <select id="hc_sede" name="sede_id" class="form-control">
-                                <option value="">Todos</option>
-                            </select>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="hc_sede">Sede</label>
+                                <select id="hc_sede" name="sede_id" class="form-control">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+                        </form>
+                        <div class="chart-container">
+                            <canvas id="grafica_hc" width="100%"></canvas>
                         </div>
-                    </form>
-                    <div class="chart-container">
-                        <canvas id="grafica_hc" width="100%"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6" style="margin-top: 20px;">
+                    <div class="card-custom">
+                        <h4 class="text-center">Indice de Satisfacción</h4>
+                        <form id="form_filtros_satisfaccion" class="form-inline text-center" style="margin-bottom: 20px;">
+                            <div class="form-group">
+                                <label for="satisfaccion_razon_social">Razón social</label>
+                                <select id="satisfaccion_razon_social" name="razon_social" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $razones; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="satisfaccion_empresa">Empresa</label>
+                                <select id="satisfaccion_empresa" name="empresa_id" class="form-control">
+                                    <option value="">Todos</option>
+                                    <?php echo $empresas; ?>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="satisfaccion_fecha_inicio">Fecha Inicio</label>
+                                <input type="date" value="<?php echo $fecha_inicio; ?>" id="satisfaccion_fecha_inicio" name="fecha_inicio" class="form-control">
+                            </div>
+
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="satisfaccion_fecha_fin">Fecha Fin</label>
+                                <input type="date" value="<?php echo $fecha_fin; ?>" id="satisfaccion_fecha_fin" name="fecha_fin" class="form-control">
+                            </div>
+                        </form>
+                        <div class="chart-container">
+                            <div class="text-center" style="margin-top: 40px; margin-bottom: 40px;">
+                                <span id="indice_satisfaccion" class="green" style="font-size: 64px; font-weight: bold;">--%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    <?php } else { ?>
+        <div class="container-fluid">
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-12 text-center">
+                    <img src="/assets/files/fotos/LogoLM.png" alt="logo" width="70%">
+                </div>
+            </div>
+        </div>
 
+    <?php } ?>
 
 </section>
 <div class="modal fade modal-ubicacion" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

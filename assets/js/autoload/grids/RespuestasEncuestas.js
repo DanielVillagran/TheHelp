@@ -45,6 +45,32 @@ $('#groups_grid').footable().on('click', '.row-delete', function (e) {
 $('#groups_grid').footable().on('click', '.row-edit', function (e) {
     e.preventDefault();
     var idemp = $(this).attr('rel');
-    var Nombre = $(this).attr('nom');
-    window.location.href = '/Empresas/edit/' + idemp;
+    swal({
+        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#0066D1",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar"
+    }, function () {
+
+        $.ajax({
+            url: "/Encuestas/eliminar_respuestas",
+            type: 'POST',
+            data: {
+                'id': idemp
+            },
+            dataType: 'json',
+            beforeSend: function (e) {
+
+            },
+            success: function (data) {
+                //swal('Listo!',"El elemento ha sido eliminado con exito.",'success');
+                grid_load_data();
+            }
+        });
+
+    });
 });

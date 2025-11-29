@@ -85,7 +85,7 @@ class Asistencias extends ANT_Controller
 			'result' => '1row'
 		));
 		$aux = Empresas_Horarios_Cubiertos_Detalle_Model::Load(array(
-			'select' => "empresas_horarios_cubiertos_detalle.*,c.*, p.nombre as puesto, concat(at.prefijo,' - ',at.nombre) as asistencia_tipo, eh.nombre as horario",
+			'select' => "empresas_horarios_cubiertos_detalle.*,c.*, p.nombre as puesto, concat(at.prefijo,' - ',at.nombre) as asistencia_tipo, concat(eh.nombre, ' - ',eh.horario) as horario",
 			'where' => 'empresas_horarios_cubiertos_detalle.horario_cubierto_id=' . $id,
 			'joinsLeft' => array(
 				'empresas_puestos_horarios as ep' => 'ep.id=empresas_horarios_cubiertos_detalle.puesto_horario_id',
@@ -226,7 +226,7 @@ class Asistencias extends ANT_Controller
 		</tr>";
 		$data['table'] = '';
 		$aux = Empresas_Puestos_Horarios_Model::Load(array(
-			'select' => "empresas_puestos_horarios.*, eh.nombre as horario, p.nombre as puesto",
+			'select' => "empresas_puestos_horarios.*, concat(eh.nombre, ' - ',eh.horario) as horario, p.nombre as puesto",
 			'joinsLeft' => array(
 				'empresas_horarios eh' => 'eh.id=empresas_puestos_horarios.horario_id',
 				'puestos p' => 'p.id=empresas_puestos_horarios.puesto_id',

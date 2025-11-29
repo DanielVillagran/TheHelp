@@ -14,15 +14,58 @@ class Colaboradores_Model extends ANT_Model
 	{
 		parent::__construct();
 	}
+	static function get_grid_info_prealtas($where = NULL, $list = NULL, $agent = NULL)
+	{
+		$lista = '';
+		$result = array();
+		$status = '(1,2)';
+		$options = array(
+			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, empresas.nombre as empresa, razones_sociales.name as razon',
+			'joinsLeft' => [
+				'colaboradores_status' => 'colaboradores.status=colaboradores_status.id',
+				'empresas' => 'colaboradores.cliente=empresas.id',
+				'razones_sociales' => 'colaboradores.razon_social=razones_sociales.id'
+			],
+			'result' => 'array',
+			'where' =>  $where ? $where . " AND colaboradores.status in $status" : "colaboradores.status in $status"
+		);
 
+		$result = Colaboradores_Model::Load($options);
+		return $result;
+	}
+	static function get_grid_info_prebajas($where = NULL, $list = NULL, $agent = NULL)
+	{
+		$lista = '';
+		$result = array();
+		$status = '(4,5)';
+		$options = array(
+			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, empresas.nombre as empresa, razones_sociales.name as razon',
+			'joinsLeft' => [
+				'colaboradores_status' => 'colaboradores.status=colaboradores_status.id',
+				'empresas' => 'colaboradores.cliente=empresas.id',
+				'razones_sociales' => 'colaboradores.razon_social=razones_sociales.id'
+			],
+			'result' => 'array',
+			'where' =>  $where ? $where . " AND colaboradores.status in $status" : "colaboradores.status in $status"
+		);
+
+		$result = Colaboradores_Model::Load($options);
+		return $result;
+	}
 	static function get_grid_info($where = NULL, $list = NULL, $agent = NULL)
 	{
 		$lista = '';
 		$result = array();
+		$status = '(3)';
 		$options = array(
-			'select' => '*',
+			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, empresas.nombre as empresa, razones_sociales.name as razon',
+			'joinsLeft' => [
+				'colaboradores_status' => 'colaboradores.status=colaboradores_status.id',
+				'empresas' => 'colaboradores.cliente=empresas.id',
+				'razones_sociales' => 'colaboradores.razon_social=razones_sociales.id'
+			],
 			'result' => 'array',
-			'where' =>  $where ? $where . " AND estatus=1" : "estatus=1"
+			'where' =>  $where ? $where . " AND colaboradores.status in $status" : "colaboradores.status in $status"
 		);
 
 		$result = Colaboradores_Model::Load($options);
@@ -40,8 +83,10 @@ class Colaboradores_Model extends ANT_Model
 		);
 
 		$result = Colaboradores_Model::Load($options);
-		foreach ($result as $key) {
-			$lista .= '<option value="' . $key['id'] . '">' . $key['codigo'] . ' - ' . $key['nombre'] . ' ' . $key['apellido_paterno'] . ' ' . $key['apellido_materno'] . '</option>';
+		if ($result) {
+			foreach ($result as $key) {
+				$lista .= '<option value="' . $key['id'] . '">' . $key['codigo'] . ' - ' . $key['nombre'] . ' ' . $key['apellido_paterno'] . ' ' . $key['apellido_materno'] . '</option>';
+			}
 		}
 		return $lista;
 	}

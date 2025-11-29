@@ -52,4 +52,24 @@ class Empresas_Puestos_Horarios_Model extends ANT_Model
 		}
 		return $lista;
 	}
+	static function get_select_puesto($where = NULL, $list = NULL, $agent = NULL)
+	{
+		$lista = '<option hidden>Seleccionar horario</option>';
+		$result = array();
+		$options = array(
+			'select' => "h.*",
+			'result' => 'array',
+			'joinsLeft' => array(
+				"puestos as h"=>'h.id=empresas_puestos_horarios.puesto_id'
+			),
+			'where' =>  $where
+		);
+
+		$result = Empresas_Puestos_Horarios_Model::Load($options);
+		foreach ($result as $key) {
+			$lista .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
+		}
+		return $lista;
+	}
+	
 }

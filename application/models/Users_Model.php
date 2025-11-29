@@ -58,7 +58,7 @@ class Users_Model extends ANT_Model
 	{
 		$result['has'] = false;
 		if ($userid != 0) {
-			$aux = Users_model::Query("SELECT 'true' as has_privilege,usuariosTCE_permisos.id_tipo_permiso from users_user
+			$aux = Users_Model::Query("SELECT 'true' as has_privilege,usuariosTCE_permisos.id_tipo_permiso from users_user
                 LEFT JOIN usuariosTCE_permisos on users_user.user_id = usuariosTCE_permisos.id_usuario
                 LEFT JOIN usuariosTCE_submodulos on usuariosTCE_submodulos.id = usuariosTCE_permisos.id_submodulo
                 LEFT JOIN usuariosTCE_modulos on usuariosTCE_submodulos.id_modulo = usuariosTCE_modulos.id
@@ -75,7 +75,7 @@ class Users_Model extends ANT_Model
 	{
 		$result['has'] = false;
 		if ($userid != 0) {
-			$aux = Users_model::Query("SELECT 'true' as has_privilege, usuariosTCE_permisos_especiales.id_tipo_permiso from users_user
+			$aux = Users_Model::Query("SELECT 'true' as has_privilege, usuariosTCE_permisos_especiales.id_tipo_permiso from users_user
                 LEFT JOIN usuariosTCE_permisos_especiales on users_user.user_id = usuariosTCE_permisos_especiales.id_usuario
                 LEFT JOIN usuariosTCE_submodulos_especiales on usuariosTCE_submodulos_especiales.id=usuariosTCE_permisos_especiales.id_submodulo_especial
                 LEFT JOIN usuariosTCE_submodulos on usuariosTCE_submodulos.id = usuariosTCE_submodulos_especiales.id_submodulo

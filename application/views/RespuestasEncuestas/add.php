@@ -31,10 +31,16 @@
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
                                             <div class="floating-label-group">
                                                 <span class="floating-label-text">Fecha *</span>
-                                                <input type="date" id="fecha" name="users[fecha]" class="form-control input-form" required />
-
+                                                <input
+                                                    type="date"
+                                                    id="fecha"
+                                                    name="users[fecha]"
+                                                    class="form-control input-form"
+                                                    value="<?php echo date('Y-m-d'); ?>"
+                                                    required />
                                             </div>
                                         </div>
+
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
                                             <span class="floating-label-text">Empresa *</span>
                                             <select class="form-control input-form" id="empresa_select" name="users[empresa_id]">
@@ -49,6 +55,48 @@
                                                 <?php echo $encuestas; ?>
                                             </select>
                                         </div>
+                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+                                            <span class="floating-label-text">Mes *</span>
+                                            <select class="form-control input-form" id="mes_select" name="users[mes]">
+                                                <option hidden>Seleccionar mes</option>
+                                                <?php
+                                                $meses = [
+                                                    1 => "Enero",
+                                                    2 => "Febrero",
+                                                    3 => "Marzo",
+                                                    4 => "Abril",
+                                                    5 => "Mayo",
+                                                    6 => "Junio",
+                                                    7 => "Julio",
+                                                    8 => "Agosto",
+                                                    9 => "Septiembre",
+                                                    10 => "Octubre",
+                                                    11 => "Noviembre",
+                                                    12 => "Diciembre"
+                                                ];
+                                                $mesActual = date("n");
+                                                foreach ($meses as $num => $nombre) {
+                                                    $selected = ($num == $mesActual) ? "selected" : "";
+                                                    echo "<option value='$num' $selected>$nombre</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-lg-6 col-md-6 pl-0">
+                                            <span class="floating-label-text">Año *</span>
+                                            <select class="form-control input-form" id="anio_select" name="users[anio]">
+                                                <option hidden>Seleccionar año</option>
+                                                <?php
+                                                $anioActual = date("Y");
+                                                for ($anio = 2025; $anio <= $anioActual; $anio++) {
+                                                    $selected = ($anio == $anioActual) ? "selected" : "";
+                                                    echo "<option value='$anio' $selected>$anio</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
                                         <div style="margin-top: 15px" class="form-group col-lg-6 col-md-6 pl-0 text-right">
                                             <button type="button" id="search" class="btn btn-guardar next-step">Responder encuesta</button>
                                         </div>
@@ -57,6 +105,13 @@
                                             <div style="margin-top: 15px; display:none" id="addExtra" class="form-group col-lg-12 col-md-12 pl-0 text-right">
                                                 <button type="button" id="btn_add_new_extra" class="btn btn-guardar next-step">Agregar extra</button>
                                             </div>
+                                            <p id="introduccion" style="
+                                                font-size: 2rem; 
+                                                font-weight: 600; 
+                                                color: #1E3A8A; 
+                                                margin-bottom: 15px;
+                                                line-height: 1.5;
+                                            "></p>
                                             <div class="table-responsive d-table-lg">
                                                 <table id="respuestas_grid" class="table table-lg" data-filter="#filter" data-filter-text-only="true" data-page-size="10" data-limit-navigation="10">
                                                     <thead>
@@ -96,3 +151,5 @@
             </div>
         </div>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.6/dist/signature_pad.umd.min.js"></script>

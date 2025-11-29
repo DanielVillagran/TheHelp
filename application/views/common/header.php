@@ -118,7 +118,7 @@ switch ($this->tank_auth->get_user_type()) {
                     <li><span class="left-toggle-switch"><i class="zmdi zmdi-menu"></i></span></li>
                     <li>
                         <div class="logo-header">
-                           <a href="/home/"><img src="<?php echo $url; ?>" alt=""></a>
+                           <a href="/home/"><img src="/assets/files/fotos/LogoLM.png" alt=""></a>
                         </div>
                     </li>
                 </ul>

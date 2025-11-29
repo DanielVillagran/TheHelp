@@ -6,6 +6,7 @@ $(document).ready(function () {
   getDataAsistencias();
   getDataFacturados();
   getDataHC();
+  getDataSatisfaccion();
 });
 $("#asistencias_empresa").change(function () {
   $.ajax({
@@ -70,13 +71,13 @@ function inicializarChartAsistencias(data) {
         labels: ["Asistencias", "Faltas"],
         datasets: [{
           data: [data.asistencias, data.faltas],
-          backgroundColor: ["rgba(0, 200, 83, 0.85)", "rgba(244, 67, 54, 0.85)"]
+          backgroundColor: ["rgba(15, 65, 90, 0.85)", "rgba(236, 109, 10, 0.85)"]
         }]
       },
       options: {
         plugins: {
           datalabels: {
-            color: '#000',
+            color: '#FFF',
             font: { weight: 'bold', size: 12 },
             formatter: (value) => value + " (" + ((value / total) * 100).toFixed(1) + "%)"
           },
@@ -196,13 +197,13 @@ function inicializarChartFacturados(data) {
         labels: ["Facturados", "Faltas"],
         datasets: [{
           data: [data.facturado, data.noFacturado],
-          backgroundColor: ["rgba(0, 200, 83, 0.85)", "rgba(244, 67, 54, 0.85)"]
+          backgroundColor: ["rgba(15, 65, 90, 0.85)", "rgba(236, 109, 10, 0.85)"]
         }]
       },
       options: {
         plugins: {
           datalabels: {
-            color: '#000',
+            color: '#FFF',
             font: { weight: 'bold', size: 12 },
             formatter: (value) => {
               const moneda = new Intl.NumberFormat('es-MX', {
@@ -329,13 +330,13 @@ function inicializarChartHC(data) {
         labels: ["Activos", "Vacantes"],
         datasets: [{
           data: [data.cubiertos, data.vacantes],
-          backgroundColor: ["rgba(0, 200, 83, 0.85)", "rgba(244, 67, 54, 0.85)"]
+          backgroundColor: ["rgba(15, 65, 90, 0.85)", "rgba(236, 109, 10, 0.85)"]
         }]
       },
       options: {
         plugins: {
           datalabels: {
-            color: '#000',
+            color: '#FFF',
             font: { weight: 'bold', size: 12 },
             formatter: (value) => {
               const moneda = new Intl.NumberFormat('es-MX', {
@@ -395,3 +396,43 @@ function obtenerDetalleFaltasHC(tipo) {
   });
 }
 
+function actualizarSemaforo(valor) {
+  const el = document.getElementById('indice_satisfaccion');
+  el.innerText = valor + '%';
+
+  el.classList.remove('green', 'yellow', 'red');
+
+  if (valor >= 85) {
+      el.classList.add('green');
+  } else if (valor >= 80) {
+      el.classList.add('yellow');
+  } else {
+      el.classList.add('red');
+  }
+}
+
+function getDataSatisfaccion() {
+  var data = $("#form_filtros_satisfaccion").serialize();
+
+  $.ajax({
+    url: "/Reportes/get_satisfaccion_encuestas",
+    type: 'POST',
+    data: data,
+    dataType: 'json',
+    beforeSend: function (e) {
+      swal({
+        title: "Cargando",
+        showConfirmButton: false,
+        imageUrl: "/assets/images/loader.gif"
+      });
+    },
+    success: function (data) {
+      const valor = parseFloat(data).toFixed(2);
+      actualizarSemaforo(valor);
+      swal.close();
+    }
+  });
+}
+$("#form_filtros_satisfaccion select, #form_filtros_satisfaccion input").on("change", function () {
+  getDataSatisfaccion();
+});

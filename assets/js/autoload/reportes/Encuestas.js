@@ -79,7 +79,7 @@ function inicializarChartCalificaciones(preguntas) {
       scales: {
         x: {
           beginAtZero: true,
-          max: 10,
+          max: 100,
           ticks: {
             stepSize: 1
           },

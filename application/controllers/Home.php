@@ -35,10 +35,14 @@ class Home extends ANT_Controller
         $data['user_id'] = $this->tank_auth->get_user_id();
         $data['razones'] = Razones_Sociales_Model::get_select();
         $data['empresas'] = Empresas_Model::get_select();
-        $data['fecha_inicio'] = "2025-06-08";//date("Y-m-d");
+        $data['fecha_inicio'] = "2025-06-08"; //date("Y-m-d");
         $data['fecha_fin'] = date("Y-m-d");
         //$ids = $this->tank_auth->get_user_role();
-        $data['view'] = 'forms/Home';
+        $user_role_id = $this->tank_auth->get_user_role_id();
+
+        if ($user_role_id <= 2) {
+            $data['view'] = 'forms/Home';
+        }
         $this->session->unset_userdata('pagina_previa');
         $this->_load_views('Home/dashboard', $data);
     }
@@ -55,8 +59,8 @@ class Home extends ANT_Controller
             foreach ($aux as $a) {
 
                 $botones = '<button type="button" class="btn btn-denuncia" onclick="atender_denuncia(' . $a['id'] . ')">Atender</button>';
-				$span = '<span class="badge badge-denuncia">Atendida</span>';
-                $ubicacion='<button type="button" class="btn btn-ver-ubicacion" data-toggle="modal" data-target="#exampleModalCenter" onclick="initMap(\''.$a['lat'].'\',\''.$a['lon'].'\')"><img src="../assets/images/icon-map.svg" alt="">Ver ubicación</button>';
+                $span = '<span class="badge badge-denuncia">Atendida</span>';
+                $ubicacion = '<button type="button" class="btn btn-ver-ubicacion" data-toggle="modal" data-target="#exampleModalCenter" onclick="initMap(\'' . $a['lat'] . '\',\'' . $a['lon'] . '\')"><img src="../assets/images/icon-map.svg" alt="">Ver ubicación</button>';
                 if ($a['status'] == 0) {
                     $data['table'] .= '<tr>
 				<th class="td-foto"><img onclick="abrir_imagen(\'https://zumpango.vmcomp.com.mx/assets/files/denuncias/' . $a['imagen'] . '\')" src="https://zumpango.vmcomp.com.mx/assets/files/denuncias/' . $a['imagen'] . '" alt=""></th>
@@ -78,7 +82,6 @@ class Home extends ANT_Controller
                 }
             }
         } else {
-            
         }
         $this->output_json($data);
     }
@@ -87,7 +90,5 @@ class Home extends ANT_Controller
         $id = $this->input->post("id");
         $data = Denuncias_Model::Update(array('status' => 1), 'id=' . $id);
         $this->output_json($data);
-
     }
-
 }

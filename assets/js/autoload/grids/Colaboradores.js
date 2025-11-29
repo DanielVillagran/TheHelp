@@ -8,7 +8,7 @@ $("#btn_add_new").click(function () {
 
 function grid_load_data() {
     $.ajax({
-        url: "/Colaboradores/get_Colaboradores",
+        url: "/Colaboradores/get_Colaboradores/activo",
         type: 'POST',
         data: {
             'search': $.trim($('#filter').val())
@@ -71,41 +71,74 @@ $('#groups_grid').footable().on('click', '.row-edit', function (e) {
     var Nombre = $(this).attr('nom');
     window.location.href = '/Colaboradores/edit/' + idemp;
 });
-$("#carga_masiva").click(function () {
-    $("#archivo_excel").trigger("click");
-});
-$("#archivo_excel").change(function (e) {
-    var file = e.target.files[0];
-
+function handleUpload($input, uploadUrl, status) {
+    var file = $input[0].files[0];
     if (!file) return;
 
-    var reader = new FileReader();
+    if (file.type !== "application/pdf") {
+        swal({ title: 'Error!', text: 'Solo se permiten archivos PDF.', type: 'error' })
+            .then(() => { $input.val(''); });
+        return;
+    }
 
-    reader.onload = function (e) {
-        var data = new Uint8Array(e.target.result);
-        var workbook = XLSX.read(data, { type: "array" });
+    var formData = new FormData();
+    formData.append("file", file);
+    formData.append("status", status);
 
-        var firstSheetName = workbook.SheetNames[0];
-        var worksheet = workbook.Sheets[firstSheetName];
-        var jsonData = XLSX.utils.sheet_to_json(worksheet);
-        $.ajax({
-            url: "/Colaboradores/carga_masiva",
-            type: "POST",
-            data: JSON.stringify({ usuarios: jsonData }),
-            contentType: "application/json",
-            dataType: "json",
-            success: function (response) {
-                swal('Listo!', "Se ha procesado el documento con exito.", 'success');
-                $("#archivo_excel").val('');
+    $.ajax({
+        url: uploadUrl,
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            var res = (typeof response === 'string') ? JSON.parse(response) : response;
+            var operados = (res && res.resultado && Array.isArray(res.resultado.operados)) ? res.resultado.operados : [];
+            var rechazados = (res && res.resultado && Array.isArray(res.resultado.rechazados)) ? res.resultado.rechazados : [];
+
+            var listaOperados = operados.length ? operados.map(o => o.split(",")[0].trim()).join("<br>") : "Ninguno";
+            var listaRechazados = rechazados.length ? rechazados.map(r => r.split(",")[0].trim()).join("<br>") : "Ninguno";
+
+            var mensaje = `
+          <b>Procesados (${operados.length}):</b><br>${listaOperados}<br><br>
+          <b>Rechazados (${rechazados.length}):</b><br>${listaRechazados}
+        `;
+
+        swal({
+            title: 'Listo!',
+            text: mensaje,
+            type: 'success',
+            html: true
+          }, function () {
+            $input.val('');
+            grid_load_data();
+          });
+        },
+        error: function () {
+            swal({
+                title: 'Error!',
+                text: "Ocurrió un error al subir el documento.",
+                type: 'success',
+                html: true
+              }, function () {
+                $input.val('');
                 grid_load_data();
-            },
-            error: function (xhr) {
-                swal('Error!', "Ocurrio un error al cargar el documento.", 'error');
-                $("#archivo_excel").val('');
-            }
-        });
+              });
+           
+        }
+    });
+}
 
-    };
+$("#carga_masiva_baja").click(function () {
+    $("#archivo_excel_baja").trigger("click");
+});
+$("#archivo_excel_baja").change(function () {
+    handleUpload($("#archivo_excel_baja"), "/Colaboradores/leer_acuse", 5);
+});
 
-    reader.readAsArrayBuffer(file);
+$("#carga_masiva_prebaja").click(function () {
+    $("#archivo_excel_prebaja").trigger("click");
+});
+$("#archivo_excel_prebaja").change(function () {
+    handleUpload($("#archivo_excel_prebaja"), "/Colaboradores/leer_acuse", 4);
 });

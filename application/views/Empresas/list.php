@@ -1,5 +1,10 @@
 <!--Page Container Start Here-->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
+<style>
+    .permisoEdicion {
+        display: <?php echo ($this->tank_auth->user_has_privilege('Modificar empresas') ? "block" :  "none"); ?>;
+    }
+</style>
 
 <section class="sec-bread main-container">
     <div class="container-fluid">
@@ -28,13 +33,13 @@
                                     </div>
 
                                     <div class="col-lg-6 col-md-6 d-flex justify-content-end align-items-center gap-2 flex-wrap">
-                                        <div class="d-btn-agregar">
+                                        <div class="d-btn-agregar permisoEdicion">
                                             <form method="post" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
                                                 <input type="file" id="archivo_excel" accept=".xlsx" style="display:none">
-                                                <button type="button" id="carga_masiva" class="btn btn-sm  add-row">Carga Masiva</button>
+                                                <button type="button" id="carga_masiva" class="btn btn-sm  add-row ">Carga Masiva</button>
                                             </form>
                                             <br>
-                                            <a id="btn_add_new" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar Empresa</a>
+                                            <a id="btn_add_new" class="btn add-row btn-agregar "><i class="fa fa-plus"></i>Agregar Empresa</a>
                                         </div>
                                     </div>
                                 </div>

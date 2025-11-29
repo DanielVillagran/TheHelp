@@ -90,8 +90,9 @@ class Empresas extends ANT_Controller
 			$where = "empresas.id in (SELECT empresa_id from empresas_has_users where user_id=$user_id)";
 		}
 		$aux = Empresas_Model::get_grid_info($where);
-		$data['head'] = "<tr><th>Empresa</th>
+		$data['head'] = "<tr>
 		<th>Nombre cliente</th>
+		<th>Empresa</th>
 		<th>Responsable</th>
 		<th class='th-editar-colonia'>Editar</th>
 		</tr>
@@ -100,9 +101,10 @@ class Empresas extends ANT_Controller
 		if ($aux) {
 			foreach ($aux as $a) {
 				$botones = '<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>
-				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
-				$data['table'] .= '<tr><td>' . $a['razon_social'] . '</td>
+				<button type="button" class="btn btn-default row-delete permisoEdicion" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
+				$data['table'] .= '<tr>
 				<td>' . $a['nombre'] . '</td>
+				<td>' . $a['razon_social'] . '</td>
 				<td>' . $a['responsable_name'] . '</td>
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
 			}
@@ -145,16 +147,31 @@ class Empresas extends ANT_Controller
 	function save_assign()
 	{
 		$post = $this->input->post('users');
-		$hasValue = Empresas_Has_Users_Model::Load(array(
-			'select' => '*',
-			'result' => '1row',
-			"where" => "empresa_id=" . $post['empresa_id'] . " AND user_id=" . $post['user_id']
-		));
-		if ($hasValue) {
-			$this->output_json(false);
+		if ($post['empresa_id'] === '0') {
+			Empresas_Has_Users_Model::Delete("user_id=" . $post['user_id']);
+			$aux = Empresas_Model::Load(array(
+				'select' => "empresas.*",
+				'result' => 'array',
+				'where' => "empresas.status=1"
+			));
+			if ($aux) {
+				foreach ($aux as $key) {
+					$result = Empresas_Has_Users_Model::Insert(['user_id' => $post['user_id'], 'empresa_id' => $key['id']]);
+				}
+				$this->output_json($result);
+			}
 		} else {
-			$result = Empresas_Has_Users_Model::Insert($post);
-			$this->output_json($result);
+			$hasValue = Empresas_Has_Users_Model::Load(array(
+				'select' => '*',
+				'result' => '1row',
+				"where" => "empresa_id=" . $post['empresa_id'] . " AND user_id=" . $post['user_id']
+			));
+			if ($hasValue) {
+				$this->output_json(false);
+			} else {
+				$result = Empresas_Has_Users_Model::Insert($post);
+				$this->output_json($result);
+			}
 		}
 	}
 	function eliminar()
@@ -204,6 +221,32 @@ class Empresas extends ANT_Controller
 		}
 		$this->output_json($data);
 	}
+	function get_puestos_by_sede()
+	{
+		$id = $this->input->post('id');
+		$data['select'] = Empresas_Puestos_Horarios_Model::get_select_puesto("sede_id=" . $id);
+		$this->output_json($data);
+	}
+	function get_horarios_by_puesto()
+	{
+		$id = $this->input->post('id');
+		$sede_id = $this->input->post('sede_id');
+		$data['select'] = Empresas_Puestos_Horarios_Model::get_select("puesto_id=" . $id . " AND sede_id=" . $sede_id);
+		$this->output_json($data);
+	}
+	function get_datos_sueldo()
+	{
+		$puesto_id = $this->input->post('puesto_id');
+		$sede_id = $this->input->post('sede_id');
+		$horario_id = $this->input->post('horario_id');
+		$data['select'] = Empresas_Puestos_Horarios_Model::Load(array(
+			'select' => '*',
+			'result' => '1row',
+			'where' =>
+			"sede_id = $sede_id AND puesto_id = $puesto_id AND horario_id = $horario_id"
+		));
+		$this->output_json($data);
+	}
 	function save_horario()
 	{
 		$post = $this->input->post('horario');
@@ -241,7 +284,7 @@ class Empresas extends ANT_Controller
 				$botones = '
 				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
 				$data['table'] .= '<tr>
-				<td>' . $a['nombre'] . '</td>
+				<td>' . $a['nombre'] . " - " . $a['horario'] . '</td>
 				<td>' . ($a['lunes'] ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-times danger"></i>') . '</td>
 				<td>' . ($a['martes'] ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-times danger"></i>') . '</td>
 				<td>' . ($a['miercoles'] ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-times danger"></i>') . '</td>
@@ -290,7 +333,8 @@ class Empresas extends ANT_Controller
 	{
 		$id = $this->input->post('id');
 		$aux = Empresas_Puestos_Horarios_Model::get_grid_info("empresas_puestos_horarios.empresa_id=" . $id);
-
+		$total_personas = 0;
+		$total_cantidad = 0;
 
 		$data['head'] = "<tr>
 		<th>Puesto</th>
@@ -302,6 +346,8 @@ class Empresas extends ANT_Controller
 		$data['table'] = '';
 		if ($aux) {
 			foreach ($aux as $a) {
+				$total_personas += $a['cantidad'];
+				$total_cantidad += ($a['cantidad'] * $a['costo_unitario']);
 				$botones = '
 				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>
 				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>';
@@ -314,6 +360,8 @@ class Empresas extends ANT_Controller
 			}
 		} else {
 		}
+		$data['total_personas'] = $total_personas;
+		$data['total_cantidad'] = $total_cantidad;
 		$this->output_json($data);
 	}
 	function get_Empresas_puesto_id()

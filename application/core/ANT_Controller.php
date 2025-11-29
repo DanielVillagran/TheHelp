@@ -1,10 +1,50 @@
 <?php
-require_once BASEPATH.'../reviews/rev_driver.php';
+require_once BASEPATH . '../reviews/rev_driver.php';
 
 class ANT_Controller extends CI_Controller
 {
 	public $ruledriver;
-
+	public $estadosMexico = [
+		'Aguascalientes',
+		'Baja California',
+		'Baja California Sur',
+		'Campeche',
+		'Chiapas',
+		'Chihuahua',
+		'Ciudad de México',
+		'Coahuila',
+		'Colima',
+		'Durango',
+		'Estado de México',
+		'Guanajuato',
+		'Guerrero',
+		'Hidalgo',
+		'Jalisco',
+		'Michoacán',
+		'Morelos',
+		'Nayarit',
+		'Nuevo León',
+		'Oaxaca',
+		'Puebla',
+		'Querétaro',
+		'Quintana Roo',
+		'San Luis Potosí',
+		'Sinaloa',
+		'Sonora',
+		'Tabasco',
+		'Tamaulipas',
+		'Tlaxcala',
+		'Veracruz',
+		'Yucatán',
+		'Zacatecas'
+	];
+	public $estatus = [
+		'Pre Alta',
+		'Pre activo',
+		'Activo',
+		'Pre baja',
+		'Baja'
+	];
 	function __construct()
 	{
 		parent::__construct();
@@ -14,6 +54,42 @@ class ANT_Controller extends CI_Controller
 		$this->load->library('form_validation');
 		$this->ruledriver = new rev_driver();
 		$this->data['contacto_id'] = 3;
+	}
+
+	public function get_estatus_color($estatus)
+	{
+		$badgeClass = '';
+
+		switch (strtolower($estatus)) {
+			case 'pre alta':
+				$badgeClass = 'label-primary'; // azul
+				break;
+			case 'pre activo':
+				$badgeClass = 'label-info'; // celeste intermedio
+				break;
+			case 'activo':
+				$badgeClass = 'label-success'; // verde
+				break;
+			case 'pre baja':
+				$badgeClass = 'label-warning'; // amarillo
+				break;
+			case 'baja':
+				$badgeClass = 'label-danger'; // rojo
+				break;
+			default:
+				$badgeClass = 'label-default'; // gris por defecto
+				break;
+		}
+
+		return "<span class='label {$badgeClass}'>{$estatus}</span>";
+	}
+	function get_estados()
+	{
+		$data = "";
+		foreach ($this->estadosMexico as $key) {
+			$data .= "<option value='$key'>$key</option>";
+		}
+		return $data;
 	}
 
 	public function load_app_template($view = "index", $data = array())
@@ -30,12 +106,9 @@ class ANT_Controller extends CI_Controller
 
 	public function output_json($data)
 	{
-		if (isset($_GET['callback']))
-		{
-			$this->output->set_content_type('application/json')->set_output($_GET['callback'].'('.json_encode($data).')');
-		}
-		else
-		{
+		if (isset($_GET['callback'])) {
+			$this->output->set_content_type('application/json')->set_output($_GET['callback'] . '(' . json_encode($data) . ')');
+		} else {
 			$this->output->set_content_type('application/json')->set_output(json_encode($data));
 		}
 	}
@@ -44,16 +117,12 @@ class ANT_Controller extends CI_Controller
 	{
 		$url = $_SERVER['REQUEST_URI'];
 		$urltemp = explode("/", $url);
-		if (@$urltemp[1] != 'auth' && !(@$urltemp[1]=='erp' && @$urltemp[2]=='orders'))
-		{
-			if (!$this->ion_auth->logged_in())
-			{
+		if (@$urltemp[1] != 'auth' && !(@$urltemp[1] == 'erp' && @$urltemp[2] == 'orders')) {
+			if (!$this->ion_auth->logged_in()) {
 				//redirect them to the login page
 				$this->session->set_flashdata('message', 'Sin acceso');
 				redirect('auth/login', 'refresh');
-			}
-			elseif (!$this->ion_auth->in_group('Tortas el Moreno') && !$this->ion_auth->in_group('ALEXANDRIA'))
-			{
+			} elseif (!$this->ion_auth->in_group('Tortas el Moreno') && !$this->ion_auth->in_group('ALEXANDRIA')) {
 				//redirect them to the login page
 				//$this->session->set_flashdata('message', 'Usuario sin permisos para acceder a este  modulo');
 				//redirect('/', 'refresh');
@@ -61,85 +130,85 @@ class ANT_Controller extends CI_Controller
 		}
 	}
 
-	function evaluate_rules($rules, $array_data = array()){
+	function evaluate_rules($rules, $array_data = array())
+	{
 
 		$rulesResult = $this->ruledriver->process($rules, $array_data);
 		$rulesInfo = array();
 		$rulesWarning = array();
 		$rulesError = array();
 
-		if($rulesResult->Revisions != ""){
-			foreach($rulesResult->Revisions as $rule){
-				if($rule->type == 1){
+		if ($rulesResult->Revisions != "") {
+			foreach ($rulesResult->Revisions as $rule) {
+				if ($rule->type == 1) {
 					$rulesError[] = $rule;
 				}
-				if($rule->type == 2){
+				if ($rule->type == 2) {
 					$rulesWarning[] = $rule;
 				}
-				if($rule->type == 3){
+				if ($rule->type == 3) {
 					$rulesInfo[] = $rule;
 				}
 			}
 		}
 
 		$data["validation"] = true;
-		if($rulesResult->Result){
+		if ($rulesResult->Result) {
 			$data["validation"] = false;
 			$data["errors"] = $rulesError;
 			$data["warnings"] = $rulesWarning;
 			$data["info"] = $rulesInfo;
 		}
 
-		return $rulesResult->Revisions != ""?$this->print_rules($data):NULL;
+		return $rulesResult->Revisions != "" ? $this->print_rules($data) : NULL;
 	}
 
-	function print_rules($data){
+	function print_rules($data)
+	{
 		$info = $data["info"];
 		$warnings = $data["warnings"];
 		$errors = $data["errors"];
 
-		if(!$data["validation"]){
+		if (!$data["validation"]) {
 
-					$html = "<div class=\"content\">";
-					if(count($info)>0)
-					{
-						$html = $html."
+			$html = "<div class=\"content\">";
+			if (count($info) > 0) {
+				$html = $html . "
 							 <div class=\"rounded\">";
-								foreach ($info as $item){
-									$html = $html."<strong>".$item->RuleIdentifier."</strong> - ".$item->Message."</br>";
-								}
-							 $html = $html."</div>";
-					}
-					if(count($warnings)>0)
-					{
-						$html = $html."
+				foreach ($info as $item) {
+					$html = $html . "<strong>" . $item->RuleIdentifier . "</strong> - " . $item->Message . "</br>";
+				}
+				$html = $html . "</div>";
+			}
+			if (count($warnings) > 0) {
+				$html = $html . "
 							<div class=\"rounded\">";
-								foreach ($warnings as $item){
-									$html = $html."<strong>".$item->RuleIdentifier."</strong> - ".$item->Message."</br>";
-								}
-							 $html = $html."</div>";
-					}
-					if(count($errors)>0)
-					{
-						$html = $html."
+				foreach ($warnings as $item) {
+					$html = $html . "<strong>" . $item->RuleIdentifier . "</strong> - " . $item->Message . "</br>";
+				}
+				$html = $html . "</div>";
+			}
+			if (count($errors) > 0) {
+				$html = $html . "
 							<div class=\"rounded\">";
-								foreach ($errors as $item){
-									$html = $html."<strong>".$item->RuleIdentifier."</strong> - ".$item->Message."</br>";
-								}
-							$html = $html."</div>";
-					}
-					$html = $html."</div>";
+				foreach ($errors as $item) {
+					$html = $html . "<strong>" . $item->RuleIdentifier . "</strong> - " . $item->Message . "</br>";
+				}
+				$html = $html . "</div>";
+			}
+			$html = $html . "</div>";
 		}
 		return $html;
-
 	}
 
-	function getCatalogs(){
+	function getCatalogs()
+	{
 
 		return null;
 	}
 
-	function getTimeZone(){
+	function getTimeZone()
+	{
 		$timezone = "
 					<select class=\"form-control\" id=\"timezone\" name=\"timezone\">
 	                     <optgroup label=\"Pacific Time Zone\">
@@ -156,11 +225,12 @@ class ANT_Controller extends CI_Controller
 	                     </optgroup>
 	                  </select>
 				";
-		  return $timezone;
+		return $timezone;
 	}
 
-	function getTimeSet(){
-		 $timeset = "
+	function getTimeSet()
+	{
+		$timeset = "
 		 				<select class=\"form-control\" id=\"timeset\" name=\"timeset\">
 			                    <option>12:00 AM</option>
 			                    <option>12:30 AM</option>
@@ -217,7 +287,7 @@ class ANT_Controller extends CI_Controller
 
 	function isValidEmail($text = '')
 	{
-		return ((FALSE == filter_var($text, FILTER_VALIDATE_EMAIL))?FALSE:TRUE);
+		return ((FALSE == filter_var($text, FILTER_VALIDATE_EMAIL)) ? FALSE : TRUE);
 	}
 
 	function generate_police_number($id = 0, $view = 'HB')
@@ -279,22 +349,16 @@ class ANT_Controller extends CI_Controller
 	 * 					- boolean   error with the TRUE value if there is an error, any else is FALSE.
 	 * 					- string    message with a string of the error, if there is an error.
 	 */
-	function is_valid_post_file($filevar = NULL, $filename = '', $valid_types = array('image/gif','image/jpeg','image/png','image/pjpeg','image/jpg'), $max_size_allowed = 0)
+	function is_valid_post_file($filevar = NULL, $filename = '', $valid_types = array('image/gif', 'image/jpeg', 'image/png', 'image/pjpeg', 'image/jpg'), $max_size_allowed = 0)
 	{
-		$valid = array('exist'=>TRUE, 'error'=>FALSE, 'message'=>'');
-		if (!empty($filevar))
-		{
-			if (empty($filevar['tmp_name'][$filename]) || !file_exists($filevar['tmp_name'][$filename]))
-			{
+		$valid = array('exist' => TRUE, 'error' => FALSE, 'message' => '');
+		if (!empty($filevar)) {
+			if (empty($filevar['tmp_name'][$filename]) || !file_exists($filevar['tmp_name'][$filename])) {
 				$valid['exist'] = FALSE;
-			}
-			elseif (!in_array($filevar['type'][$filename], $valid_types))
-			{
+			} elseif (!in_array($filevar['type'][$filename], $valid_types)) {
 				$valid['error'] = TRUE;
 				$valid['message'] = 'El tipo de archivo no es valido.';
-			}
-			elseif ($max_size_allowed>0 && $filevar['size'][$filename]>$max_size_allowed)
-			{
+			} elseif ($max_size_allowed > 0 && $filevar['size'][$filename] > $max_size_allowed) {
 				$valid['error'] = TRUE;
 				$valid['message'] = 'El archivo supera el maximo permitido.';
 			}
@@ -302,25 +366,24 @@ class ANT_Controller extends CI_Controller
 		return $valid;
 	}
 
-	function is_valid_post_doc($filevar = NULL, $filename = '', $valid_types = array('image/doc','image/pdf','image/txt'), $max_size_allowed = 2097152)
+	function is_valid_post_doc($filevar = NULL, $filename = '', $valid_types = array('image/doc', 'image/pdf', 'image/txt'), $max_size_allowed = 2097152)
 	{
 		return $this->is_valid_post_file($filevar, $filename, $valid_types, $max_size_allowed);
 	}
 
-	function is_valid_ant_account($id_account=0)
+	function is_valid_ant_account($id_account = 0)
 	{
 		$is_valid = FALSE;
-		if ($id_account>0)
-		{
+		if ($id_account > 0) {
 			$options = array(
-				'select'=>'ant_account_id',
-				'clauses'=>array('id'=>$this->tank_auth->get_user_id()),
-				'result'=>'1row'
+				'select' => 'ant_account_id',
+				'clauses' => array('id' => $this->tank_auth->get_user_id()),
+				'result' => '1row'
 			);
 			$logged_ant_account_id = $this->get_user_ant_account();
 			$account_ant_account_id = Erp_Accounts_Model::Load($options);
-			$account_ant_account_id = ($account_ant_account_id)?$account_ant_account_id->ant_account_id:0;
-			$is_valid = ($this->is_sa_dev() || $logged_ant_account_id==$account_ant_account_id)?TRUE:FALSE;
+			$account_ant_account_id = ($account_ant_account_id) ? $account_ant_account_id->ant_account_id : 0;
+			$is_valid = ($this->is_sa_dev() || $logged_ant_account_id == $account_ant_account_id) ? TRUE : FALSE;
 		}
 		return TRUE; //$is_valid;
 	}
@@ -332,12 +395,10 @@ class ANT_Controller extends CI_Controller
 
 	function getRealIP()
 	{
-		if (!empty($_SERVER['HTTP_CLIENT_IP']))
-		{
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 			return $_SERVER['HTTP_CLIENT_IP'];
 		}
-		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-		{
+		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 			return $_SERVER['HTTP_X_FORWARDED_FOR'];
 		}
 		return $_SERVER['REMOTE_ADDR'];
@@ -346,18 +407,18 @@ class ANT_Controller extends CI_Controller
 	function get_user_ant_account()
 	{
 		$options = array(
-			'select'=>'ant_account_id',
-			'clauses'=>array('id'=>$this->tank_auth->get_user_id()),
-			'result'=>'1row'
+			'select' => 'ant_account_id',
+			'clauses' => array('id' => $this->tank_auth->get_user_id()),
+			'result' => '1row'
 		);
 		$logged_ant_account_id = Users_Model::Load($options);
-		return ($logged_ant_account_id)?$logged_ant_account_id->ant_account_id:0;
+		return ($logged_ant_account_id) ? $logged_ant_account_id->ant_account_id : 0;
 	}
 
-	function get_user_ant_account_info($ant_account_id=0)
+	function get_user_ant_account_info($ant_account_id = 0)
 	{
 		$options = array(
-			'select'=>'
+			'select' => '
 				ant_accounts.id,
 				ant_accounts.name,
 				ant_accounts.website,
@@ -377,21 +438,19 @@ class ANT_Controller extends CI_Controller
 				inv_accounts.carta_porte,
 				inv_accounts.fiscal_locales as impuestos_locales',
 			'joinsLeft' => array('inv_accounts' => 'inv_accounts.ant_account_id = ant_accounts.id'),
-			'clauses'=>array('ant_accounts.id'=>$ant_account_id),
-			'result'=>'1row'
+			'clauses' => array('ant_accounts.id' => $ant_account_id),
+			'result' => '1row'
 		);
 		return Ant_Accounts_Model::Load($options);
 	}
 
-	function hasPrivilege($privilege='', $userid=0)
+	function hasPrivilege($privilege = '', $userid = 0)
 	{
 		$has_privilege = FALSE;
-		if ($privilege!='')
-		{
-			$userid = ($userid>0)?$userid:$this->tank_auth->get_user_id();
+		if ($privilege != '') {
+			$userid = ($userid > 0) ? $userid : $this->tank_auth->get_user_id();
 			$aux = Users_Model::get_modules($privilege, $userid);
-			if ($aux)
-			{
+			if ($aux) {
 				$has_privilege = TRUE;
 			}
 		}
@@ -401,97 +460,64 @@ class ANT_Controller extends CI_Controller
 	function registrar_salida()
 	{
 		$id = $this->tank_auth->get_user_id();
-		if ($id>0)
-		{
-			Users_Model::Update(array('last_logout'=>date('Y-m-d H:i:s')), array('id'=>$id));
+		if ($id > 0) {
+			Users_Model::Update(array('last_logout' => date('Y-m-d H:i:s')), array('id' => $id));
 		}
 	}
 
 	/**
 	 * Generaci\xF3n de Documentos en PDF disponible para su uso en cualquier controlador
 	 */
-	function get_pdf($type='', $info=array())
+	function get_pdf($type = '', $info = array())
 	{
 		$this->load->library('pdf');
-                $this->load->library('pdf_code');
-		if (!in_array($type, array('protocolo','alberca','acondicionamiento','staff')) && !$this->tank_auth->is_logged_in())
-		{
+		$this->load->library('pdf_code');
+		if (!in_array($type, array('protocolo', 'alberca', 'acondicionamiento', 'staff')) && !$this->tank_auth->is_logged_in()) {
 			redirect('/');
 			return;
 		}
-		if ($type=='protocolo')
-		{
+		if ($type == 'protocolo') {
 			return $this->pdf_protocolo();
-		}
-		elseif ($type=='alberca')
-		{
+		} elseif ($type == 'alberca') {
 			return $this->pdf_alberca();
-		}
-		elseif ($type=='acondicionamiento')
-		{
+		} elseif ($type == 'acondicionamiento') {
 			return $this->pdf_acondicionamiento();
-		}
-		elseif ($type=='staff')
-		{
+		} elseif ($type == 'staff') {
 			return $this->pdf_staff();
-		}
-		elseif ($type=='ausencias')
-		{
+		} elseif ($type == 'ausencias') {
 			//'TITULAR', 'MEMBRESIA', 'INICIOAUSENCIA', 'NOMBRESOCIO', 'FINAUSENCIA', 'MOTIVO', 'MONTO', 'MESCARGO'
 			return $this->pdf_ausencias($info);
-		}
-		elseif ($type=='aviso')
-		{
+		} elseif ($type == 'aviso') {
 			//'DOMICILIO', 'TELEFONOS', 'WEBSITE', 'ACTUALIZACION'
 			return $this->pdf_aviso($info);
-		}
-		elseif ($type=='cancelacion')
-		{
+		} elseif ($type == 'cancelacion') {
 			//'NOMBRE', 'MEMBRESIA','TARJETA','MONTO','INICIO'
 			return $this->pdf_cancelacion($info);
-		}
-		elseif ($type=='cargo')
-		{
+		} elseif ($type == 'cargo') {
 			//'FECHA', 'AFILIACION', 'NOMBRE_COMERCIAL', 'TARJETA', 'RAZON_SOCIAL', 'NOMBRE'=>'', 'CONTRATO', 'CONCEPTO', 'MONTO', 'PERIORICIDAD'
 			return $this->pdf_cargo($info);
-		}
-		elseif ($type=='baja')
-		{
+		} elseif ($type == 'baja') {
 			//'FECHA', 'NOMBRE', 'MEMBRESIA_TITULAR', 'MEMBRESIA_SOCIO', 'MOTIVO', 'TITULAR'
 			return $this->pdf_baja($info);
-		}
-		elseif ($type=='horario')
-		{
+		} elseif ($type == 'horario') {
 			// NOMBRE, MEMBRESIA, MULTA
 			return $this->pdf_horario($info);
-		}
-		elseif ($type=='responsiva')
-		{
+		} elseif ($type == 'responsiva') {
 			//'SOCIO', 'MEMBRESIA', 'RESPONSABLE', 'DIRECCION', 'MENOR', 'EDAD'
 			return $this->pdf_responsiva($info);
-		}
-		elseif ($type=='cesion')
-		{
+		} elseif ($type == 'cesion') {
 			//'DIA', 'MES', 'ANIO', 'SOCIO', 'MEMBRESIA', 'NOMBRE', 'MOTIVO'
 			return $this->pdf_cesion($info);
-		}
-		elseif ($type=='contrato')
-		{
+		} elseif ($type == 'contrato') {
 			//'TITULAR', 'DOMICILIO', 'TIPOMEMBRESIA', 'PERIODO', 'INSCRIPCION', 'MANTENIMIENTO', 'ADICIONALES', 'PENALIDAD', 'PORCIENTO', 'DIA', 'MES', 'ANIO'
 			return $this->pdf_contrato($info);
-		}
-		elseif ($type=='modificaciones')
-		{
+		} elseif ($type == 'modificaciones') {
 			//'FECHA', 'TITULAR', 'MEMBRESIA', 'MOTIVO', 'CANTIDAD', 'PORCIENTO', TIPOMODIFICACION('MEMBRESIA', 'DEPENDIENTE', 'BAJA', 'REACTIVACION', 'REFERIDO')
 			return $this->pdf_modificaciones($info);
-		}
-		elseif ($type=='credencial')
-		{
+		} elseif ($type == 'credencial') {
 			//'FECHA', 'TITULAR', 'MEMBRESIA', 'MOTIVO', 'CANTIDAD', 'PORCIENTO', TIPOMODIFICACION('MEMBRESIA', 'DEPENDIENTE', 'BAJA', 'REACTIVACION', 'REFERIDO')
 			return $this->pdf_credencial($info);
-		}
-		else
-		{
+		} else {
 			redirect('/');
 		}
 	}
@@ -505,21 +531,20 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetCreator('esprezza.com');
 		$pdf->SetSubject('Contrato');
 		$pdf->SetKeywords('Consultoria');
-		$pdf->SetDisplayMode('default','single');
+		$pdf->SetDisplayMode('default', 'single');
 		$pdf->SetLeftMargin(15);
 		$pdf->SetRightMargin(15);
-		$pdf->SetFillColor(200,200,200);
+		$pdf->SetFillColor(200, 200, 200);
 	}
 
-	function add_page_header(&$pdf, $postion='left', $date=0, $pagesize='Letter', $page='P')
+	function add_page_header(&$pdf, $postion = 'left', $date = 0, $pagesize = 'Letter', $page = 'P')
 	{
 		$pdf->AddPage($page, $pagesize);
 		$pdf->SetLineWidth(0.2);
-		$path = realpath(dirname(__FILE__).'/../../assets/images');
-		$img1 = $path.DIRECTORY_SEPARATOR.'esprezza.png';
+		$path = realpath(dirname(__FILE__) . '/../../assets/images');
+		$img1 = $path . DIRECTORY_SEPARATOR . 'esprezza.png';
 		$imgsize = 66;
-		if ($postion=='center')
-		{
+		if ($postion == 'center') {
 			$x = 88;
 			$y = 10;
 			$xf = 15;
@@ -527,18 +552,14 @@ class ANT_Controller extends CI_Controller
 			$align = 'C';
 			$imgsize = 40;
 			$width = 186;
-		}
-		elseif ($postion=='right')
-		{
+		} elseif ($postion == 'right') {
 			$x = 130;
 			$y = 10;
 			$xf = 15;
 			$yf = 25;
 			$align = 'L';
 			$width = 186;
-		}
-		elseif ($postion=='report')
-		{
+		} elseif ($postion == 'report') {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -546,9 +567,7 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$imgsize = 50;
 			$width = 325;
-		}
-		else
-		{
+		} else {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -556,31 +575,27 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$width = 186;
 		}
-		$pdf->Image($img1,$x,$y,$imgsize);
+		$pdf->Image($img1, $x, $y, $imgsize);
 		$pdf->SetTextColor(0);
-		$pdf->SetFont('Arial','',10);
-		if ($date>0)
-		{
-			$pdf->SetXY($xf,$yf);
-			$pdf->Cell($width, 5, str_replace(array('january','february','march','april','may','june','july','august','september','october','november','december','#'), array('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre','de'), strtolower(date("d # F # Y"))), 0, 1, $align);
-		}
-		else
-		{
-			$pdf->SetXY($xf,$yf);
+		$pdf->SetFont('Arial', '', 10);
+		if ($date > 0) {
+			$pdf->SetXY($xf, $yf);
+			$pdf->Cell($width, 5, str_replace(array('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december', '#'), array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'de'), strtolower(date("d # F # Y"))), 0, 1, $align);
+		} else {
+			$pdf->SetXY($xf, $yf);
 		}
 		$pdf->Ln();
 	}
 
 
-	function add_page_header_anytext(&$pdf, $postion='left', $text='', $pagesize='Letter', $page='P')
+	function add_page_header_anytext(&$pdf, $postion = 'left', $text = '', $pagesize = 'Letter', $page = 'P')
 	{
 		$pdf->AddPage($page, $pagesize);
 		$pdf->SetLineWidth(0.2);
-		$path = realpath(dirname(__FILE__).'/../../assets/images');
-		$img1 = $path.DIRECTORY_SEPARATOR.'esprezza.png';
+		$path = realpath(dirname(__FILE__) . '/../../assets/images');
+		$img1 = $path . DIRECTORY_SEPARATOR . 'esprezza.png';
 		$imgsize = 66;
-		if ($postion=='center')
-		{
+		if ($postion == 'center') {
 			$x = 88;
 			$y = 10;
 			$xf = 15;
@@ -588,18 +603,14 @@ class ANT_Controller extends CI_Controller
 			$align = 'C';
 			$imgsize = 40;
 			$width = 186;
-		}
-		elseif ($postion=='right')
-		{
+		} elseif ($postion == 'right') {
 			$x = 130;
 			$y = 10;
 			$xf = 15;
 			$yf = 25;
 			$align = 'L';
 			$width = 186;
-		}
-		elseif ($postion=='report')
-		{
+		} elseif ($postion == 'report') {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -607,9 +618,7 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$imgsize = 50;
 			$width = 325;
-		}
-		else
-		{
+		} else {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -617,25 +626,24 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$width = 186;
 		}
-		$pdf->Image($img1,$x,$y,$imgsize);
+		$pdf->Image($img1, $x, $y, $imgsize);
 		$pdf->SetTextColor(0);
-		$pdf->SetFont('Arial','',10);
+		$pdf->SetFont('Arial', '', 10);
 
-		$pdf->SetXY($xf,$yf);
+		$pdf->SetXY($xf, $yf);
 		$pdf->Cell($width, 5, $text, 0, 1, $align);
 
 		$pdf->Ln();
 	}
 
-	function add_page_header_anytext_horizontal(&$pdf, $postion='left', $text='', $pagesize='Legal', $page='L')
+	function add_page_header_anytext_horizontal(&$pdf, $postion = 'left', $text = '', $pagesize = 'Legal', $page = 'L')
 	{
 		$pdf->AddPage($page, $pagesize);
 		$pdf->SetLineWidth(0.2);
-		$path = realpath(dirname(__FILE__).'/../../assets/images');
-		$img1 = $path.DIRECTORY_SEPARATOR.'esprezza.png';
+		$path = realpath(dirname(__FILE__) . '/../../assets/images');
+		$img1 = $path . DIRECTORY_SEPARATOR . 'esprezza.png';
 		$imgsize = 66;
-		if ($postion=='center')
-		{
+		if ($postion == 'center') {
 			$x = 162;
 			$y = 10;
 			$xf = 15;
@@ -643,18 +651,14 @@ class ANT_Controller extends CI_Controller
 			$align = 'C';
 			$imgsize = 40;
 			$width = 333;
-		}
-		elseif ($postion=='right')
-		{
+		} elseif ($postion == 'right') {
 			$x = 130;
 			$y = 10;
 			$xf = 15;
 			$yf = 25;
 			$align = 'L';
 			$width = 186;
-		}
-		elseif ($postion=='report')
-		{
+		} elseif ($postion == 'report') {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -662,9 +666,7 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$imgsize = 50;
 			$width = 325;
-		}
-		else
-		{
+		} else {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -672,26 +674,25 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$width = 186;
 		}
-		$pdf->Image($img1,$x,$y,$imgsize);
+		$pdf->Image($img1, $x, $y, $imgsize);
 		$pdf->SetTextColor(0);
-		$pdf->SetFont('Arial','',10);
+		$pdf->SetFont('Arial', '', 10);
 
-		$pdf->SetXY($xf,$yf);
+		$pdf->SetXY($xf, $yf);
 		$pdf->Cell($width, 5, $text, 0, 1, $align);
 
 		$pdf->Ln();
 	}
 
 
-	function add_page_header_general(&$pdf, $postion='left', $date=0, $pagesize='Legal', $page='L')
+	function add_page_header_general(&$pdf, $postion = 'left', $date = 0, $pagesize = 'Legal', $page = 'L')
 	{
 		$pdf->AddPage($page, $pagesize);
 		$pdf->SetLineWidth(0.2);
-		$path = realpath(dirname(__FILE__).'/../../assets/images');
-		$img1 = $path.DIRECTORY_SEPARATOR.'esprezza.png';
+		$path = realpath(dirname(__FILE__) . '/../../assets/images');
+		$img1 = $path . DIRECTORY_SEPARATOR . 'esprezza.png';
 		$imgsize = 66;
-		if ($postion=='center')
-		{
+		if ($postion == 'center') {
 			$x = 162;
 			$y = 10;
 			$xf = 15;
@@ -699,18 +700,14 @@ class ANT_Controller extends CI_Controller
 			$align = 'C';
 			$imgsize = 40;
 			$width = 333;
-		}
-		elseif ($postion=='right')
-		{
+		} elseif ($postion == 'right') {
 			$x = 130;
 			$y = 10;
 			$xf = 15;
 			$yf = 25;
 			$align = 'L';
 			$width = 186;
-		}
-		elseif ($postion=='report')
-		{
+		} elseif ($postion == 'report') {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -718,9 +715,7 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$imgsize = 50;
 			$width = 325;
-		}
-		else
-		{
+		} else {
 			$x = 20;
 			$y = 14;
 			$xf = 15;
@@ -728,42 +723,33 @@ class ANT_Controller extends CI_Controller
 			$align = 'R';
 			$width = 186;
 		}
-		$pdf->Image($img1,$x,$y,$imgsize);
+		$pdf->Image($img1, $x, $y, $imgsize);
 		$pdf->SetTextColor(0);
-		$pdf->SetFont('Arial','',10);
-		if ($date>0)
-		{
-			$pdf->SetXY($xf,$yf);
-			$pdf->Cell($width, 5, str_replace(array('january','february','march','april','may','june','july','august','september','october','november','december','#'), array('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre','de'), strtolower(date("d # F # Y"))), 0, 1, $align);
-		}
-		else
-		{
-			$pdf->SetXY($xf,$yf);
+		$pdf->SetFont('Arial', '', 10);
+		if ($date > 0) {
+			$pdf->SetXY($xf, $yf);
+			$pdf->Cell($width, 5, str_replace(array('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december', '#'), array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'de'), strtolower(date("d # F # Y"))), 0, 1, $align);
+		} else {
+			$pdf->SetXY($xf, $yf);
 		}
 		$pdf->Ln();
 	}
-	function add_page_footer($pdf, $calle=null, $num_ext=null, $neighborhood=null,$type='general')
+	function add_page_footer($pdf, $calle = null, $num_ext = null, $neighborhood = null, $type = 'general')
 	{
-		if ($type=='report')
-		{
+		if ($type == 'report') {
 			$xpos = 10;
 			$ypos = 206;
-		}
-		else
-		{
+		} else {
 			$xpos = 10;
 			$ypos = 268;
 		}
-		if(($calle!=null and $num_ext!=null) or $neighborhood!=null)
-		{
+		if (($calle != null and $num_ext != null) or $neighborhood != null) {
 
 			$pdf->SetTextColor(200, 200, 200);
 			$pdf->SetFont('Arial', '', 12);
-			$pdf->Text($xpos, $ypos, $calle." ".$num_ext." Col. ".$neighborhood);
+			$pdf->Text($xpos, $ypos, $calle . " " . $num_ext . " Col. " . $neighborhood);
 			$pdf->SetTextColor(0, 0, 0);
-
 		}
-
 	}
 
 	/**
@@ -774,7 +760,7 @@ class ANT_Controller extends CI_Controller
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$pdf->AddPage("P", "Letter");
-		$pdf->Cell(186,6,"",0,1);
+		$pdf->Cell(186, 6, "", 0, 1);
 		$textos = array(
 			"#B#PROTOCOLO DE SERVICIO PARA EL COACH EN \xC1REA DE FUERZA Y CARDIO",
 			"",
@@ -832,18 +818,14 @@ class ANT_Controller extends CI_Controller
 			"-	Se selecciona la rutina m\xE1s adecuada para el socio de acuerdo con la informaci\xF3n obtenida teniendo en cuenta siempre cierto margen de seguridad (ante la duda asignar la rutina menos intensa)",
 			"-	Se llena y se da seguimiento durante la estancia del socio.",
 		);
-		foreach ($textos as $t)
-		{
-			if(FALSE!==strpos($t, "#B#"))
-			{
+		foreach ($textos as $t) {
+			if (FALSE !== strpos($t, "#B#")) {
 				$t = str_replace("#B#", "", $t);
 				$pdf->SetFont("Arial", "B", 11);
-			}
-			else
-			{
+			} else {
 				$pdf->SetFont("Arial", "", 10);
 			}
-			$pdf->MultiCell(186,6.5,$t);
+			$pdf->MultiCell(186, 6.5, $t);
 		}
 		$pdf->Output("Life & Fitness - Protocolo de Servicio.pdf", "D");
 		exit;
@@ -857,7 +839,7 @@ class ANT_Controller extends CI_Controller
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$pdf->AddPage("P", "Letter");
-		$pdf->Cell(186,6,"",0,1);
+		$pdf->Cell(186, 6, "", 0, 1);
 		$textos = array(
 			"#B#                                         REGLAMENTO PARA USO DE AREA DE ALBERCA",
 			"",
@@ -879,18 +861,14 @@ class ANT_Controller extends CI_Controller
 			"    13.  El horario de uso de alberca es de 6:00 a 22:30 hrs.",
 			"",
 		);
-		foreach ($textos as $t)
-		{
-			if(FALSE!==strpos($t, "#B#"))
-			{
+		foreach ($textos as $t) {
+			if (FALSE !== strpos($t, "#B#")) {
 				$t = str_replace("#B#", "", $t);
 				$pdf->SetFont("Arial", "B", 11);
-			}
-			else
-			{
+			} else {
 				$pdf->SetFont("Arial", "", 10);
 			}
-			$pdf->MultiCell(186,7,$t);
+			$pdf->MultiCell(186, 7, $t);
 		}
 		$pdf->Output("Life & Fitness - Reglamento de Alberca.pdf", "D");
 		exit;
@@ -904,7 +882,7 @@ class ANT_Controller extends CI_Controller
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$pdf->AddPage("P", "Letter");
-		$pdf->Cell(186,6,"",0,1);
+		$pdf->Cell(186, 6, "", 0, 1);
 		$textos = array(
 			"#B#                        REGLAMENTO PARA USO DE AREA DE ACONDICIONAMIENTO FISICO",
 			"",
@@ -925,18 +903,14 @@ class ANT_Controller extends CI_Controller
 			"    12.  Siempre que sea necesario los socios deber\xE1n alternar el uso de los equipos para todos puedan usarlos.",
 			"    13.  Para un correcto uso del equipo consulte a nuestros entrenadores, est\xE1n capacitados y dispuestos.",
 		);
-		foreach ($textos as $t)
-		{
-			if(FALSE!==strpos($t, "#B#"))
-			{
+		foreach ($textos as $t) {
+			if (FALSE !== strpos($t, "#B#")) {
 				$t = str_replace("#B#", "", $t);
 				$pdf->SetFont("Arial", "B", 11);
-			}
-			else
-			{
+			} else {
 				$pdf->SetFont("Arial", "", 10);
 			}
-			$pdf->MultiCell(186,8,$t);
+			$pdf->MultiCell(186, 8, $t);
 		}
 		$pdf->Output("Life & Fitness - Reglamento Acondicionamiento Fisico.pdf", "D");
 		exit;
@@ -950,7 +924,7 @@ class ANT_Controller extends CI_Controller
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$pdf->AddPage("P", "Letter");
-		$pdf->Cell(186,6,"",0,1);
+		$pdf->Cell(186, 6, "", 0, 1);
 		$textos = array(
 			"#B#REGLAMENTO PARA PERSONAL DEL STAFF AREA DEPORTIVA.",
 			"",
@@ -1026,18 +1000,14 @@ class ANT_Controller extends CI_Controller
 			"       6.  Para  cambios  excepcionales  de turno, descansos o permisos  deber\xE1n  ser  solicitados  con  72  horas de\n            anticipaci\xF3n por lo menos al jefe del \xE1rea. Se llevar\xE1 un registro en bit\xE1cora.",
 			"       7.  Para solicitud de vacaciones deber\xE1n solicitarse 10 d\xEDas antes por los menos.",
 		);
-		foreach ($textos as $t)
-		{
-			if(FALSE!==strpos($t, "#B#"))
-			{
+		foreach ($textos as $t) {
+			if (FALSE !== strpos($t, "#B#")) {
 				$t = str_replace("#B#", "", $t);
 				$pdf->SetFont("Arial", "B", 11);
-			}
-			else
-			{
+			} else {
 				$pdf->SetFont("Arial", "", 10);
 			}
-			$pdf->MultiCell(186,5,$t);
+			$pdf->MultiCell(186, 5, $t);
 		}
 		$pdf->Output("Life & Fitness - Reglamento Personal de Staff.pdf", "D");
 		exit;
@@ -1046,7 +1016,7 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Ausencias
 	 */
-	function pdf_ausencias($info=NULL)
+	function pdf_ausencias($info = NULL)
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
@@ -1054,10 +1024,10 @@ class ANT_Controller extends CI_Controller
 
 		$pdf->Ln(10);
 		$pdf->SetFont("Arial", "B", 11);
-		$pdf->Cell(186,5,"AUSENCIA",0,1,"C");
+		$pdf->Cell(186, 5, "AUSENCIA", 0, 1, "C");
 		$pdf->Ln(15);
 		$pdf->SetFont("Arial", "B", 10);
-		$pdf->Cell(186,5,"DATOS DEL SOCIO:",0,1);
+		$pdf->Cell(186, 5, "DATOS DEL SOCIO:", 0, 1);
 		$pdf->SetFont("Arial", "", 10);
 		$txt = "
 			Nombre del socio titular: #TITULAR#
@@ -1078,26 +1048,26 @@ class ANT_Controller extends CI_Controller
 
                                                   ____________________________________________
                                                              Nombre y sello de quotemeta(str)uien recibe";
-		$info["TITULAR"] = isset($info["TITULAR"])?utf8_decode($info["TITULAR"]):"___________________________________________";
-		$info["MEMBRESIA"] = isset($info["MEMBRESIA"])?utf8_decode($info["MEMBRESIA"]):"_____________";
-		$info["INICIOAUSENCIA"] = isset($info["INICIOAUSENCIA"])?utf8_decode($info["INICIOAUSENCIA"]):"___________________";
-		$info["NOMBRESOCIO"] = isset($info["NOMBRESOCIO"])?utf8_decode($info["NOMBRESOCIO"]):"_________________________________________________________";
-		$info["FINAUSENCIA"] = isset($info["FINAUSENCIA"])?utf8_decode($info["FINAUSENCIA"]):"_______________________";
-		$info["MOTIVO"] = isset($info["MOTIVO"])?utf8_decode($info["MOTIVO"]):"__________________________________________________";
-		$info["MONTO"] = isset($info["MONTO"])?utf8_decode($info["MONTO"]):"______________________";
-		$info["MESCARGO"] = isset($info["MESCARGO"])?utf8_decode($info["MESCARGO"]):"____________________";
-		$txt = str_replace(array("#TITULAR#","#MEMBRESIA#","#INICIOAUSENCIA#","#NOMBRESOCIO#","#FINAUSENCIA#","#MOTIVO#","#MONTO#","#MESCARGO#"), array($info["TITULAR"],$info["MEMBRESIA"],$info["INICIOAUSENCIA"],$info["NOMBRESOCIO"],$info["FINAUSENCIA"],$info["MOTIVO"],$info["MONTO"],$info["MESCARGO"]), $txt);
+		$info["TITULAR"] = isset($info["TITULAR"]) ? utf8_decode($info["TITULAR"]) : "___________________________________________";
+		$info["MEMBRESIA"] = isset($info["MEMBRESIA"]) ? utf8_decode($info["MEMBRESIA"]) : "_____________";
+		$info["INICIOAUSENCIA"] = isset($info["INICIOAUSENCIA"]) ? utf8_decode($info["INICIOAUSENCIA"]) : "___________________";
+		$info["NOMBRESOCIO"] = isset($info["NOMBRESOCIO"]) ? utf8_decode($info["NOMBRESOCIO"]) : "_________________________________________________________";
+		$info["FINAUSENCIA"] = isset($info["FINAUSENCIA"]) ? utf8_decode($info["FINAUSENCIA"]) : "_______________________";
+		$info["MOTIVO"] = isset($info["MOTIVO"]) ? utf8_decode($info["MOTIVO"]) : "__________________________________________________";
+		$info["MONTO"] = isset($info["MONTO"]) ? utf8_decode($info["MONTO"]) : "______________________";
+		$info["MESCARGO"] = isset($info["MESCARGO"]) ? utf8_decode($info["MESCARGO"]) : "____________________";
+		$txt = str_replace(array("#TITULAR#", "#MEMBRESIA#", "#INICIOAUSENCIA#", "#NOMBRESOCIO#", "#FINAUSENCIA#", "#MOTIVO#", "#MONTO#", "#MESCARGO#"), array($info["TITULAR"], $info["MEMBRESIA"], $info["INICIOAUSENCIA"], $info["NOMBRESOCIO"], $info["FINAUSENCIA"], $info["MOTIVO"], $info["MONTO"], $info["MESCARGO"]), $txt);
 		$pdf->MultiCell(186, 6, $txt);
-		$pdf->SetXY(15,-26);
+		$pdf->SetXY(15, -26);
 		$pdf->SetTextColor(142, 142, 142);
 		$aux = Ant_Accounts_Model::get_info_sucursal($info['ant_accounts_id']);
-        $address = $aux[0]['fiscal_address'];
-        $address_n = $aux[0]['fiscal_address_ext_num'];
-        $neighborhood = $aux[0]['neighborhood'];
-        $city = $aux[0]['fiscal_city'];
-        $state = $aux[0]['fiscal_address_state'];
-        $phone = $aux[0]['fiscal_phone'];
-		$pdf->Cell(186, 5, $address." ".$address_n." Col ".$neighborhood." ".$city.", ".$state."      ".$phone,0,0,"C");
+		$address = $aux[0]['fiscal_address'];
+		$address_n = $aux[0]['fiscal_address_ext_num'];
+		$neighborhood = $aux[0]['neighborhood'];
+		$city = $aux[0]['fiscal_city'];
+		$state = $aux[0]['fiscal_address_state'];
+		$phone = $aux[0]['fiscal_phone'];
+		$pdf->Cell(186, 5, $address . " " . $address_n . " Col " . $neighborhood . " " . $city . ", " . $state . "      " . $phone, 0, 0, "C");
 		$pdf->Output("Life & Fitness - Ausencias.pdf", "D");
 		exit;
 	}
@@ -1105,41 +1075,40 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Aviso de privacidad
 	 */
-	function pdf_aviso($info=array())
+	function pdf_aviso($info = array())
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$this->add_page_header($pdf, "center");
 		$h = 4.9;
 
-		foreach (array("DOMICILIO"=>"(Domicilio).", "TELEFONOS"=>"(N\xFAmeros).", "WEBSITE"=>"(P\xE1gina de Internet)","ACTUALIZACION"=>"Enero 2014.") as $field=>$default)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):$default;
+		foreach (array("DOMICILIO" => "(Domicilio).", "TELEFONOS" => "(N\xFAmeros).", "WEBSITE" => "(P\xE1gina de Internet)", "ACTUALIZACION" => "Enero 2014.") as $field => $default) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : $default;
 		}
 		$aux = Ant_Accounts_Model::get_info_sucursal($info['ant_accounts_id']);
 		$name = $aux[0]["nombre_apoderado"];
-        $gender = $aux[0]['sexo_apoderado'];
-        $tipo = utf8_decode($aux[0]['tipo_apoderado']);
-        $address = $aux[0]['fiscal_address'];
-        $address_n = $aux[0]['fiscal_address_ext_num'];
-        $neighborhood = $aux[0]['neighborhood'];
-        $city = $aux[0]['fiscal_city'];
-        $state = $aux[0]['fiscal_address_state'];
-        $phone = $aux[0]['fiscal_phone'];
-        $cp = $aux[0]['fiscal_address_zip'];
-        $country = $aux[0]['fiscal_country'];
+		$gender = $aux[0]['sexo_apoderado'];
+		$tipo = utf8_decode($aux[0]['tipo_apoderado']);
+		$address = $aux[0]['fiscal_address'];
+		$address_n = $aux[0]['fiscal_address_ext_num'];
+		$neighborhood = $aux[0]['neighborhood'];
+		$city = $aux[0]['fiscal_city'];
+		$state = $aux[0]['fiscal_address_state'];
+		$phone = $aux[0]['fiscal_phone'];
+		$cp = $aux[0]['fiscal_address_zip'];
+		$country = $aux[0]['fiscal_country'];
 
 		$pdf->SetFont("Arial", "B", 8);
-		$pdf->Cell(186,$h+0.5,"AVISO DE PRIVACIDAD",0,1,"C");
+		$pdf->Cell(186, $h + 0.5, "AVISO DE PRIVACIDAD", 0, 1, "C");
 
 		$pdf->SetFont("Arial", "", 8);
-		$pdf->Cell(33,$h,"La sociedad denominada ",0,0,"J");
+		$pdf->Cell(33, $h, "La sociedad denominada ", 0, 0, "J");
 
 		$pdf->SetFont("Arial", "B", 8);
-		$pdf->Cell(102,$h,'"LIFE & FITNESS MEXICO", SOCIEDAD ANONIMA DE CAPITAL VARIABLE,',0,0,"J");
+		$pdf->Cell(102, $h, '"LIFE & FITNESS MEXICO", SOCIEDAD ANONIMA DE CAPITAL VARIABLE,', 0, 0, "J");
 
 		$pdf->SetFont("Arial", "", 8);
-		$pdf->Cell(51,$h," est\xE1 comprometida con la protecci\xF3n de",0,1,"J");
+		$pdf->Cell(51, $h, " est\xE1 comprometida con la protecci\xF3n de", 0, 1, "J");
 
 		$txt = "sus datos personales, al ser responsable de su uso, manejo y confidencialidad, y al respecto le informa lo siguiente:
 			Esta Sociedad, recaba y usa datos personales para el cumplimiento de las siguientes finalidades:
@@ -1151,11 +1120,11 @@ class ANT_Controller extends CI_Controller
 			De manera adicional, utilizamos su informaci\xF3n personal para realizar encuestas de evaluaci\xF3n del personal de esta sociedad, as\xED como para ofrecerle nuevos servicios o promociones.  Si bien, estas finalidades no son necesarias para prestarle los servicios que solicita o contrata con nosotros, las mismas nos permiten brindarle un mejor servicio y elevar su calidad.  En caso de que no desee que sus datos personales sean tratados para estos fines, desde este momento, Usted puede manifestar su negativa al personalidad de la sociedad de m\xE9rito, como a continuaci\xF3n se indica.
 			En  caso  de que NO desee que sus datos  personales se  utilicen para los fines  descritos en el p\xE1rrafo anterior, marque el siguiente recuadro con";
 		$pdf->MultiCell(186, $h, $txt);
-		$pdf->Cell(36,$h,"una cruz y asiente su firma:",0,0,"J");
-		$pdf->Cell(10,$h,"",1);
-		$pdf->Cell(3,$h,"");
-		$pdf->Cell(70,$h,"",1);
-		$pdf->Cell(67,$h,"",0,1);
+		$pdf->Cell(36, $h, "una cruz y asiente su firma:", 0, 0, "J");
+		$pdf->Cell(10, $h, "", 1);
+		$pdf->Cell(3, $h, "");
+		$pdf->Cell(70, $h, "", 1);
+		$pdf->Cell(67, $h, "", 0, 1);
 		$txt = "No consiento que mis datos personales se utilicen para los siguientes fines:
         		-  La realizaci\xF3n de encuestas de evaluaci\xF3n de los servicios prestados.
         		-  El ofrecimiento de nuevos servicios o promociones.
@@ -1177,7 +1146,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetFont("Arial", "B", 8);
 		$pdf->Cell(103, $h, '"LIFE & FITNESS MEXICO", SOCIEDAD ANONIMA DE CAPITAL VARIABLE,');
 		$pdf->SetFont("Arial", "", 8);
-		$pdf->Cell(9, $h," son", 0, 1);
+		$pdf->Cell(9, $h, " son", 0, 1);
 
 		$txt = "obtenidos de los documentos requisitados por Usted y de los documentos privados u oficiales que nos proporciona directamente, as\xED como de los documentos que expiden los diversos Registros y Dependencias P\xFAblicas Federales, Estatales y Municipales.
 			De forma eventual, sus datos personales se comparten para el cumplimiento de requerimientos legales o la atenci\xF3n de una orden fundada y motivada de las autoridades competentes en ejercicio de sus funciones de notificaci\xF3n, vigilancia y fiscalizaci\xF3n.  En cualquier caso, comunicaremos el presente aviso de privacidad a los destinatarios de sus datos personales, a fin de que respeten sus t\xE9rminos.
@@ -1193,18 +1162,18 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(66, $h, "SOCIEDAD AN\xD3NIMA DE CAPITAL VARIABLE.");
 		$pdf->SetFont("Arial", "", 8);
 		$pdf->Cell(120, $h, "Por lo cual, cualquier acci\xF3n o petici\xF3n que nos solicite  respecto a los mismos se regir\xE1 por la", 0, 1);
-		$pdf->Cell(186, $h, "legislaci\xF3n aplicable.",0,1);
+		$pdf->Cell(186, $h, "legislaci\xF3n aplicable.", 0, 1);
 		$txt = "Es importante informarle que su solicitud deber\xE1 de contener, al menos, la siguiente informaci\xF3n: (i) su nombre o el de su representante, domicilio u otro medio para comunicarle la respuesta; (ii) los documentos que acrediten s identidad, o en su caso, el de su representante; (iii) la descripci\xF3n clara y precisa de los datos personales respecto de los cuales busca ejercer su derecho; y (iv) cualquier otro elemento o documento que facilite la localizaci\xF3n de los datos personales.  En tal virtud, deber\xE1 de acreditar su identidad mediante identificaci\xF3n oficial vigente o en caso de presentar su solicitud a trav\xE9s de representante, a trav\xE9s de instrumento p\xFAblico \xF3 poder notarial.
 			Nos comprometemos a darle respuesta en un plazo m\xE1ximo de 20 d\xEDas h\xE1biles contados a partir del d\xEDa en que recibimos su solicitud, misma que pondremos a su disposici\xF3n en nuestro domicilio, previa acreditaci\xF3n de su identidad.  Si solicita acceso a sus datos personales, la reproducci\xF3n de \xE9stos se llevar\xE1 a cabo a trav\xE9s de copias simples, archivo electr\xF3nico, o bien, podr\xE1 consultarlos directamente en sitio. En caso de solicitar su derecho de rectificaci\xF3n, su solicitud deber\xE1 ir acompa\xF1ada de la documentaci\xF3n que ampare la procedencia de lo solicitado.
 			Si desea dejar de recibir publicidad o promociones de nuestros servicios podr\xE1:";
 		$pdf->MultiCell(186, $h, $txt);
 		$pdf->Cell(132, $h, "        -  Presentar  su  solicitud  personalmente  en  nuestro  domicilio  dirigida  a  sociedad  denominada ");
 		$pdf->SetFont("Arial", "B", 8);
-		$pdf->Cell(54, $h, '"LIFE & FITNESS MEXICO", SOCIEDAD.',0,1);
-		$pdf->Cell(186, $h, "           AN\xD3NIMA DE CAPITAL VARIABLE.",0,1);
+		$pdf->Cell(54, $h, '"LIFE & FITNESS MEXICO", SOCIEDAD.', 0, 1);
+		$pdf->Cell(186, $h, "           AN\xD3NIMA DE CAPITAL VARIABLE.", 0, 1);
 		$pdf->SetFont("Arial", "", 8);
 		$txt = "        -  Enviar un correo electr\xF3nico a la siguiente direcci\xF3n electr\xF3nica: lifeandfitness.gdl@outlook.com.
-        		-  Llamar a los n\xFAmeros telef\xF3nicos: ".$phone."
+        		-  Llamar a los n\xFAmeros telef\xF3nicos: " . $phone . "
         	El presente aviso de privacidad puede sufrir modificaciones o actualizaciones, por lo cual, nos comprometemos a mantenerlo informado de tal situaci\xF3n a trav\xE9s de los siguientes medios:
         		-  Nuestra p\xE1gina de internet
         		-  Notificaci\xF3n personal a su correo electr\xF3nico.
@@ -1212,15 +1181,15 @@ class ANT_Controller extends CI_Controller
 			Si Usted tiene alguna duda sobre el presente aviso de privacidad o nuestra pol\xEDtica de privacidad, puede dirigirla a:
         	-  La direcci\xF3n electr\xF3nica: lifeandfitness.gdl@outlook.com.";
 		$pdf->MultiCell(186, $h, $txt);
-		$pdf->Cell(95,$h, "        -  La  direcci\xF3n de correo postal  dirigida  a  la  sociedad  denominada");
+		$pdf->Cell(95, $h, "        -  La  direcci\xF3n de correo postal  dirigida  a  la  sociedad  denominada");
 		$pdf->SetFont("Arial", "B", 8);
-		$pdf->Cell(91,$h, '"LIFE  &  FITNESS  MEXICO",  SOCIEDAD  ANONIMA  DE  CAPITAL', 0, 1);
-		$pdf->Cell(25,$h, "           VARIABLE");
+		$pdf->Cell(91, $h, '"LIFE  &  FITNESS  MEXICO",  SOCIEDAD  ANONIMA  DE  CAPITAL', 0, 1);
+		$pdf->Cell(25, $h, "           VARIABLE");
 		$pdf->SetFont("Arial", "", 8);
 
-		$pdf->Cell(161,$h, "al siguiente domicilio: ".$address." ".$address_n." Col ".$neighborhood." CP: ".$cp." ".$city.", ".$state." ".$country.".", 0, 1);
+		$pdf->Cell(161, $h, "al siguiente domicilio: " . $address . " " . $address_n . " Col " . $neighborhood . " CP: " . $cp . " " . $city . ", " . $state . " " . $country . ".", 0, 1);
 		$pdf->SetFont("Arial", "", 8);
-		$txt = "        -  A los tel\xE9fonos: ".$phone.".
+		$txt = "        -  A los tel\xE9fonos: " . $phone . ".
 			Asimismo,  ponemos  a  su  entera  disposici\xF3n  copias  del  presente  aviso  de  privacidad  en  nuestro  domicilio  y en nuestra p\xE1gina de internet.
 			Si Usted considera que su derecho a la protecci\xF3n de datos personales ha sido vulnerado por alguna conducta de nuestros empleados o de nuestras actuaciones o respuestas, puede acudir ante el Instituto Federal de Acceso a la Informaci\xF3n y Protecci\xF3n de Datos (IFAI). Para mayor informaci\xF3n visite www.ifai.mx.";
 		$pdf->MultiCell(186, $h, $txt);
@@ -1228,14 +1197,14 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetFont("Arial", "B", 8);
 		$pdf->Cell(186, $h, '"LIFE & FITNESS MEXICO", SOCIEDAD ANONIMA DE CAPITAL VARIABLE.', 0, 1, "C");
 		$pdf->SetFont("Arial", "", 8);
-		if ($tipo !=null || $tipo != ""){
+		if ($tipo != null || $tipo != "") {
 			$pdf->Cell(76, $h, $tipo, 0, 0, "R");
-		}else{
-			if($gender=="H"){
+		} else {
+			if ($gender == "H") {
 				$pdf->Cell(76, "SE\xD1OR", $tipo, 0, 0, "R");
-			}else if ($gender=="M"){
+			} else if ($gender == "M") {
 				$pdf->Cell(76, $h, "SE\xD1ORA", 0, 0, "R");
-			}else{
+			} else {
 				$pdf->Cell(76, $h, "SE\xD1OR/A", 0, 0, "R");
 			}
 		}
@@ -1243,17 +1212,17 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(110, $h, $name, 0, 1);
 		$pdf->SetFont("Arial", "", 8);
 		$pdf->Cell(186, $h, $info["DOMICILIO"], 0, 1, "C");
-		$pdf->Cell(186, $h, "Tels. ".$info["TELEFONOS"], 0, 1, "C");
+		$pdf->Cell(186, $h, "Tels. " . $info["TELEFONOS"], 0, 1, "C");
 		$pdf->Cell(186, $h, $info["WEBSITE"], 0, 1, "C");
-		$pdf->Cell(186, $h, "Ultima actualizaci\xF3n ".$info["ACTUALIZACION"], 0, 1, "C");
-		$pdf->Ln($h*2);
+		$pdf->Cell(186, $h, "Ultima actualizaci\xF3n " . $info["ACTUALIZACION"], 0, 1, "C");
+		$pdf->Ln($h * 2);
 		$txt = "Firmo de conformidad, d\xE1ndome por enterado y explicado del contenido del presente Aviso de Privacidad.
 
 
 
 			Nombre y firma del Titular.";
 		$pdf->SetX(78);
-		$pdf->MultiCell(62, $h-1, $txt, 1, "C");
+		$pdf->MultiCell(62, $h - 1, $txt, 1, "C");
 		$pdf->Output("Life & Fitness - Aviso de Privacidad.pdf", "D");
 		exit;
 	}
@@ -1261,71 +1230,70 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Cancelacion Cargo Automatico
 	 */
-	function pdf_cancelacion($info=NULL)
+	function pdf_cancelacion($info = NULL)
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
-		$this->add_page_header($pdf, "left", (isset($info["FECHA"])?$info["FECHA"]:time()));
-		foreach (array("NOMBRE","MEMBRESIA","TARJETA","MONTO","INICIO") as $field)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):"";
+		$this->add_page_header($pdf, "left", (isset($info["FECHA"]) ? $info["FECHA"] : time()));
+		foreach (array("NOMBRE", "MEMBRESIA", "TARJETA", "MONTO", "INICIO") as $field) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : "";
 		}
 		$pdf->SetLineWidth(0.4);
-		$pdf->SetDrawColor(0,0,0);
+		$pdf->SetDrawColor(0, 0, 0);
 		$pdf->Ln(8);
 		$pdf->SetFont("Arial", "B", 11);
-		$pdf->Cell(186,5,"CARTA DE CANCELACI\xD3N DE SERVICIO",0,1,"C");
+		$pdf->Cell(186, 5, "CARTA DE CANCELACI\xD3N DE SERVICIO", 0, 1, "C");
 
 		$pdf->SetFont("Arial", "BU", 11);
-		$pdf->Cell(186,5,"CARGO AUTOM\xC1TICO A TARJETA",0,1,"C");
+		$pdf->Cell(186, 5, "CARGO AUTOM\xC1TICO A TARJETA", 0, 1, "C");
 		$pdf->Ln(12);
 
 		$pdf->SetFont("Arial", "B", 11);
-		$pdf->Cell(14,5,"");
-		$pdf->Cell(172,5,"DATOS DEL SOCIO:",0,1);
+		$pdf->Cell(14, 5, "");
+		$pdf->Cell(172, 5, "DATOS DEL SOCIO:", 0, 1);
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "", 11);
-		$pdf->Cell(14,5,"");
-		$pdf->Cell(35,5,"Nombre:");
-		$pdf->Cell(120,5,$info["NOMBRE"],"B");
-		$pdf->Cell(17,5,"",0,1);
+		$pdf->Cell(14, 5, "");
+		$pdf->Cell(35, 5, "Nombre:");
+		$pdf->Cell(120, 5, $info["NOMBRE"], "B");
+		$pdf->Cell(17, 5, "", 0, 1);
 		$pdf->Ln(10);
 
-		$pdf->Cell(14,5,"");
-		$pdf->Cell(35,5,"Membres\xEDa No.:");
-		$pdf->Cell(120,5,$info["MEMBRESIA"],"B");
-		$pdf->Cell(17,5,"",0,1);
+		$pdf->Cell(14, 5, "");
+		$pdf->Cell(35, 5, "Membres\xEDa No.:");
+		$pdf->Cell(120, 5, $info["MEMBRESIA"], "B");
+		$pdf->Cell(17, 5, "", 0, 1);
 		$pdf->Ln(10);
 
-		$pdf->Cell(14,5,"");
-		$pdf->Cell(35,5,"N\xFAmero de tarjeta:");
-		$pdf->Cell(120,5,$info["TARJETA"],"B");
-		$pdf->Cell(17,5,"",0,1);
+		$pdf->Cell(14, 5, "");
+		$pdf->Cell(35, 5, "N\xFAmero de tarjeta:");
+		$pdf->Cell(120, 5, $info["TARJETA"], "B");
+		$pdf->Cell(17, 5, "", 0, 1);
 		$pdf->Ln(10);
 
-		$pdf->Cell(14,5,"");
-		$pdf->Cell(35,5,"Monto:");
-		$pdf->Cell(120,5,$info["MONTO"],"B");
-		$pdf->Cell(17,5,"",0,1);
+		$pdf->Cell(14, 5, "");
+		$pdf->Cell(35, 5, "Monto:");
+		$pdf->Cell(120, 5, $info["MONTO"], "B");
+		$pdf->Cell(17, 5, "", 0, 1);
 		$pdf->Ln(10);
 
-		$pdf->Cell(14,5,"");
-		$pdf->Cell(35,5,"Fecha de inicio:");
-		$pdf->Cell(120,5,$info["INICIO"],"B");
-		$pdf->Cell(17,5,"",0,1);
+		$pdf->Cell(14, 5, "");
+		$pdf->Cell(35, 5, "Fecha de inicio:");
+		$pdf->Cell(120, 5, $info["INICIO"], "B");
+		$pdf->Cell(17, 5, "", 0, 1);
 		$pdf->Ln(10);
 
-		$pdf->Cell(14,5,"");
-		$pdf->MultiCell(155,5,"Por este conducto, solicito a Life & Fitness Mexico S.A de C.V suspenda definitivamente los cargos autom\xE1ticos que se realizaban a la mencionada tarjeta por concepto del cargo del mantenimiento mensual de dicha membres\xEDa.");
+		$pdf->Cell(14, 5, "");
+		$pdf->MultiCell(155, 5, "Por este conducto, solicito a Life & Fitness Mexico S.A de C.V suspenda definitivamente los cargos autom\xE1ticos que se realizaban a la mencionada tarjeta por concepto del cargo del mantenimiento mensual de dicha membres\xEDa.");
 		$pdf->Ln(22);
 
-		$pdf->Cell(186,5,"____________________________________________",0,1,"C");
-		$pdf->Cell(186,5,"Nombre y firma del tarjetahabiente",0,1,"C");
+		$pdf->Cell(186, 5, "____________________________________________", 0, 1, "C");
+		$pdf->Cell(186, 5, "Nombre y firma del tarjetahabiente", 0, 1, "C");
 		$pdf->Ln(25);
 
-		$pdf->Cell(186,5,"____________________________________________",0,1,"C");
-		$pdf->Cell(186,5,"Nombre y sello de quien recibe",0,1,"C");
+		$pdf->Cell(186, 5, "____________________________________________", 0, 1, "C");
+		$pdf->Cell(186, 5, "Nombre y sello de quien recibe", 0, 1, "C");
 
 		$pdf->SetLineWidth(0.1);
 		$pdf->Output("Life & Fitness - Cancelacion Cargo Automatico.pdf", "D");
@@ -1335,86 +1303,85 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Cargo Automatico
 	 */
-	function pdf_cargo($info=NULL)
+	function pdf_cargo($info = NULL)
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 
 		$pdf->AddPage("P", "Letter");
 		$pdf->SetLineWidth(0.2);
-		$path = realpath(dirname(__FILE__)."/../../assets/images");
-		$img1 = $path.DIRECTORY_SEPARATOR."esprezza.png";
+		$path = realpath(dirname(__FILE__) . "/../../assets/images");
+		$img1 = $path . DIRECTORY_SEPARATOR . "esprezza.png";
 		$x = 130;
 		$y = 10;
 		$xf = 15;
 		$yf = 25;
 		$align = "L";
-		$pdf->Image($img1,$x,$y,66);
+		$pdf->Image($img1, $x, $y, 66);
 
-		foreach (array("FECHA"=>"","AFILIACION"=>"7523195","NOMBRE_COMERCIAL"=>"Life & Fitness","TARJETA"=>"","RAZON_SOCIAL"=>"Life & Fitness Mexico S.A. de C.V.","NOMBRE"=>"","CONTRATO"=>"","CONCEPTO"=>"","MONTO"=>"","PERIORICIDAD"=>"") as $field=>$default)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):$default;
+		foreach (array("FECHA" => "", "AFILIACION" => "7523195", "NOMBRE_COMERCIAL" => "Life & Fitness", "TARJETA" => "", "RAZON_SOCIAL" => "Life & Fitness Mexico S.A. de C.V.", "NOMBRE" => "", "CONTRATO" => "", "CONCEPTO" => "", "MONTO" => "", "PERIORICIDAD" => "") as $field => $default) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : $default;
 		}
 
-		$pdf->SetTextColor(0,0,0);
-		$pdf->SetFont("Arial","B",14);
-		$pdf->Cell(186,5,"Carta Autorizaci\xF3n",0,1);
-		$pdf->Cell(186,5,"v\xEDa Cargos Recurrentes",0,1);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetFont("Arial", "B", 14);
+		$pdf->Cell(186, 5, "Carta Autorizaci\xF3n", 0, 1);
+		$pdf->Cell(186, 5, "v\xEDa Cargos Recurrentes", 0, 1);
 		$pdf->Ln();
-		$pdf->SetFont("Arial","B",10);
-		$pdf->Cell(186,5,"LIFE & FITNESS MEXICO S.A. DE C.V.",0,1);
-		$pdf->Cell(186,5,$address." ".$address_n." Col".$neighborhood." CP: ".$cp,0,1);
+		$pdf->SetFont("Arial", "B", 10);
+		$pdf->Cell(186, 5, "LIFE & FITNESS MEXICO S.A. DE C.V.", 0, 1);
+		$pdf->Cell(186, 5, $address . " " . $address_n . " Col" . $neighborhood . " CP: " . $cp, 0, 1);
 		$pdf->Ln(8);
 		$x = $pdf->GetX();
 		$y = $pdf->GetY();
 		$pdf->SetLineWidth(0.8);
-		$pdf->SetDrawColor(215,227,255);
-		$pdf->Line($x, $y, $x+186, $y);
+		$pdf->SetDrawColor(215, 227, 255);
+		$pdf->Line($x, $y, $x + 186, $y);
 
 		$pdf->SetLineWidth(0.1);
-		$pdf->SetDrawColor(0,0,0);
+		$pdf->SetDrawColor(0, 0, 0);
 		$pdf->Ln();
-		$pdf->SetFont("Arial","B",7);
-		$pdf->Cell(35,5,"Lugar y Fecha: ".$city." ".$state);
-		$pdf->Cell(58,5,$info["FECHA"],"B");
+		$pdf->SetFont("Arial", "B", 7);
+		$pdf->Cell(35, 5, "Lugar y Fecha: " . $city . " " . $state);
+		$pdf->Cell(58, 5, $info["FECHA"], "B");
 
-		$pdf->SetFont("Arial","B",9);
-		$pdf->Cell(93,5,"DATOS DEL NEGOCIO AFILIADO",0,1);
+		$pdf->SetFont("Arial", "B", 9);
+		$pdf->Cell(93, 5, "DATOS DEL NEGOCIO AFILIADO", 0, 1);
 		$x = $pdf->GetX();
 		$y = $pdf->GetY();
-		$pdf->Text($x, $y+6, "DATOS DEL TARJETAHABIENTE");
-		$pdf->SetFont("Arial","",10);
+		$pdf->Text($x, $y + 6, "DATOS DEL TARJETAHABIENTE");
+		$pdf->SetFont("Arial", "", 10);
 		$x = $pdf->GetX();
 		$y = $pdf->GetY();
-		$pdf->SetFont("Arial","B",8);
-		$pdf->Cell(93,5,"");
-		$pdf->Cell(30,5,"N\xFAmero de Afiliaci\xF3n: ");
-		$pdf->Cell(63,5,$info["AFILIACION"],0,1);//"7523195"
+		$pdf->SetFont("Arial", "B", 8);
+		$pdf->Cell(93, 5, "");
+		$pdf->Cell(30, 5, "N\xFAmero de Afiliaci\xF3n: ");
+		$pdf->Cell(63, 5, $info["AFILIACION"], 0, 1); //"7523195"
 
-		$pdf->Cell(93,5,"");
-		$pdf->Cell(27,5,"Nombre Comercial: ");
-		$pdf->Cell(66,5,$info["NOMBRE_COMERCIAL"],0,1); //"Life & Fitness"
+		$pdf->Cell(93, 5, "");
+		$pdf->Cell(27, 5, "Nombre Comercial: ");
+		$pdf->Cell(66, 5, $info["NOMBRE_COMERCIAL"], 0, 1); //"Life & Fitness"
 
-		$pdf->SetFont("Arial","B",8);
-		$pdf->Cell(28,5,"N\xFAmero de Tarjeta:");
-		$pdf->Cell(65,5,$info["TARJETA"],"B");
-		$pdf->Cell(20,5,"Raz\xF3n Social: ");
-		$pdf->Cell(73,5,$info["RAZON_SOCIAL"],0,1); // "Life & Fitness Mexico S.A. de C.V."
+		$pdf->SetFont("Arial", "B", 8);
+		$pdf->Cell(28, 5, "N\xFAmero de Tarjeta:");
+		$pdf->Cell(65, 5, $info["TARJETA"], "B");
+		$pdf->Cell(20, 5, "Raz\xF3n Social: ");
+		$pdf->Cell(73, 5, $info["RAZON_SOCIAL"], 0, 1); // "Life & Fitness Mexico S.A. de C.V."
 
-		$pdf->Cell(28,5,"Nombre completo:");
-		$pdf->Cell(158,5,$info["NOMBRE"],"B",1);
+		$pdf->Cell(28, 5, "Nombre completo:");
+		$pdf->Cell(158, 5, $info["NOMBRE"], "B", 1);
 		$pdf->Ln();
 
 		$x = $pdf->GetX();
 		$y = $pdf->GetY();
 		$pdf->SetLineWidth(0.8);
-		$pdf->SetDrawColor(215,227,255);
-		$pdf->Line($x, $y, $x+186, $y);
+		$pdf->SetDrawColor(215, 227, 255);
+		$pdf->Line($x, $y, $x + 186, $y);
 
 		$pdf->Ln();
 		$pdf->SetLineWidth(0.1);
-		$pdf->SetDrawColor(0,0,0);
-		$pdf->SetFont("Arial","",8);
+		$pdf->SetDrawColor(0, 0, 0);
+		$pdf->SetFont("Arial", "", 8);
 		$txt = "Por la presente autorizo a Banco Mercantil del Norte, S.A. Instituci\xF3n de Banca M\xFAltiple, Grupo Financiero Banorte, para que, con base en el/los contratos de adhesi\xF3n para la apertura de cr\xE9dito en cuenta corriente o para dep\xF3sitos en cuenta corriente seg\xFAn corresponda, que tengo celebrado y del cual se me otorg\xF3 la Tarjeta arriba descrita, se sirvan pagar por mi cuenta a nombre de Life & Fitness Mexico S.A. de C.V. los cargos por los conceptos, montos y periodicidad a continuaci\xF3n detallados, oblig\xE1ndome a informar en tiempo y forma en su caso el cambio de n\xFAmero de Tarjeta asignado por el Banco Emisor, que por reposici\xF3n, robo o extrav\xEDo, as\xED como la cancelaci\xF3n de la misma por cualquier otro motivo.
 
 			El Negocio Afiliado se\xF1alado en el encabezado, se obliga y es responsable de cumplir con:
@@ -1426,57 +1393,57 @@ class ANT_Controller extends CI_Controller
 		$pdf->MultiCell(186, 3.8, $txt);
 		$pdf->Ln(10);
 
-		$pdf->SetFont("Arial","B",8);
-		$pdf->Cell(186,5,"NO. CONTRATO",0,1,"C");
-		$pdf->Cell(68,5,"");
-		$pdf->Cell(50,5,$info["CONTRATO"],"B");
-		$pdf->Cell(68,5,"",0,1);
+		$pdf->SetFont("Arial", "B", 8);
+		$pdf->Cell(186, 5, "NO. CONTRATO", 0, 1, "C");
+		$pdf->Cell(68, 5, "");
+		$pdf->Cell(50, 5, $info["CONTRATO"], "B");
+		$pdf->Cell(68, 5, "", 0, 1);
 		$pdf->Ln(10);
 
-		$pdf->Cell(60,5,"CONCEPTO");
-		$pdf->Cell(3,5,"");
-		$pdf->Cell(60,5,"MONTO (M.N.)",0,0,"C");
-		$pdf->Cell(3,5,"");
-		$pdf->Cell(60,5,"PERIORICIDAD",0,1,"C");
+		$pdf->Cell(60, 5, "CONCEPTO");
+		$pdf->Cell(3, 5, "");
+		$pdf->Cell(60, 5, "MONTO (M.N.)", 0, 0, "C");
+		$pdf->Cell(3, 5, "");
+		$pdf->Cell(60, 5, "PERIORICIDAD", 0, 1, "C");
 
-		$pdf->Cell(60,4,$info["CONCEPTO"],"B");
-		$pdf->Cell(3,4,"");
-		$pdf->Cell(60,4,$info["MONTO"],"B");
-		$pdf->Cell(3,4,"");
-		$pdf->Cell(60,4,$info["PERIORICIDAD"],"B",1);
+		$pdf->Cell(60, 4, $info["CONCEPTO"], "B");
+		$pdf->Cell(3, 4, "");
+		$pdf->Cell(60, 4, $info["MONTO"], "B");
+		$pdf->Cell(3, 4, "");
+		$pdf->Cell(60, 4, $info["PERIORICIDAD"], "B", 1);
 		$pdf->Ln(4);
 
-		$pdf->SetFont("Arial","",8);
-		$pdf->Cell(186,6,"La periodicidad y el monto pueden ser variables o fijos y deber\xE1 especificarse claramente para el Tarjetahabiente.",0,1);
+		$pdf->SetFont("Arial", "", 8);
+		$pdf->Cell(186, 6, "La periodicidad y el monto pueden ser variables o fijos y deber\xE1 especificarse claramente para el Tarjetahabiente.", 0, 1);
 
-		$pdf->SetFont("Arial","B",8);
-		$pdf->Cell(186,6,"Invariablemente deber\xE1 de efectuarse la validaci\xF3n visual de las firmas de la tarjeta bancaria contra la identificaci\xF3n oficial.",0,1);
+		$pdf->SetFont("Arial", "B", 8);
+		$pdf->Cell(186, 6, "Invariablemente deber\xE1 de efectuarse la validaci\xF3n visual de las firmas de la tarjeta bancaria contra la identificaci\xF3n oficial.", 0, 1);
 		$pdf->Ln(5);
 
 		$x = $pdf->GetX();
 		$y = $pdf->GetY();
 		$pdf->SetLineWidth(0.8);
-		$pdf->SetDrawColor(215,227,255);
-		$pdf->Line($x, $y, $x+186, $y);
+		$pdf->SetDrawColor(215, 227, 255);
+		$pdf->Line($x, $y, $x + 186, $y);
 
 		$pdf->Ln();
 		$pdf->SetLineWidth(0.1);
-		$pdf->SetDrawColor(0,0,0);
-		$pdf->SetFont("Arial","B",9);
+		$pdf->SetDrawColor(0, 0, 0);
+		$pdf->SetFont("Arial", "B", 9);
 
 		$pdf->Ln(34);
-		$pdf->Cell(10,5,"");
-		$pdf->Cell(70,5,"Acepto el Servicio Cargo Recurrente","T",0,"C");
-		$pdf->Cell(36,5,"");
-		$pdf->Cell(70,5,"Firma del responsable y sello del Negocio","T",1,"C");
+		$pdf->Cell(10, 5, "");
+		$pdf->Cell(70, 5, "Acepto el Servicio Cargo Recurrente", "T", 0, "C");
+		$pdf->Cell(36, 5, "");
+		$pdf->Cell(70, 5, "Firma del responsable y sello del Negocio", "T", 1, "C");
 
-		$pdf->Cell(10,5,"");
-		$pdf->Cell(70,5,"Nombre y firma del Tarjetahabiente",0,0,"C");
-		$pdf->Cell(106,5,"",0,1);
+		$pdf->Cell(10, 5, "");
+		$pdf->Cell(70, 5, "Nombre y firma del Tarjetahabiente", 0, 0, "C");
+		$pdf->Cell(106, 5, "", 0, 1);
 
-		$pdf->Cell(10,5,"");
-		$pdf->Cell(70,5,"(Obligatorio)",0,0,"C");
-		$pdf->Cell(106,5,"",0,1);
+		$pdf->Cell(10, 5, "");
+		$pdf->Cell(70, 5, "(Obligatorio)", 0, 0, "C");
+		$pdf->Cell(106, 5, "", 0, 1);
 
 		$pdf->Output("Life & Fitness - Cargo Automatico.pdf", "D");
 		exit;
@@ -1485,102 +1452,101 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Carta Baja Conformidad Baja de Membresia
 	 */
-	function pdf_baja($info=NULL)
+	function pdf_baja($info = NULL)
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$this->add_page_header($pdf, "left", time());
-		foreach (array("FECHA"=>"___________________________","NOMBRE"=>"_________________________________________________________","MEMBRESIA_TITULAR"=>"", "MEMBRESIA_SOCIO"=>"________________","MOTIVO"=>"____________________________________________________________________________", "TITULAR"=>"") as $field=>$default)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):$default;
+		foreach (array("FECHA" => "___________________________", "NOMBRE" => "_________________________________________________________", "MEMBRESIA_TITULAR" => "", "MEMBRESIA_SOCIO" => "________________", "MOTIVO" => "____________________________________________________________________________", "TITULAR" => "") as $field => $default) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : $default;
 		}
 		$aux = Ant_Accounts_Model::get_info_sucursal($info['ant_accounts_id']);
 
-        $address = $aux[0]['fiscal_address'];
-        $address_n = $aux[0]['fiscal_address_ext_num'];
-        $neighborhood = $aux[0]['neighborhood'];
-        $city = $aux[0]['fiscal_city'];
-        $state = $aux[0]['fiscal_address_state'];
-        $phone = $aux[0]['fiscal_phone'];
+		$address = $aux[0]['fiscal_address'];
+		$address_n = $aux[0]['fiscal_address_ext_num'];
+		$neighborhood = $aux[0]['neighborhood'];
+		$city = $aux[0]['fiscal_city'];
+		$state = $aux[0]['fiscal_address_state'];
+		$phone = $aux[0]['fiscal_phone'];
 
-		$pdf->SetFont("Arial","B",11);
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"CARTA CONFORMIDAD BAJA DE MEMBRES\xCDA",0,1,"C");
+		$pdf->SetFont("Arial", "B", 11);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "CARTA CONFORMIDAD BAJA DE MEMBRES\xCDA", 0, 1, "C");
 		$pdf->Ln();
 
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"DATOS DEL SOCIO:",0,1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "DATOS DEL SOCIO:", 0, 1);
 		$pdf->Ln();
 
-		$pdf->SetFont("Arial","",9);
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(36,4,"Nombre del socio titular:");
-		$pdf->Cell(124,4,$info["TITULAR"],"B",1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(36, 4, "Nombre del socio titular:");
+		$pdf->Cell(124, 4, $info["TITULAR"], "B", 1);
 		$pdf->Ln();
 
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(25,5,"Membres\xEDa No.:");
-		$pdf->Cell(50,5,$info["MEMBRESIA_TITULAR"],"B");
-		$pdf->Cell(85,5,$info["MEMBRESIA_TITULAR"],0,1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(25, 5, "Membres\xEDa No.:");
+		$pdf->Cell(50, 5, $info["MEMBRESIA_TITULAR"], "B");
+		$pdf->Cell(85, 5, $info["MEMBRESIA_TITULAR"], 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(12,4,"");
+		$pdf->Cell(12, 4, "");
 		$txt = "Por este conducto, acuerdo que desde el d\xEDa #FECHA# el socio (a) de nombre #NOMBRE# queda dado de baja de la membres\xEDa No. #MEMBRESIA# por el siguiente motivo:
 			#MOTIVO#
 			de tal forma que entregar\xE1 su credencial y no tendr\xE1 acceso al club ni a sus servicios desde la fecha se\xF1alada.
 
 			En  dado  caso  de  querer  regresar  a  ser socio de Life & Fitness a su membres\xEDa original existen tres opciones:";
-		$txt = str_replace(array("#FECHA#","#NOMBRE#","#MEMBRESIA#","#MOTIVO#"), array($info["FECHA"],$info["NOMBRE"],$info["MEMBRESIA_SOCIO"],$info["MOTIVO"]), $txt);
+		$txt = str_replace(array("#FECHA#", "#NOMBRE#", "#MEMBRESIA#", "#MOTIVO#"), array($info["FECHA"], $info["NOMBRE"], $info["MEMBRESIA_SOCIO"], $info["MOTIVO"]), $txt);
 		$pdf->MultiCell(162, 5, $txt);
 
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"    1.- Realizar  el  pago  de  los  meses  de  adeudo y el mes correspondiente a su mantenimiento al momento de");
-		$pdf->Cell(12,4,"",0,1);
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"         hacer el tr\xE1mite.");
-		$pdf->Cell(12,4,"",0,1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "    1.- Realizar  el  pago  de  los  meses  de  adeudo y el mes correspondiente a su mantenimiento al momento de");
+		$pdf->Cell(12, 4, "", 0, 1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "         hacer el tr\xE1mite.");
+		$pdf->Cell(12, 4, "", 0, 1);
 
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"    2.- En  caso  de  tener  tres  o  m\xE1s  meses  sin  pago registrado, el interesado  puede realizar  una reactivaci\xF3n");
-		$pdf->Cell(12,4,"",0,1);
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"         pagando  el  33%  del  costo  de  la  membres\xEDa  al  momento  del  tr\xE1mite  y  el  mes  correspondiente de su");
-		$pdf->Cell(12,4,"",0,1);
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"         mantenimiento.");
-		$pdf->Cell(12,4,"",0,1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "    2.- En  caso  de  tener  tres  o  m\xE1s  meses  sin  pago registrado, el interesado  puede realizar  una reactivaci\xF3n");
+		$pdf->Cell(12, 4, "", 0, 1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "         pagando  el  33%  del  costo  de  la  membres\xEDa  al  momento  del  tr\xE1mite  y  el  mes  correspondiente de su");
+		$pdf->Cell(12, 4, "", 0, 1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "         mantenimiento.");
+		$pdf->Cell(12, 4, "", 0, 1);
 
-		$pdf->Cell(12,4,"");
-		$pdf->Cell(162,4,"    3.- Adquirir  una  nueva  membres\xEDa  ajust\xE1ndose  a los requerimientos  al  momento  de  la  nueva  inscripci\xF3n.");
-		$pdf->Cell(12,4,"",0,1);
+		$pdf->Cell(12, 4, "");
+		$pdf->Cell(162, 4, "    3.- Adquirir  una  nueva  membres\xEDa  ajust\xE1ndose  a los requerimientos  al  momento  de  la  nueva  inscripci\xF3n.");
+		$pdf->Cell(12, 4, "", 0, 1);
 
 		$pdf->Ln(40);
-		$pdf->Cell(62,4,"");
-		$pdf->Cell(62,4,"","B",0,"C");
-		$pdf->Cell(42,4,"",0,1);
-		$pdf->Cell(62,4,"");
-		$pdf->Cell(62,4,"Nombre y firma de conformidad socio titular",0,0,"C");
-		$pdf->Cell(42,4,"",0,1);
+		$pdf->Cell(62, 4, "");
+		$pdf->Cell(62, 4, "", "B", 0, "C");
+		$pdf->Cell(42, 4, "", 0, 1);
+		$pdf->Cell(62, 4, "");
+		$pdf->Cell(62, 4, "Nombre y firma de conformidad socio titular", 0, 0, "C");
+		$pdf->Cell(42, 4, "", 0, 1);
 
 		$pdf->Ln(25);
-		$pdf->Cell(62,4,"");
-		$pdf->Cell(62,4,"","B",0,"C");
-		$pdf->Cell(42,4,"",0,1);
-		$pdf->Cell(62,4,"");
-		$pdf->Cell(62,4,"Nombre y firma de conformidad socio que se da de baja",0,0,"C");
-		$pdf->Cell(42,4,"",0,1);
+		$pdf->Cell(62, 4, "");
+		$pdf->Cell(62, 4, "", "B", 0, "C");
+		$pdf->Cell(42, 4, "", 0, 1);
+		$pdf->Cell(62, 4, "");
+		$pdf->Cell(62, 4, "Nombre y firma de conformidad socio que se da de baja", 0, 0, "C");
+		$pdf->Cell(42, 4, "", 0, 1);
 
 		$pdf->Ln(25);
-		$pdf->Cell(62,4,"");
-		$pdf->Cell(62,4,"","B",0,"C");
-		$pdf->Cell(42,4,"",0,1);
-		$pdf->Cell(62,4,"");
-		$pdf->Cell(62,4,"Nombre y sello de quien recibe",0,0,"C");
-		$pdf->Cell(42,4,"",0,1);
+		$pdf->Cell(62, 4, "");
+		$pdf->Cell(62, 4, "", "B", 0, "C");
+		$pdf->Cell(42, 4, "", 0, 1);
+		$pdf->Cell(62, 4, "");
+		$pdf->Cell(62, 4, "Nombre y sello de quien recibe", 0, 0, "C");
+		$pdf->Cell(42, 4, "", 0, 1);
 
-		$pdf->SetFont("Arial","",10);
-		$pdf->SetTextColor(200,200,200);
-		$pdf->Text(40,266,$address." ".$address_n." Col ".$neighborhood." ".$city.", ".$state."      ".$phone);
+		$pdf->SetFont("Arial", "", 10);
+		$pdf->SetTextColor(200, 200, 200);
+		$pdf->Text(40, 266, $address . " " . $address_n . " Col " . $neighborhood . " " . $city . ", " . $state . "      " . $phone);
 
 		$pdf->Output("Life & Fitness - Carta Baja Conformidad Baja Membresia.pdf", "D");
 		exit;
@@ -1589,28 +1555,28 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Carta Horario Basico Conformidad
 	 */
-	function pdf_horario($info=NULL)
+	function pdf_horario($info = NULL)
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$this->add_page_header($pdf, "left", time());
-		$info["NOMBRE"] = isset($info["NOMBRE"])?utf8_decode($info["NOMBRE"]):"";
-		$info["MEMBRESIA"] = isset($info["MEMBRESIA"])?utf8_decode($info["MEMBRESIA"]):"";
-		$info["MULTA"] = isset($info["MULTA"])?utf8_decode($info["MULTA"]):"100.00";
+		$info["NOMBRE"] = isset($info["NOMBRE"]) ? utf8_decode($info["NOMBRE"]) : "";
+		$info["MEMBRESIA"] = isset($info["MEMBRESIA"]) ? utf8_decode($info["MEMBRESIA"]) : "";
+		$info["MULTA"] = isset($info["MULTA"]) ? utf8_decode($info["MULTA"]) : "100.00";
 
 		$pdf->Ln();
-		$pdf->SetFont("Arial","B",11);
+		$pdf->SetFont("Arial", "B", 11);
 
 		$pdf->Cell(16, 7, "");
 		$pdf->Cell(154, 7, "CARTA CONFORMIDAD MEMBRES\xCDA HORARIO B\xC1SICO", 0, 1, "C");
 		$pdf->Ln();
 
-		$pdf->SetFont("Arial","B",10);
+		$pdf->SetFont("Arial", "B", 10);
 		$pdf->Cell(16, 6, "");
 		$pdf->Cell(154, 6, "DATOS DEL SOCIO:", 0, 1);
 		$pdf->Ln(4);
 
-		$pdf->SetFont("Arial","",10);
+		$pdf->SetFont("Arial", "", 10);
 		$pdf->Cell(16, 6, "");
 		$pdf->Cell(30, 6, "Nombre del socio:");
 		$pdf->Cell(124, 6, $info["NOMBRE"], "B", 1);
@@ -1624,45 +1590,45 @@ class ANT_Controller extends CI_Controller
 		$pdf->MultiCell(154, 4, "Por este conducto, me comprometo a respetar los horarios establecidos en la membres\xEDa horario b\xE1sico:");
 		$pdf->Ln(8);
 
-		$pdf->SetFont("Arial","B",10);
+		$pdf->SetFont("Arial", "B", 10);
 		$pdf->Cell(16, 4, "");
-		$pdf->Cell(154, 4, "Lunes a Viernes: de 10:00 a las 18:00",0, 1,"C");
+		$pdf->Cell(154, 4, "Lunes a Viernes: de 10:00 a las 18:00", 0, 1, "C");
 		$pdf->Cell(16, 4, "");
-		$pdf->Cell(154, 4, "S\xE1bados: 08:00 a las 18:00",0, 1,"C");
+		$pdf->Cell(154, 4, "S\xE1bados: 08:00 a las 18:00", 0, 1, "C");
 		$pdf->Cell(16, 4, "");
-		$pdf->Cell(154, 4, "Domingos: 09:00 a 16:00",0, 1,"C");
+		$pdf->Cell(154, 4, "Domingos: 09:00 a 16:00", 0, 1, "C");
 		$pdf->Ln(8);
 
-		$pdf->SetFont("Arial","",10);
+		$pdf->SetFont("Arial", "", 10);
 		$pdf->Cell(16, 4, "");
-		$pdf->Cell(154, 4, "De lo contrario, al registrar entrada o salida del club en horarios fuera de lo  establecido, se  har\xE1",0,1);
+		$pdf->Cell(154, 4, "De lo contrario, al registrar entrada o salida del club en horarios fuera de lo  establecido, se  har\xE1", 0, 1);
 
 		$pdf->Cell(16, 4, "");
 		$pdf->Cell(6, 4, "un ");
-		$pdf->SetFont("Arial","B",10);
-		$pdf->Cell(42, 4, "cargo de $ ".$info["MULTA"]." pesos ");
-		$pdf->SetFont("Arial","",10);
-		$pdf->Cell(106, 4, "a la  cuenta de dicha  membres\xEDa, el  cual tendr\xE1 que ser liquidado",0,1);
+		$pdf->SetFont("Arial", "B", 10);
+		$pdf->Cell(42, 4, "cargo de $ " . $info["MULTA"] . " pesos ");
+		$pdf->SetFont("Arial", "", 10);
+		$pdf->Cell(106, 4, "a la  cuenta de dicha  membres\xEDa, el  cual tendr\xE1 que ser liquidado", 0, 1);
 		$pdf->Cell(16, 4, "");
-		$pdf->Cell(154, 4, "para poder tener acceso al club en sus siguientes visitas.",0,1);
-		$pdf->Ln(30);
-
-		$pdf->Cell(46, 4, "");
-		$pdf->Cell(94, 4, "","B");
-		$pdf->Cell(46, 4, "",0,1);
-
-		$pdf->Cell(46, 4, "");
-		$pdf->Cell(94, 4, "Nombre y firma del titular de la membres\xEDa",0,0,"C");
-		$pdf->Cell(46, 4, "",0,1);
+		$pdf->Cell(154, 4, "para poder tener acceso al club en sus siguientes visitas.", 0, 1);
 		$pdf->Ln(30);
 
 		$pdf->Cell(46, 4, "");
 		$pdf->Cell(94, 4, "", "B");
-		$pdf->Cell(46, 4, "",0,1);
+		$pdf->Cell(46, 4, "", 0, 1);
 
 		$pdf->Cell(46, 4, "");
-		$pdf->Cell(94, 4, "Nombre y sello de quien recibe",0,0,"C");
-		$pdf->Cell(46, 4, "",0,1);
+		$pdf->Cell(94, 4, "Nombre y firma del titular de la membres\xEDa", 0, 0, "C");
+		$pdf->Cell(46, 4, "", 0, 1);
+		$pdf->Ln(30);
+
+		$pdf->Cell(46, 4, "");
+		$pdf->Cell(94, 4, "", "B");
+		$pdf->Cell(46, 4, "", 0, 1);
+
+		$pdf->Cell(46, 4, "");
+		$pdf->Cell(94, 4, "Nombre y sello de quien recibe", 0, 0, "C");
+		$pdf->Cell(46, 4, "", 0, 1);
 
 		$pdf->Output("Life & Fitness - Carta Horario Basico Conformidad.pdf", "D");
 		exit;
@@ -1671,35 +1637,34 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Carta Responsiva Menor de Edad
 	 */
-	function pdf_responsiva($info=NULL)
+	function pdf_responsiva($info = NULL)
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$this->add_page_header($pdf, "left", time());
-		foreach (array("SOCIO"=>"","MEMBRESIA"=>"","RESPONSABLE"=>"_____________________________________","DIRECCION"=>"_______________________________________","MENOR"=>"_____________________________________","EDAD"=>"_____") as $field=>$default)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):$default;
+		foreach (array("SOCIO" => "", "MEMBRESIA" => "", "RESPONSABLE" => "_____________________________________", "DIRECCION" => "_______________________________________", "MENOR" => "_____________________________________", "EDAD" => "_____") as $field => $default) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : $default;
 		}
-		$pdf->SetFont("Arial","B",11);
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(154,5,"CARTA RESPONSIVA MENORES DE EDAD",0,1,"C");
+		$pdf->SetFont("Arial", "B", 11);
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(154, 5, "CARTA RESPONSIVA MENORES DE EDAD", 0, 1, "C");
 		$pdf->Ln();
 
-		$pdf->SetFont("Arial","B",10);
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(154,5,"DATOS:",0,1);
+		$pdf->SetFont("Arial", "B", 10);
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(154, 5, "DATOS:", 0, 1);
 		$pdf->Ln();
 
-		$pdf->SetFont("Arial","",9);
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(30,5,"Nombre del socio:");
-		$pdf->Cell(124,5,$info["SOCIO"],"B",1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(30, 5, "Nombre del socio:");
+		$pdf->Cell(124, 5, $info["SOCIO"], "B", 1);
 		$pdf->Ln(3);
 
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(26,5,"Membres\xEDa No.:");
-		$pdf->Cell(58,5,$info["MEMBRESIA"],"B");
-		$pdf->Cell(78,5,"",0,1);
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(26, 5, "Membres\xEDa No.:");
+		$pdf->Cell(58, 5, $info["MEMBRESIA"], "B");
+		$pdf->Cell(78, 5, "", 0, 1);
 		$pdf->Ln(12);
 
 		$txt = "Por este conducto, hago constar que yo el Sr. (a) #RESPONSABLE# con direcci\xF3n en #DIRECCION# como padre o responsable del menor con nombre #MENOR# de #EDAD# a\xF1os de edad, autorizo al menor para hacer uso de las instalaciones de Life & Fitenss por lo que asumo toda la responsabilidad ante cualquier suceso que pudiese presentarse y deslindo a Life & Fitness M\xE9xico SA de CV de toda responsabilidad.
@@ -1721,8 +1686,8 @@ class ANT_Controller extends CI_Controller
 
                                          ____________________________________________
                                                         Nombre y sello de quien recibe";
-		$txt = str_replace(array("#RESPONSABLE#","#DIRECCION#","#MENOR#","#EDAD#"), array($info["RESPONSABLE"],$info["DIRECCION"],$info["MENOR"],$info["EDAD"]), $txt);
-		$pdf->Cell(16,5,"");
+		$txt = str_replace(array("#RESPONSABLE#", "#DIRECCION#", "#MENOR#", "#EDAD#"), array($info["RESPONSABLE"], $info["DIRECCION"], $info["MENOR"], $info["EDAD"]), $txt);
+		$pdf->Cell(16, 5, "");
 		$pdf->MultiCell(154, 7, $txt);
 		$pdf->Output("Life & Fitness - Carta Responsiva Menor de Edad.pdf", "D");
 		exit;
@@ -1731,31 +1696,30 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Cesion de Derechos
 	 */
-	function pdf_cesion($info=NULL)
+	function pdf_cesion($info = NULL)
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$this->add_page_header($pdf, "left", time());
 
-		foreach (array("DIA"=>"___", "MES"=>"____________", "ANIO"=>"20___", "SOCIO"=>"","MEMBRESIA"=>"________","NOMBRE"=>"____________________________________________________","MOTIVO"=>"_____________________________________________________________________________________") as $field=>$default)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):$default;
+		foreach (array("DIA" => "___", "MES" => "____________", "ANIO" => "20___", "SOCIO" => "", "MEMBRESIA" => "________", "NOMBRE" => "____________________________________________________", "MOTIVO" => "_____________________________________________________________________________________") as $field => $default) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : $default;
 		}
 
-		$pdf->SetFont("Arial","B",11);
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(154,5,"CARTA CESI\xD3N DE DERECHOS DE MEMBRES\xCDA",0,1,"C");
+		$pdf->SetFont("Arial", "B", 11);
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(154, 5, "CARTA CESI\xD3N DE DERECHOS DE MEMBRES\xCDA", 0, 1, "C");
 		$pdf->Ln(10);
 
-		$pdf->SetFont("Arial","B",10);
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(154,5,"DATOS DEL SOCIO:",0,1);
+		$pdf->SetFont("Arial", "B", 10);
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(154, 5, "DATOS DEL SOCIO:", 0, 1);
 		$pdf->Ln(4);
 
-		$pdf->SetFont("Arial","",9);
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(36,5,"Nombre del socio titular:");
-		$pdf->Cell(118,5,$info["SOCIO"],"B",1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(36, 5, "Nombre del socio titular:");
+		$pdf->Cell(118, 5, $info["SOCIO"], "B", 1);
 		$pdf->Ln(12);
 
 		$txt = "Autorizo  al club  deportivo  Life & Fitness  M\xE9xico S.A de C.V,  realizar el cambio de titular a la membres\xEDa No. #MEMBRESIA#  cediendo  todos  los  derechos  correspondientes  de  dicha  membres\xEDa,  con  el fin de que #NOMBRE# sea el nuevo Titular de la Membres\xEDa Life & Fitness con todos los derechos y obligaciones, dando cumplimiento a los t\xE9rminos y condiciones vigentes desde el d\xEDa #DIA# de #MES# del a\xF1o #ANIO# por el motivo siguiente:
@@ -1775,8 +1739,8 @@ class ANT_Controller extends CI_Controller
 
                                             ____________________________________________
                                                      Nombre y firma del titular de quien recibe";
-		$txt = str_replace(array("#MEMBRESIA#","#NOMBRE#","#DIA#","#MES#","#ANIO#","#MOTIVO#"), array($info["MEMBRESIA"],$info["NOMBRE"],$info["DIA"],$info["MES"],$info["ANIO"],$info["MOTIVO"]), $txt);
-		$pdf->Cell(16,8,"");
+		$txt = str_replace(array("#MEMBRESIA#", "#NOMBRE#", "#DIA#", "#MES#", "#ANIO#", "#MOTIVO#"), array($info["MEMBRESIA"], $info["NOMBRE"], $info["DIA"], $info["MES"], $info["ANIO"], $info["MOTIVO"]), $txt);
+		$pdf->Cell(16, 8, "");
 		$pdf->MultiCell(154, 8, $txt);
 		$pdf->Output("Life & Fitness - Cesion de Derechos.pdf", "D");
 		exit;
@@ -1785,50 +1749,49 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Contrato
 	 */
-	function pdf_contrato_old($info=array())
+	function pdf_contrato_old($info = array())
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
 		$this->add_page_header($pdf, "center");
-		foreach (array("TITULAR"=>"- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", "DOMICILIO"=>"", "TIPOMEMBRESIA"=>"", "PERIODO"=>"______________________________", "INSCRIPCION"=>"", "MANTENIMIENTO"=>"", "ADICIONALES"=>"", "PENALIDAD"=>"", "PORCIENTO"=>"", "DIA"=>"__________", "MES"=>"____________________________________________", "ANIO"=>"______________________") as $field=>$default)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):$default;
-			if (is_string($info[$field])){
+		foreach (array("TITULAR" => "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", "DOMICILIO" => "", "TIPOMEMBRESIA" => "", "PERIODO" => "______________________________", "INSCRIPCION" => "", "MANTENIMIENTO" => "", "ADICIONALES" => "", "PENALIDAD" => "", "PORCIENTO" => "", "DIA" => "__________", "MES" => "____________________________________________", "ANIO" => "______________________") as $field => $default) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : $default;
+			if (is_string($info[$field])) {
 				$info[$field] = strtoupper($info[$field]);
 			}
 		}
 		$aux = Ant_Accounts_Model::get_info_sucursal($info['ant_accounts_id']);
-        $name = strtoupper($aux[0]['nombre_apoderado']);
-        $gender = $aux[0]['sexo_apoderado'];
-        $tipo = utf8_decode($aux[0]['tipo_apoderado']);
-        $address = strtoupper($aux[0]['fiscal_address']);
-        $address_n = strtoupper($aux[0]['fiscal_address_ext_num']);
-        $neighborhood = strtoupper($aux[0]['neighborhood']);
-        $city = strtoupper($aux[0]['fiscal_city']);
-        $municipality= strtoupper($aux[0]['fiscal_address_municipality']);
-        $state = strtoupper($aux[0]['fiscal_address_state']);
+		$name = strtoupper($aux[0]['nombre_apoderado']);
+		$gender = $aux[0]['sexo_apoderado'];
+		$tipo = utf8_decode($aux[0]['tipo_apoderado']);
+		$address = strtoupper($aux[0]['fiscal_address']);
+		$address_n = strtoupper($aux[0]['fiscal_address_ext_num']);
+		$neighborhood = strtoupper($aux[0]['neighborhood']);
+		$city = strtoupper($aux[0]['fiscal_city']);
+		$municipality = strtoupper($aux[0]['fiscal_address_municipality']);
+		$state = strtoupper($aux[0]['fiscal_address_state']);
 		$h = 2.2;
-		$pdf->SetFont("Arial","",5);
-		$txt = "\t\tCONTRATO QUE EN LA CIUDAD DE ".strtoupper($city).", ".strtoupper($state).", CELEBRAN POR UNA PARTE ";
-		if ($tipo !=null || $tipo != ""){
-			if($gender=="H"){
-				$txt .="EL ".strtoupper($tipo)." ".$name.", EN SU CAR\xC1CTER DE APODERADO";
-			}else if ($gender=="M"){
-				$txt .="LA ".strtoupper($tipo)." ".$name.", EN SU CAR\xC1CTER DE APODERADA";
-			}else if ($gender==null || $gender==""){
-				$txt .="EL/LA ".strtoupper($tipo)." ".$name.", EN SU CAR\xC1CTER DE APODERADO/A";
+		$pdf->SetFont("Arial", "", 5);
+		$txt = "\t\tCONTRATO QUE EN LA CIUDAD DE " . strtoupper($city) . ", " . strtoupper($state) . ", CELEBRAN POR UNA PARTE ";
+		if ($tipo != null || $tipo != "") {
+			if ($gender == "H") {
+				$txt .= "EL " . strtoupper($tipo) . " " . $name . ", EN SU CAR\xC1CTER DE APODERADO";
+			} else if ($gender == "M") {
+				$txt .= "LA " . strtoupper($tipo) . " " . $name . ", EN SU CAR\xC1CTER DE APODERADA";
+			} else if ($gender == null || $gender == "") {
+				$txt .= "EL/LA " . strtoupper($tipo) . " " . $name . ", EN SU CAR\xC1CTER DE APODERADO/A";
 			}
-		}else{
-			if($gender=="H"){
-				$txt .="EL SE\xD1OR ".$name.", EN SU CAR\xC1CTER DE APODERADO";
-			}else if ($gender=="M"){
-				$txt .="LA SE\xD1ORA ".$name.", EN SU CAR\xC1CTER DE APODERADA";
-			}else if ($gender==null || $gender==""){
-				$txt .="EL/LA SE\xD1OR/A".$name.", EN SU CAR\xC1CTER DE APODERADO/A";
+		} else {
+			if ($gender == "H") {
+				$txt .= "EL SE\xD1OR " . $name . ", EN SU CAR\xC1CTER DE APODERADO";
+			} else if ($gender == "M") {
+				$txt .= "LA SE\xD1ORA " . $name . ", EN SU CAR\xC1CTER DE APODERADA";
+			} else if ($gender == null || $gender == "") {
+				$txt .= "EL/LA SE\xD1OR/A" . $name . ", EN SU CAR\xC1CTER DE APODERADO/A";
 			}
 		}
-		$txt.=" LEGAL DE LA SOCIEDAD DENOMINADA \"Esprezza\", SOCIEDAD AN\xd3NIMA DE CAPITAL VARIABLE, A QUIEN EN LO SUCESIVO SE LE DENOMINAR\xC1 \"EL PRESTADOR\", Y POR OTRA PARTE: {$info["TITULAR"]} \nPOR SU PROPIO DERECHO, Y A QUIEN EN LO SUCESIVO SE LE DENOMINAR\xC1 \"USUARIO TITULAR\", CONTRATO QUE LOS COMPARECIENTES SUJETAN DE CONFORMIDAD A LAS SIGUIENTES DECLARACIONES Y CL\xC1USULAS:";
-		$pdf->Cell(5,$h,"");
+		$txt .= " LEGAL DE LA SOCIEDAD DENOMINADA \"Esprezza\", SOCIEDAD AN\xd3NIMA DE CAPITAL VARIABLE, A QUIEN EN LO SUCESIVO SE LE DENOMINAR\xC1 \"EL PRESTADOR\", Y POR OTRA PARTE: {$info["TITULAR"]} \nPOR SU PROPIO DERECHO, Y A QUIEN EN LO SUCESIVO SE LE DENOMINAR\xC1 \"USUARIO TITULAR\", CONTRATO QUE LOS COMPARECIENTES SUJETAN DE CONFORMIDAD A LAS SIGUIENTES DECLARACIONES Y CL\xC1USULAS:";
+		$pdf->Cell(5, $h, "");
 		$pdf->MultiCell(176, $h, $txt);
 		$pdf->Ln();
 		$pdf->SetLineWidth(0.5);
@@ -1837,44 +1800,44 @@ class ANT_Controller extends CI_Controller
 		$pdf->Line(20, $pdf->GetY(), 196, $pdf->GetY());
 		$pdf->Ln(3);
 		$pdf->SetLineWidth(0.1);
-		$pdf->SetDrawColor(0,0,0);
-		$pdf->Cell(5,$h,"");
-		$pdf->Cell(176,$h,"D E C L A R A C I O N E S:",0,1,"C");
+		$pdf->SetDrawColor(0, 0, 0);
+		$pdf->Cell(5, $h, "");
+		$pdf->Cell(176, $h, "D E C L A R A C I O N E S:", 0, 1, "C");
 		$pdf->Ln(6);
 		$txt = "I. DECLARA ";
-		if ($tipo !=null || $tipo != ""){
-			if($gender=="H"){
-				$txt .="EL ".strtoupper($tipo)." ".$name.", EN SU CAR\xC1CTER DE APODERADO";
-			}else if ($gender=="M"){
-				$txt .="LA ".strtoupper($tipo)." ".$name.", EN SU CAR\xC1CTER DE APODERADA";
-			}else if ($gender==null || $gender==""){
-				$txt .="EL/LA ".strtoupper($tipo)." ".$name.", EN SU CAR\xC1CTER DE APODERADO/A";
+		if ($tipo != null || $tipo != "") {
+			if ($gender == "H") {
+				$txt .= "EL " . strtoupper($tipo) . " " . $name . ", EN SU CAR\xC1CTER DE APODERADO";
+			} else if ($gender == "M") {
+				$txt .= "LA " . strtoupper($tipo) . " " . $name . ", EN SU CAR\xC1CTER DE APODERADA";
+			} else if ($gender == null || $gender == "") {
+				$txt .= "EL/LA " . strtoupper($tipo) . " " . $name . ", EN SU CAR\xC1CTER DE APODERADO/A";
 			}
-		}else{
-			if($gender=="H"){
-				$txt .="EL SE\xD1OR ".$name.", EN SU CAR\xC1CTER DE APODERADO";
-			}else if ($gender=="M"){
-				$txt .="LA SE\xD1ORA ".$name.", EN SU CAR\xC1CTER DE APODERADA";
-			}else if ($gender==null || $gender==""){
-				$txt .="EL/LA SE\xD1OR/A".$name.", EN SU CAR\xC1CTER DE APODERADO/A";
+		} else {
+			if ($gender == "H") {
+				$txt .= "EL SE\xD1OR " . $name . ", EN SU CAR\xC1CTER DE APODERADO";
+			} else if ($gender == "M") {
+				$txt .= "LA SE\xD1ORA " . $name . ", EN SU CAR\xC1CTER DE APODERADA";
+			} else if ($gender == null || $gender == "") {
+				$txt .= "EL/LA SE\xD1OR/A" . $name . ", EN SU CAR\xC1CTER DE APODERADO/A";
 			}
 		}
 		//         //
-		$txt.=" LEGAL DE LA SOCIEDAD DENOMINADA \"DEXFIT\", SOCIEDAD AN\xD3NIMA DE CAPITAL VARIABLE, BAJO PROTESTA DE DECIR VERDAD, Y SABEDOR DE LAS CONSECUENCIAS LEGALES DE CONDUCIRSE EN CONTRARIO, LO SIGUIENTE:
+		$txt .= " LEGAL DE LA SOCIEDAD DENOMINADA \"DEXFIT\", SOCIEDAD AN\xD3NIMA DE CAPITAL VARIABLE, BAJO PROTESTA DE DECIR VERDAD, Y SABEDOR DE LAS CONSECUENCIAS LEGALES DE CONDUCIRSE EN CONTRARIO, LO SIGUIENTE:
 
-			 A)  QUE  ES  UNA PERSONA MORAL LEGALMENTE CONSTITUIDA CONFORME A LA LEGISLACION MEXICANA, MEDIANTE ESCRITURA P\xDABLICA 1732 (DIECISIETE MIL TREINTA Y DOS), OTORGADA   ANTE\n         LA  FE DEL LICENCIADO  CARLOS  HIJAR  ESCARE\xD1O,   NOTARIO P\xDABLICO 10 (DIEZ),  EN LA MUNICIPALIDAD DE  ZAPOPAN,  JALISCO;   CUYO PRIMER TESTIMONIO SE ENCUENTRA DEBIDAMENTE\n         INSCRITO EN EL REGISTRO P\xDABLICO DE LA PROPIEDAD Y DE GUADALAJARA, JALISCO.\n    B)  QUE SU REPRESENTADA TIENE SU DOMICILIO FISCAL EN LA FINCA MARCADA CON EL N\xDAMERO 746, DE LA CALLE AV. PATRIA, Y  CON  REGISTRO  FEDERAL  DE  CONTRIBUYENTES\n         DEX170103BU0;  SIENDO  LEG\xCDTIMA  POSEEDORA  DE  LAS  INSTALACIONES  DEPORTIVAS DENOMINADAS \"DEXFIT\", UBICADAS EN LA CALLE \n         ".strtoupper($address)." #".$address_n." Col ".strtoupper($neighborhood). ", ". strtoupper($municipality).", ".strtoupper($state).".\n    C)  QUE SU REPRESENTADA TIENE LA CAPACIDAD JUR\xCDDICA NECESARIA PARA EL CUMPLIMIENTO DE LAS OBLIGACIONES ESTABLECIDAS EN EL PRESENTE ACUERDO DE VOLUNTADES.
+			 A)  QUE  ES  UNA PERSONA MORAL LEGALMENTE CONSTITUIDA CONFORME A LA LEGISLACION MEXICANA, MEDIANTE ESCRITURA P\xDABLICA 1732 (DIECISIETE MIL TREINTA Y DOS), OTORGADA   ANTE\n         LA  FE DEL LICENCIADO  CARLOS  HIJAR  ESCARE\xD1O,   NOTARIO P\xDABLICO 10 (DIEZ),  EN LA MUNICIPALIDAD DE  ZAPOPAN,  JALISCO;   CUYO PRIMER TESTIMONIO SE ENCUENTRA DEBIDAMENTE\n         INSCRITO EN EL REGISTRO P\xDABLICO DE LA PROPIEDAD Y DE GUADALAJARA, JALISCO.\n    B)  QUE SU REPRESENTADA TIENE SU DOMICILIO FISCAL EN LA FINCA MARCADA CON EL N\xDAMERO 746, DE LA CALLE AV. PATRIA, Y  CON  REGISTRO  FEDERAL  DE  CONTRIBUYENTES\n         DEX170103BU0;  SIENDO  LEG\xCDTIMA  POSEEDORA  DE  LAS  INSTALACIONES  DEPORTIVAS DENOMINADAS \"DEXFIT\", UBICADAS EN LA CALLE \n         " . strtoupper($address) . " #" . $address_n . " Col " . strtoupper($neighborhood) . ", " . strtoupper($municipality) . ", " . strtoupper($state) . ".\n    C)  QUE SU REPRESENTADA TIENE LA CAPACIDAD JUR\xCDDICA NECESARIA PARA EL CUMPLIMIENTO DE LAS OBLIGACIONES ESTABLECIDAS EN EL PRESENTE ACUERDO DE VOLUNTADES.
 
 			II. DECLARA EL(LA) SE\xD1OR(A) {$info["TITULAR"]}, BAJO PROTESTA DE DECIR VERDAD, Y SABEDOR(A) DE LAS CONSECUENCIAS LEGALES DE CONDUCIRSE EN CONTRARIO, LO SIGUIENTE:
 
 			A)  QUE ES UNA PERSONA F\xCDSICA DE NACIONALIDAD MEXICANA, MAYOR DE EDAD, CON LA CAPACIDAD JUR\xCDDICA NECESARIA PARA LA CELEBRACI\xD3N DEL PRESENTE CONTRATO, MANIFESTANDO\n          TENER SU DOMICILIO EN:";
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->MultiCell(176, $h, $txt);
 		$pdf->Ln();
 
 		$pdf->Ln(5);
 
-		$pdf->SetFont("Arial","B",7);
-		$pdf->Cell(5,$h,"");
+		$pdf->SetFont("Arial", "B", 7);
+		$pdf->Cell(5, $h, "");
 		$pdf->MultiCell(175, $h, $info["DOMICILIO"]);
 		$pdf->Ln(5);
 		$pdf->SetLineWidth(0.5);
@@ -1882,16 +1845,16 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetLineWidth(0.1);
 		$pdf->Ln(5);
 
-		$pdf->SetFont("Arial","",5);
-		$pdf->Cell(5,$h,"");
-		$pdf->Cell(176,$h,"    B)  QUE ES SU VOLUNTAD INSCRIBIRSE COMO USUARIO TITULAR DE UNA MEMBRESIA TIPO:",0,1);
+		$pdf->SetFont("Arial", "", 5);
+		$pdf->Cell(5, $h, "");
+		$pdf->Cell(176, $h, "    B)  QUE ES SU VOLUNTAD INSCRIBIRSE COMO USUARIO TITULAR DE UNA MEMBRESIA TIPO:", 0, 1);
 		$pdf->Ln(5);
 
-		$pdf->SetFont("Arial","B",7);
-		$pdf->Cell(40,$h,$info["TIPOMEMBRESIA"],0,1,"C");//$pdf->Text(20, 124, $info["TIPOMEMBRESIA"]);
+		$pdf->SetFont("Arial", "B", 7);
+		$pdf->Cell(40, $h, $info["TIPOMEMBRESIA"], 0, 1, "C"); //$pdf->Text(20, 124, $info["TIPOMEMBRESIA"]);
 		$pdf->SetLineWidth(0.1);
-		$pdf->SetDrawColor(0,0,0);
-		$pdf->SetFont("Arial","",5);
+		$pdf->SetDrawColor(0, 0, 0);
+		$pdf->SetFont("Arial", "", 5);
 		$pdf->Ln(5);
 
 		$pdf->SetLineWidth(0.5);
@@ -1901,7 +1864,7 @@ class ANT_Controller extends CI_Controller
 
 		// ".strtoupper($address)." #".$address_n." Col ".strtoupper($neighborhood).",
 
-		$txt = utf8_decode("TENIENDO  COMO  GIMNASIO  BASE  LAS  INSTALACIONES  DENOMINADAS \"DEXFIT\",  CON   DOMICILIO  EN  LA AV. DE LAS AMÉRICAS, COUNTRY CLUB, IDENTIFICADO CON EL NÚMERO 1254, EN  LA  MUNICIPALIDAD  DE  ".strtoupper($municipality).",  ".strtoupper($state)."; QUIEN TIENE AMPLIO CONOCIMIENTO DE LOS  TÉRMINOS,  DERECHOS Y OBLIGACIONES ESTABLECIDOS EN EL PRESENTE ACUERDO DE VOLUNTADES.
+		$txt = utf8_decode("TENIENDO  COMO  GIMNASIO  BASE  LAS  INSTALACIONES  DENOMINADAS \"DEXFIT\",  CON   DOMICILIO  EN  LA AV. DE LAS AMÉRICAS, COUNTRY CLUB, IDENTIFICADO CON EL NÚMERO 1254, EN  LA  MUNICIPALIDAD  DE  " . strtoupper($municipality) . ",  " . strtoupper($state) . "; QUIEN TIENE AMPLIO CONOCIMIENTO DE LOS  TÉRMINOS,  DERECHOS Y OBLIGACIONES ESTABLECIDOS EN EL PRESENTE ACUERDO DE VOLUNTADES.
 			C)  QUE A LA FIRMA DEL PRESENTE CONTRATO CUBRE LA CUOTA DE INSCRIPCIÓN CORRESPONDIENTE, ELIGIENDO PAGAR LA CUOTA DE MANTENIMIENTO EN FORMA:\n          {$info["PERIODO"]}.
 			D)  QUE CONOCE Y COMPRENDE EL REGLAMENTO INTERNO DEL GIMNASIO, MISMO QUE CONTIENE LAS NORMAS A SEGUIR DENTRO DE LAS INSTALACIONES UBICADAS EN EL DOMICILIO DESCRITO\n         EN LA  DECLARACIÓN  LETRA  \"B\"  QUE  ANTECEDE; REGLAMENTO  QUE  FORMA  PARTE  DEL  PRESENTE  CONTRATO,  MISMO  QUE  SE  OBLIGA A CUMPLIR Y HACER CUMPLIR POR SUS\n         USUARIOS DEPENDIENTES.
 
@@ -1909,44 +1872,44 @@ class ANT_Controller extends CI_Controller
 
 			EXPUESTO LO ANTERIOR LOS COMPARECIENTES OTORGAN LAS SIGUIENTES");
 
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->MultiCell(176, $h, $txt);
 		$pdf->Ln();
 
-		$pdf->Cell(5,$h,"");
-		$pdf->Cell(176,$h,"C L A U S U L A S:",0,1,"C");
+		$pdf->Cell(5, $h, "");
+		$pdf->Cell(176, $h, "C L A U S U L A S:", 0, 1, "C");
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(24, $h, "PRIMERA. DEFINICIONES.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(154, $h, utf8_decode("PARA EFECTOS DE LA INTERPRETACIÓN DEL PRESENTE CONTRATO, DEBERÁ ENTENDERSE POR CADA UNO DE LOS CONCEPTOS EXPRESADOS EN EL MISMO, LO SIGUIENTE:"), 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "1. ", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(11, $h, "GIMNASIO.","B");
+		$pdf->Cell(11, $h, "GIMNASIO.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(163, $h, utf8_decode("EL ESTABLECIMIENTO UBICADO EN LA AV. DE LAS AMÉRICAS, COUNTRY CLUB IDENTIFICADO CON EL NÚMERO 1254,"),0,1);
+		$pdf->Cell(163, $h, utf8_decode("EL ESTABLECIMIENTO UBICADO EN LA AV. DE LAS AMÉRICAS, COUNTRY CLUB IDENTIFICADO CON EL NÚMERO 1254,"), 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, utf8_decode("EN LA MUNICIPALIDAD DE ".strtoupper($municipality).", ".strtoupper($state).", LUGAR EN DONDE SE ENCUENTRA EL CENTRO DE ACONDICIONAMIENTO AL CUAL TENDRÁN ACCESO LOS USUARIOS, E IDENTIFICADO"),0,1);
+		$pdf->Cell(171, $h, utf8_decode("EN LA MUNICIPALIDAD DE " . strtoupper($municipality) . ", " . strtoupper($state) . ", LUGAR EN DONDE SE ENCUENTRA EL CENTRO DE ACONDICIONAMIENTO AL CUAL TENDRÁN ACCESO LOS USUARIOS, E IDENTIFICADO"), 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, utf8_decode("COMO GIMNASIO BASE. EN DICHO GIMNASIO BASE,  EL USUARIO DEBERÁ LLEVAR A CABO LA REALIZACIÓN DE CUALQUIER TRÁMITE RELATIVO A SU SUSCRIPCIÓN."),0,1);
+		$pdf->Cell(171, $h, utf8_decode("COMO GIMNASIO BASE. EN DICHO GIMNASIO BASE,  EL USUARIO DEBERÁ LLEVAR A CABO LA REALIZACIÓN DE CUALQUIER TRÁMITE RELATIVO A SU SUSCRIPCIÓN."), 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "2. ", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(18, $h, "USUARIO TITULAR.","B");
+		$pdf->Cell(18, $h, "USUARIO TITULAR.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(153, $h, utf8_decode("ES  LA  PERSONA  FÍSICA, MAYOR DE EDAD, O PERSONA MORAL, QUE SUSCRIBE EL  CONTRATO Y DE  QUIEN  SE  RECIBE  EL  PAGO  DE  LAS  CUOTAS DE SUSCRIPCIÓN"),0,1);
+		$pdf->Cell(153, $h, utf8_decode("ES  LA  PERSONA  FÍSICA, MAYOR DE EDAD, O PERSONA MORAL, QUE SUSCRIBE EL  CONTRATO Y DE  QUIEN  SE  RECIBE  EL  PAGO  DE  LAS  CUOTAS DE SUSCRIPCIÓN"), 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "Y MANTENIMIENTO.",0,1);
-		$pdf->Cell(188, $h, "",0,1);
+		$pdf->Cell(171, $h, "Y MANTENIMIENTO.", 0, 1);
+		$pdf->Cell(188, $h, "", 0, 1);
 		/*
 		$pdf->Cell(10,$h,"");
 		$pdf->SetFont("Arial", "B", 11);
@@ -1959,121 +1922,121 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(171, $h, utf8_decode("UNA MEMBRESÍA DE PAREJA, FAMILIAR O FAMILIAR PLUS."),0,1);
 		$pdf->Cell(188, $h, "",0,1);
 		*/
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "3. ", 0, 0, "R");
-		$pdf->Cell(188, $h, "",0,1);
+		$pdf->Cell(188, $h, "", 0, 1);
 		$pdf->Cell(17, $h, "");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(12, $h, "USUARIOS.","B");
+		$pdf->Cell(12, $h, "USUARIOS.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(159, $h, utf8_decode("SON LAS PERSONAS FÍSICAS QUE SON TITULARES DE UNA SUSCRIPCIÓN"),0,1);
+		$pdf->Cell(159, $h, utf8_decode("SON LAS PERSONAS FÍSICAS QUE SON TITULARES DE UNA SUSCRIPCIÓN"), 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "",0,1);
+		$pdf->Cell(171, $h, "", 0, 1);
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "4. ", 0, 0, "R");
-		$pdf->Cell(188, $h, "",0,1);
+		$pdf->Cell(188, $h, "", 0, 1);
 		$pdf->Cell(17, $h, "");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(24, $h, utf8_decode("CUOTA DE INSCRIPCIÓN."),"B");
+		$pdf->Cell(24, $h, utf8_decode("CUOTA DE INSCRIPCIÓN."), "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(147, $h, utf8_decode("ES LA CANTIDAD LIQUIDA QUE DEBE PAGAR EL USUARIO TITULAR COMO CONTRAPRESTACIÓN DE LA SUSCRIPCIÓN EN EL TIPO, CLASE Y MODALIDAD QUE ELIJA."),0,1);
+		$pdf->Cell(147, $h, utf8_decode("ES LA CANTIDAD LIQUIDA QUE DEBE PAGAR EL USUARIO TITULAR COMO CONTRAPRESTACIÓN DE LA SUSCRIPCIÓN EN EL TIPO, CLASE Y MODALIDAD QUE ELIJA."), 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "",0,1);
+		$pdf->Cell(171, $h, "", 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "5. ", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(28, $h, "CUOTA DE MANTENIMIENTO.","B");
+		$pdf->Cell(28, $h, "CUOTA DE MANTENIMIENTO.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(143, $h, "ES EL CANTIDAD LIQUIDA QUE DEBE PAGAR EL USUARIO TITULAR COMO CONTRAPRESTACI\xD3N POR EL ACCESO.  ESTA  CUOTA  ES  ANUAL",0,1);
+		$pdf->Cell(143, $h, "ES EL CANTIDAD LIQUIDA QUE DEBE PAGAR EL USUARIO TITULAR COMO CONTRAPRESTACI\xD3N POR EL ACCESO.  ESTA  CUOTA  ES  ANUAL", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "PUDIENDO EN ALGUNOS CASOS OTORGARSE PLAZOS MENSUALES Y SEMESTRALES PARA SU PAGO",0,1);
+		$pdf->Cell(171, $h, "PUDIENDO EN ALGUNOS CASOS OTORGARSE PLAZOS MENSUALES Y SEMESTRALES PARA SU PAGO", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "",0,1);
+		$pdf->Cell(171, $h, "", 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "6. ", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(15, $h, "REGLAMENTO.","B");
+		$pdf->Cell(15, $h, "REGLAMENTO.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(156, $h, "ES  EL  CONJUNTO  DE  NORMAS  ESPEC\xCDFICAS  QUE  REGULAN  LOS  T\xC9RMINOS  Y  CONDICIONES  DE  LA  PRESTACI\xD3N  DEL SERVICIO  POR PARTE  DE \"EL PRESTADOR\",",0,1);
+		$pdf->Cell(156, $h, "ES  EL  CONJUNTO  DE  NORMAS  ESPEC\xCDFICAS  QUE  REGULAN  LOS  T\xC9RMINOS  Y  CONDICIONES  DE  LA  PRESTACI\xD3N  DEL SERVICIO  POR PARTE  DE \"EL PRESTADOR\",", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "Y EL COMPORTAMIENTO DE LOS USUARIOS.",0,1);
+		$pdf->Cell(171, $h, "Y EL COMPORTAMIENTO DE LOS USUARIOS.", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "",0,1);
+		$pdf->Cell(171, $h, "", 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "7. ", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(11, $h, "INVITADO.","B");
+		$pdf->Cell(11, $h, "INVITADO.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(160, $h, "ES  LA  PERSONA  F\xCDSICA  QUE  ACOMPA\xD1A  AL  USUARIO,  TITULAR  O  DEPENDIENTE,  ACUDIENDO  EN  FORMA  ESPOR\xC1DICA  Y  EVENTUAL  AL  GIMNASIO,  PARA HACER USO",0,1);
+		$pdf->Cell(160, $h, "ES  LA  PERSONA  F\xCDSICA  QUE  ACOMPA\xD1A  AL  USUARIO,  TITULAR  O  DEPENDIENTE,  ACUDIENDO  EN  FORMA  ESPOR\xC1DICA  Y  EVENTUAL  AL  GIMNASIO,  PARA HACER USO", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "DE  LAS  INSTALACIONES   DEL   MISMO;  PREVIO PAGO DE LA CUOTA POR INVITACI\xD3N QUE AL EFECTO DETERMINE  \"EL PRESTADOR\",  QUIEN SOLO PODR\xC1 HACER USO DE LAS",0,1);
+		$pdf->Cell(171, $h, "DE  LAS  INSTALACIONES   DEL   MISMO;  PREVIO PAGO DE LA CUOTA POR INVITACI\xD3N QUE AL EFECTO DETERMINE  \"EL PRESTADOR\",  QUIEN SOLO PODR\xC1 HACER USO DE LAS", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "INSTALACIONES DE ACUERDO A LA CLASE, TIPO Y MODALIDAD DEL PAQUETE DE SERVICIOS CONTRATADO POR EL USUARIO  TITULAR",0,1);
+		$pdf->Cell(171, $h, "INSTALACIONES DE ACUERDO A LA CLASE, TIPO Y MODALIDAD DEL PAQUETE DE SERVICIOS CONTRATADO POR EL USUARIO  TITULAR", 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "8. ", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(13, $h, "INSCRIPCI\xD3N","B");
+		$pdf->Cell(13, $h, "INSCRIPCI\xD3N", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(158, $h, "ES EL T\xCDTULO DE VIGENCIA DEFINIDA DE MANTENIMIENTO ANUAL, QUE OTORGA AL SUSCRIPTOR DEL CONTRATO EL DERECHO DE HACER USO DE LAS INSTALACIONES DEL",0,1);
+		$pdf->Cell(158, $h, "ES EL T\xCDTULO DE VIGENCIA DEFINIDA DE MANTENIMIENTO ANUAL, QUE OTORGA AL SUSCRIPTOR DEL CONTRATO EL DERECHO DE HACER USO DE LAS INSTALACIONES DEL", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "GYMNASIO COMO CONTRAPRESTACI\xD3N DEL PAGO DE LAS CUOTAS DE MANTENIMIENTO.",0,1);
+		$pdf->Cell(171, $h, "GYMNASIO COMO CONTRAPRESTACI\xD3N DEL PAGO DE LAS CUOTAS DE MANTENIMIENTO.", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "",0,1);
+		$pdf->Cell(171, $h, "", 0, 1);
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "9. ", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(34, $h, "CLASES DE PAQUETES DE SERVICIO","B");
+		$pdf->Cell(34, $h, "CLASES DE PAQUETES DE SERVICIO", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(146, $h, "ES  LA  CLASIFICACI\xD3N  DE  LOS  SERVICIOS CON  BASE  EN  EL  ACCESO,  USO  Y  HORARIO  DE  LAS  INSTALACIONES  INCLUIDAS EN EL PAGO DE",0,1);
+		$pdf->Cell(146, $h, "ES  LA  CLASIFICACI\xD3N  DE  LOS  SERVICIOS CON  BASE  EN  EL  ACCESO,  USO  Y  HORARIO  DE  LAS  INSTALACIONES  INCLUIDAS EN EL PAGO DE", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "LAS CUOTAS DE INSCRIPCI\xD3N Y MANTENIMIENTO.",0,1);
+		$pdf->Cell(171, $h, "LAS CUOTAS DE INSCRIPCI\xD3N Y MANTENIMIENTO.", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "",0,1);
+		$pdf->Cell(171, $h, "", 0, 1);
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "10. ", 0, 0, "R");
-		$pdf->Cell(188, $h, "",0,1);
+		$pdf->Cell(188, $h, "", 0, 1);
 		$pdf->Cell(17, $h, "");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(24, $h, "SERVICIOS ADICIONALES.","B");
+		$pdf->Cell(24, $h, "SERVICIOS ADICIONALES.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(147, $h, " SON AQUELLOS SERVICIOS QUE  SE PRESTAN EN EL GIMNASIO, CUYO  USO  NO  SE ENCUENTRA INCLUIDO DENTRO DE LA  CLASE DE PAQUETES  DE  SERVICIOS",0,1);
+		$pdf->Cell(147, $h, " SON AQUELLOS SERVICIOS QUE  SE PRESTAN EN EL GIMNASIO, CUYO  USO  NO  SE ENCUENTRA INCLUIDO DENTRO DE LA  CLASE DE PAQUETES  DE  SERVICIOS", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(147, $h, "ELEGIDO, POR EL USUARIO",0,1);
+		$pdf->Cell(147, $h, "ELEGIDO, POR EL USUARIO", 0, 1);
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "11. ", 0, 0, "R");
-		$pdf->Cell(188, $h, "",0,1);
+		$pdf->Cell(188, $h, "", 0, 1);
 		$pdf->Cell(17, $h, "");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(22, $h, "POBLACI\xD3N ESPECIAL.","B");
+		$pdf->Cell(22, $h, "POBLACI\xD3N ESPECIAL.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(149, $h, "SON  AQUELLOS USUARIOS QUE  PADEZCAN  ALGUNA ENFERMEDAD CUYOS S\xCDNTOMAS Y RIESGOS DE SALUD SE PUEDAN AGRAVAR  POR  LA  ACTIVIDAD F\xCDSICA",0,1);
+		$pdf->Cell(149, $h, "SON  AQUELLOS USUARIOS QUE  PADEZCAN  ALGUNA ENFERMEDAD CUYOS S\xCDNTOMAS Y RIESGOS DE SALUD SE PUEDAN AGRAVAR  POR  LA  ACTIVIDAD F\xCDSICA", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, " VIGOROSA O LA PR\xC1CTICA DE ALG\xDAN DEPORTE.",0,1);
+		$pdf->Cell(171, $h, " VIGOROSA O LA PR\xC1CTICA DE ALG\xDAN DEPORTE.", 0, 1);
 
-		$this->add_page_footer($pdf,$address,$address_n,$neighborhood);
+		$this->add_page_footer($pdf, $address, $address_n, $neighborhood);
 
-		$this->add_page_header($pdf,"center");
+		$this->add_page_header($pdf, "center");
 		/*
 		$pdf->Cell(10,$h,"");
 		$pdf->SetFont("Arial", "B", 11);
@@ -2121,32 +2084,32 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 		*/
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "12. ", 0, 0, "R");
-		$pdf->Cell(188, $h, "",0,1);
+		$pdf->Cell(188, $h, "", 0, 1);
 		$pdf->Cell(17, $h, "");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(17, $h, "VISITA EFECTIVA.","B");
+		$pdf->Cell(17, $h, "VISITA EFECTIVA.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(154, $h, "ES EL INGRESO DE AQUEL USUARIO A LAS INSTALACIONES DEL GIMNASIO, QUE LO REALICE EN FORMA EFECTIVA.",0,1);
+		$pdf->Cell(154, $h, "ES EL INGRESO DE AQUEL USUARIO A LAS INSTALACIONES DEL GIMNASIO, QUE LO REALICE EN FORMA EFECTIVA.", 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(10,$h,"");
+		$pdf->Cell(10, $h, "");
 		$pdf->SetFont("Arial", "B", 11);
 		$pdf->Cell(7, 6.6, "13. ", 0, 0, "R");
-		$pdf->Cell(188, $h, "",0,1);
+		$pdf->Cell(188, $h, "", 0, 1);
 		$pdf->Cell(17, $h, "");
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(33, $h, "RESCISI\xD3N, CANCELACI\xD3N Y BAJA.","B");
+		$pdf->Cell(33, $h, "RESCISI\xD3N, CANCELACI\xD3N Y BAJA.", "B");
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(138, $h, "SE  UTILIZAN COMO  SIN\xD3NIMOS, Y  SIGNIFICA  LA TERMINACI\xD3N  ANTICIPADA  DE  LA VIGENCIA DE LA PRESTACI\xD3N  DE  SERVICIOS POR  UNA CAUSA",0,1);
+		$pdf->Cell(138, $h, "SE  UTILIZAN COMO  SIN\xD3NIMOS, Y  SIGNIFICA  LA TERMINACI\xD3N  ANTICIPADA  DE  LA VIGENCIA DE LA PRESTACI\xD3N  DE  SERVICIOS POR  UNA CAUSA", 0, 1);
 		$pdf->Cell(17, $h, "");
-		$pdf->Cell(171, $h, "IMPUTABLE AL USUARIO",0,1);
+		$pdf->Cell(171, $h, "IMPUTABLE AL USUARIO", 0, 1);
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(20, $h, "SEGUNDA. OBJETO.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(54, $h, "EN VIRTUD DE LA CELEBRACI\xd3N DEL PRESENTE CONTRATO");
@@ -2161,7 +2124,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(31, $h, "TERCERA. CONTRAPRESTACI\xD3N.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(150, $h, "EL  CUMPLIMIENTO  DE  LAS  CONTRAPRESTACIONES  ESTABLECIDAS  EN  EL  PRESENTE  ACUERDO  DE VOLUNTADES, PODR\xC1 SER REALIZADO MEDIANTE EL PAGO (I) EN", 0, 1);
@@ -2179,9 +2142,9 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(143, $h, "POR LOS CONCEPTOS SIGUIENTES:", 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->SetFont("Arial", "B", 5);
-		$pdf->Cell(4,$h,"A).",0, 0, "R");
+		$pdf->Cell(4, $h, "A).", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
 		$pdf->Cell(39, $h, "CUOTA POR CONCEPTO DE INSCRIPCI\xD3N,", 0, 0, "R");
 		$pdf->SetFont("Arial", "", 5);
@@ -2189,16 +2152,16 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(103, $h, "EN FORMA ANUAL, CUYO PAGO PODR\xC1 CUMPLIRSE EN  FORMA MENSUAL,  SEMESTRAL O ANUAL,  A ELECCI\xD3N DEL");
 		$pdf->SetFont("Arial", "B", 5);
-		$pdf->Cell(20, $h, '"USUARIO TITULAR",', 0, 0 , 'L');
+		$pdf->Cell(20, $h, '"USUARIO TITULAR",', 0, 0, 'L');
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(56, $h, "EN LAS MODALIDADES ESTABLECIDAS  DENTRO  DEL PROEMIO", 0, 1);
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, "DE LA PRESENTE CL\xC1USULA.", 0, 1);
 		$pdf->Ln();
 
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->SetFont("Arial", "B", 5);
-		$pdf->Cell(4,$h,"B).",0, 0, "R");
+		$pdf->Cell(4, $h, "B).", 0, 0, "R");
 		$pdf->SetFont("Arial", "BU", 5);
 		$pdf->Cell(42, $h, "CUOTA POR CONCEPTO DE MANTENIMIENTO,", 0, 0, "R");
 		$pdf->SetFont("Arial", "", 5);
@@ -2221,9 +2184,9 @@ class ANT_Controller extends CI_Controller
 		//$pdf->SetFont("Arial", "B", 5);
 		//$pdf->Cell(19, $h, 'USUARIO TITULAR"');
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(100, $h, "TENGAN INASISTENCIA O FALTA DE USO DE LAS INSTALACIONES DEL  GIMNASIO; EN TAL VIRTUD, ",0, 1);
+		$pdf->Cell(100, $h, "TENGAN INASISTENCIA O FALTA DE USO DE LAS INSTALACIONES DEL  GIMNASIO; EN TAL VIRTUD, ", 0, 1);
 		$pdf->Cell(5, $h, "");
-		$pdf->Cell(167, $h, "DICHAS  RAZONES  NO SER\xC1N CAUSA JUSTIFICADA DE NO PAGO,  POR LO QUE EL PAGO MENSUAL, SEMESTRAL O ANUAL DE  LA  CUOTA  DE MANTENIMIENTO DEBER\xC1 SER  TOTAL  Y  OPORTUNAMENTE" ,0 , 1);
+		$pdf->Cell(167, $h, "DICHAS  RAZONES  NO SER\xC1N CAUSA JUSTIFICADA DE NO PAGO,  POR LO QUE EL PAGO MENSUAL, SEMESTRAL O ANUAL DE  LA  CUOTA  DE MANTENIMIENTO DEBER\xC1 SER  TOTAL  Y  OPORTUNAMENTE", 0, 1);
 		$pdf->Cell(5, $h, "");
 		//$pdf->Cell(65, $h, " ", 0, 1);
 		$pdf->Cell(25, $h, "CUBIERTA. EN ESTE CASO EL ");
@@ -2257,7 +2220,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, "EFECTIVO.", 0, 1);
 		$pdf->Ln(2);
-	    $pdf->Cell(5, $h, "");
+		$pdf->Cell(5, $h, "");
 		//$pdf->Cell(5, $h, "");
 		$pdf->Cell(186, $h, "LAS   CANTIDADES   CORRESPONDIENTES  A  LAS  CUOTAS  QUE  POR   CONCEPTO   DE   INSCRIPCI\xD3N   Y   DE MANTENIMIENTO ESTABLECIDAS EN LA PRESENTE CL\xC1USULA, SER\xC1N ESTABLECIDAS  EN  LA", 0, 1);
 		$pdf->Cell(5, $h, "");
@@ -2268,7 +2231,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(52, $h, "CUARTA. INCREMENTO DE CUOTAS DE MANTENIMIENTO.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(3, $h, "EL");
@@ -2286,7 +2249,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(30, $h, "QUINTA. INTER\xC9S MORATORIO.- ", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(100, $h, "LA FALTA DE PAGO OPORTUNO DE LA CUOTA DE MANTENIMIENTO, TENDR\xC1 COMO CONSECUENCIA: (I) NEGAR AL");
@@ -2296,12 +2259,12 @@ class ANT_Controller extends CI_Controller
 		//$pdf->Cell(32, $h, " ", 0, 1);
 		//$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, ",  Y  (II) EL COBRO DE  UN INTER\xC9S", 0, 1);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, "MORATORIO DEL 10% SOBRE SALDO VENCIDO, TOMANDO COMO BASE LA TASA DE INTER\xC9S INTERBANCARIA DE EQUILIBRIO, M\xC1S OCHO PUNTOS PORCENTUALES.", 0, 1);
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(40, $h, "SEXTA. PAGO DE SERVICIOS ADICIONALES.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(141, $h, "PARA  TENER  DERECHO  AL USO DE LOS SERVICIOS  ADICIONALES,  NO INCLUIDOS EN LA CLASE DEL PAQUETE DE SERVICIOS   ELEGIDA, EL USUARIO TITULAR ", 0, 1);
@@ -2316,7 +2279,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(27, $h, "S\xC9PTIMA. FINANCIAMIENTO.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(154, $h, "PARA  DAR  CUMPLIMIENTO A LAS CONTRAPRESTACIONES  ESTABLECIDAS  EN LA CL\xC1USULA  TERCERA  DEL  PRESENTE  CONTRATO, EN EL SUPUESTO DE QUE SE OPTE POR", 0, 1);
@@ -2356,7 +2319,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(115, $h, "SE  OBLIGA  A  REALIZAR LOS  PAGOS  DEL  CONTRATO  DE   MUTUO   DE  M\xC9RITO, A FAVOR  DE   LA   SOCIEDAD   DENOMINADA ");
 		$pdf->SetFont("Arial", "B", 5);
-		$pdf->Cell(40, $h, '"DEXFIT" ,  SOCIEDAD '."AN\xD3NIMA  DE  CAPITAL", 0, 1);
+		$pdf->Cell(40, $h, '"DEXFIT" ,  SOCIEDAD ' . "AN\xD3NIMA  DE  CAPITAL", 0, 1);
 
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(5, $h, "");
@@ -2393,13 +2356,13 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(24, $h, "SOCIEDAD  DENOMINADA");
 		$pdf->SetFont("Arial", "B", 5);
-		$pdf->Cell(50, $h, '"DEXFIT", SOCIEDAD '."AN\xD3NIMA DE CAPITAL VARIABLE,");
+		$pdf->Cell(50, $h, '"DEXFIT", SOCIEDAD ' . "AN\xD3NIMA DE CAPITAL VARIABLE,");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(92, $h, "ELABORAR\xC1  UN  RECIBO  DE DICHO  PAGO  A  SU FAVOR, INDICANDO LA CANTIDAD, FORMA, Y FECHA DE DICHO  ACTO.", 0, 1);
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(22, $h, "OCTAVA. AUSENCIAS.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(27, $h, "EN EL SUPUESTO DE QUE, EL");
@@ -2407,7 +2370,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(19, $h, '"USUARIO TITULAR"');
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(190, $h, "LLEGASE  A AUSENTARSE EN EL USO DE LOS SERVICIOS OFERTADOS EN EL PRESENTE  ACUERDO  DE VOLUNTADES, SER\xC1", 0, 1);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(185, $h, "ACREEDOR A UNA SANCI\xD3N ECON\xD3MICA DE ACUERDO A LAS DISPOSICIONES SIGUIENTES:", 0, 1);
 
 		$pdf->SetFont("Arial", "B", 5);
@@ -2450,7 +2413,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(34, $h, "NOVENA. CESI\xD3N DE MEMBRES\xCDAS.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(3.5, $h, "EL");
@@ -2465,7 +2428,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(42, $h, "D\xC9CIMA. CAMBIO DE PAQUETE DE SERVICIOS.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(139, $h, "LA CLASE,  TIPO  Y  MODALIDAD  DEL PAQUETE DE SERVICIOS ELEGIDA  AL SUSCRIBIR EL PRESENTE CONTRATO, PODR\xC1 SER MOTIVO DE CAMBIO, SIENDO", 0, 1);
@@ -2478,8 +2441,8 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, "REGLAMENTOS ANEXOS EL PRESENTE CONTRATO.", 0, 1);
 
-				$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->SetFont("Arial", "BU", 5);
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(27, $h, "D\xC9CIMA PRIMERA. ACCESO.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(60, $h, "PARA  TENER ACCESO  A  LAS INSTALACIONES DEL GIMANASIO, EL");
@@ -2496,7 +2459,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetFont("Arial", "B", 5);
 		$pdf->Cell(19, $h, '"USUARIO TITULAR"');
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(86, $h, " SE COMPROMETE A OTORGAR TODAS LAS FACILIDADES", 0 , 1);
+		$pdf->Cell(86, $h, " SE COMPROMETE A OTORGAR TODAS LAS FACILIDADES", 0, 1);
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(27, $h, "QUE AL EFECTO REQUIERA EL");
 		$pdf->SetFont("Arial", "B", 5);
@@ -2514,11 +2477,11 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(77, $h, "QUE DEBER\xC1N OTORGARSE AL PERSONAL DE VENTAS DE LA SOCIEDAD DENOMINADA");
 		$pdf->SetFont("Arial", "B", 5);
-		$pdf->Cell(104, $h, '"DEXFIT", SOCIEDAD '."AN\xD3NIMA".' DE CAPITAL VARIABLE.', 0,1);
+		$pdf->Cell(104, $h, '"DEXFIT", SOCIEDAD ' . "AN\xD3NIMA" . ' DE CAPITAL VARIABLE.', 0, 1);
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(40, $h, "D\xC9CIMA SEGUNDA. DEL USUARIO TITULAR.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(3, $h, "EL");
@@ -2531,7 +2494,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(36, $h, "D\xC9CIMA TERCERA. DE LOS INVITADOS.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(91, $h, "EN BENEFICIO DE LOS USUARIOS Y PARA EVITAR  LA  SATURACI\xD3N EN EL USO DE LA INSTALACIONES,");
@@ -2549,13 +2512,13 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(181, $h, "INVITADO OBLIG\xC1NDOSE A CUMPLIR Y A RESPETAR EL REGLAMENTO DEL GIMNASIO.", 0, 1);
 		$pdf->Ln();
 
-		$this->add_page_footer($pdf,$address,$address_n,$neighborhood);
+		$this->add_page_footer($pdf, $address, $address_n, $neighborhood);
 
 		$this->add_page_header($pdf, "center");
 		$pdf->SetLineWidth(0.1);
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(68, $h, "D\xC9CIMA CUARTA. RESPONSABILIDAD POR EL USO DE LAS INSTALACIONES.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(3, $h, "EL ");
@@ -2568,7 +2531,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetFont("Arial", "B", 5);
 		$pdf->Cell(15, $h, '"PRESTADOR",');
 		$pdf->SetFont("Arial", "", 5);
-		$pdf->Cell(181, $h, "DE  ACUERDO  A  SU  NATURALEZA,  SIGUIENDO  EN  TODO  MOMENTO  LAS  INSTRUCCIONES  DE SU USO QUE CONSTEN EN LOS MISMOS O EN ", 0, 1);///////
+		$pdf->Cell(181, $h, "DE  ACUERDO  A  SU  NATURALEZA,  SIGUIENDO  EN  TODO  MOMENTO  LAS  INSTRUCCIONES  DE SU USO QUE CONSTEN EN LOS MISMOS O EN ", 0, 1); ///////
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, "QUE  LES SEAN SE\xD1ALADAS POR EL PERSONAL DEL GIMANASIO; EN TAL VIRTUD, EL USO DE TODAS LAS INSTALACIONES, EQUIPOS Y DEM\xC1S, LO REALIZARAN BAJO SU \xDANICA Y EXCLUSIVA RESPONSABILIDAD.", 0, 1);
 		$pdf->Cell(5, $h, "");
@@ -2586,7 +2549,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(46, $h, "D\xC9CIMA QUINTA. SEGURO DE RESPONSABILIDAD.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "B", 5);
 		$pdf->Cell(18, $h, '"EL   PRESTADOR');
@@ -2607,7 +2570,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(52, $h, "D\xC9CIMA SEXTA. MANIFESTACI\xD3N DE ESTADO DE SALUD.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(37.5, $h, "A LA FIRMA DEL PRESENTE CONTRATO EL");
@@ -2636,7 +2599,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(71, $h, "D\xC9CIMA S\xC9PTIMA. EVENTOS ESPECIALES, ORGANIZACI\xD3N Y MANTENIMIENTO.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(5, $h, "LOS");
@@ -2671,7 +2634,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(46, $h, "D\xC9CIMA OCTAVA. DA\xD1OS Y P\xC9RDIDAS DE BIENES.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(52, $h, "POR NINGUN MOTIVO Y BAJO NINGUNA CIRCUNSTANCIA,");
@@ -2688,11 +2651,11 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(43, $h, "D\xC9CIMA NOVENA. D\xCDAS Y HORAS DE SERVICIO.-", "", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(140.5, $h, "EL GIMNASIO Y SUS INSTALACIONES ESTAR\xC1N ABIERTOS EN LOS D\xCDAS Y EN EL HORARIO  ESTABLECIDOS  DE  ACUERDO  AL CALENDARIO APROBADO POR", 0, 1);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->SetFont("Arial", "B", 5);
 		$pdf->Cell(18, $h, '"EL PRESTADOR"');
 		$pdf->SetFont("Arial", "", 5);
@@ -2723,7 +2686,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(38, $h, "VIG\xC9SIMA. D\xCDAS Y HORAS DE SERVICIO.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "B", 5);
 		$pdf->Cell(17, $h, '"EL PRESTADOR"');
@@ -2751,7 +2714,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 		//
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(53, $h, "VIG\xC9SIMA PRIMERA. AUSENCIA TEMPORAL VOLUNTARIA.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(3.5, $h, "EL");
@@ -2761,7 +2724,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(48, $h, " PODR\xC1N, EN UN TIEMPO MAYOR A 60 SESENTA D\xCDAS");
 		//$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, "NATURALES, AUSENTARSE EN LAS INSTALACIONES DEL GIMNASIO,");
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, " TENIENDO LA OPCI\xD3N DE RECUPERAR EL TIEMPO DE INASISTENCIA, SIEMPRE Y CUANDO CUMPLA CON LOS REQUISITOS", 0, 1);
 		$pdf->Cell(5, $h, "");
 		$pdf->Cell(181, $h, "SIGUIENTES:", 0, 1);
@@ -2792,7 +2755,7 @@ class ANT_Controller extends CI_Controller
 		//$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(18, $h, 'DE LA "AUSENCIA" ');
 		$pdf->Cell(181, $h, "TENDR\xC1 QUE VERIFICAR CON EL GIMNASIO QUE NO SE TENGA NINGUN REGISTRO, PRORROG\xC1NDOSE EL PER\xCDODO DE VIGENCIA DE SU ", 0, 1);
-		$pdf->Cell(5, $h, "");//
+		$pdf->Cell(5, $h, ""); //
 		$pdf->Cell(181, $h, "MEMBRES\xCDA EN IGUAL NUMERO DE MESES. EN TAL VIRTUD, REINICI\xC1NDOSE  EL PAGO NORMAL DE SU MENSUALIDAD DE CUOTA POR  MANTENIMIENTO AL CONCLUIR LA  PR\xD3RROGA.", 0, 1);
 		//$pdf->Cell(5, $h, "");
 		//$pdf->Cell(181, $h, "DE LOS USUARIOS DE LA MEMBRES\xCDA AL CLUB O AL T\xC9RMINO DEL PER\xCDODO DE AUSENCIA SE\xD1ALADO EL AVISO PRESENTADO POR ESCRITO, LO QUE OCURRA PRIMERO.", 0, 1);
@@ -2839,7 +2802,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 		*/
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(45.5, $h, "VIG\xC9SIMA SEGUNDA. TERMINACI\xD3N VOLUNTARIA.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(3, $h, "EL");
@@ -2873,7 +2836,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(46, $h, "VIG\xC9SIMA TERCERA. SUSPENCI\xD3N DE USUARIOS.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "B", 5);
 		$pdf->Cell(17, $h, '"EL PRESTADOR');
@@ -2953,7 +2916,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Cell(171, $h, "VIOLAR LOS HORARIOS DE SALIDA O ESTANCIA EN EL GIMNASIO.", 0, 1);
 		$pdf->Ln();
 
-		$this->add_page_footer($pdf,$address,$address_n,$neighborhood);
+		$this->add_page_footer($pdf, $address, $address_n, $neighborhood);
 		// here
 		$this->add_page_header($pdf, "center");
 
@@ -3028,7 +2991,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 		//
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(75, $h, "VIG\xC9SIMA CUARTA. DE LA TERMINACI\xD3N ANTICIPADA Y RESCISI\xD3N DEL CONTRATO.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(87, $h, "CON INDEPENDIENCIA DE LAS CAUSAS Y SANCIONES ESTABLECIDAS EN LA CL\xC1USULA ANTERIOR,");
@@ -3071,7 +3034,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(68.5, $h, "VIG\xC9SIMA QUINTA. DEL MANTENIMIENTO Y REACTIVACI\xD3N DE MEMBRES\xCDAS.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(84.5, $h, "AL  T\xC9RMINO   DEL  PER\xCDODO   CORRESPONDIENTE   AL  MANTENIMIENTO  ANUAL   PAGADO,  EL");
@@ -3137,7 +3100,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 		*/
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(34, $h, "VIG\xC9SIMA SEXTA. ENCABEZADOS.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(147, $h, "LOS  ENCABEZADOS  DE  LAS  CL\xC1USULAS  TIENEN  LA  EXCLUSIVA  FINALIDAD  DE  FACILITAR  SU  LECTURA  Y NO TENDR\xC1N EL EFECTO DE MODIFICAR O AFECTAR EL", 0, 1);
@@ -3146,7 +3109,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->SetFont("Arial", "BU", 5);
-		$pdf->Cell(5,$h,"");
+		$pdf->Cell(5, $h, "");
 		$pdf->Cell(49, $h, "VIG\xC9SIMA S\xCPTIMA. JURISDICCI\xD3N Y COMPETENCIA.-", "B", 0, "R");
 		$pdf->SetFont("Arial", "", 5);
 		$pdf->Cell(133, $h, "CONVIENEN  EXPRESAMENTE  LAS  PARTES,  QUE  PARA  LA  INTERPRETACI\xD3N  Y  CUMPLIMIENTO  DEL  PRESENTE  CONTRATO SE SOMETER\xC1N A LOS", 0, 1);
@@ -3155,59 +3118,60 @@ class ANT_Controller extends CI_Controller
 		$pdf->Ln();
 
 		$pdf->Cell(5, $h, "");
-		$pdf->MultiCell(181, $h, "LEIDO EL PRESENTE ACUERDO DE VOLUNTADES, LO FIRMAN LOS COMPARECIENTES, EN LA CIUDAD DE ".strtoupper($city).", ".strtoupper($state).", A LOS ".$info["DIA"]." D\xCDAS DEL  MES DE ".$info["MES"]." DEL A\xD1O ".$info["ANIO"].".");
-		$pdf->Ln($h*5);
+		$pdf->MultiCell(181, $h, "LEIDO EL PRESENTE ACUERDO DE VOLUNTADES, LO FIRMAN LOS COMPARECIENTES, EN LA CIUDAD DE " . strtoupper($city) . ", " . strtoupper($state) . ", A LOS " . $info["DIA"] . " D\xCDAS DEL  MES DE " . $info["MES"] . " DEL A\xD1O " . $info["ANIO"] . ".");
+		$pdf->Ln($h * 5);
 
 		$pdf->Cell(65, $h, "");
 		$pdf->Cell(61, $h, "", "B", 1, "C");
 		$pdf->Ln(0.7);
 		$pdf->Cell(65, $h, "");
 		$pdf->SetFont("Arial", "B", 5);
-		if ($tipo !=null || $tipo != ""){
-			if($gender=="H"){
-				$pdf->Cell(61, $h, strtoupper($tipo)." ".strtoupper($name).",", 0, 1, "C");
+		if ($tipo != null || $tipo != "") {
+			if ($gender == "H") {
+				$pdf->Cell(61, $h, strtoupper($tipo) . " " . strtoupper($name) . ",", 0, 1, "C");
 				$pdf->Cell(65, $h, "");
 				$pdf->Cell(61, $h, 'APODERADO LEGAL DE "DEXFIT",', 0, 1, "C");
-			}else if ($gender=="M"){
-				$pdf->Cell(61, $h, strtoupper($tipo)." ".strtoupper($name).",", 0, 1, "C");
+			} else if ($gender == "M") {
+				$pdf->Cell(61, $h, strtoupper($tipo) . " " . strtoupper($name) . ",", 0, 1, "C");
 				$pdf->Cell(65, $h, "");
 				$pdf->Cell(61, $h, 'APODERADA LEGAL DE "DEXFIT",', 0, 1, "C");
-			}else{
-				$pdf->Cell(61, $h, strtoupper($tipo)." ".strtoupper($name).",", 0, 1, "C");
+			} else {
+				$pdf->Cell(61, $h, strtoupper($tipo) . " " . strtoupper($name) . ",", 0, 1, "C");
 				$pdf->Cell(65, $h, "");
 				$pdf->Cell(61, $h, 'APODERADO/A LEGAL DE "DEXFIT",', 0, 1, "C");
 			}
-		}else{
-			if($gender=="H"){
-				$pdf->Cell(61, $h, "SE\xD1OR ".strtoupper($name).",", 0, 1, "C");
+		} else {
+			if ($gender == "H") {
+				$pdf->Cell(61, $h, "SE\xD1OR " . strtoupper($name) . ",", 0, 1, "C");
 				$pdf->Cell(65, $h, "");
 				$pdf->Cell(61, $h, 'APODERADO LEGAL DE "DEXFIT",', 0, 1, "C");
-			}else if ($gender=="M"){
-				$pdf->Cell(61, $h, "SE\xD1ORA ".strtoupper($name).",", 0, 1, "C");
+			} else if ($gender == "M") {
+				$pdf->Cell(61, $h, "SE\xD1ORA " . strtoupper($name) . ",", 0, 1, "C");
 				$pdf->Cell(65, $h, "");
 				$pdf->Cell(61, $h, 'APODERADA LEGAL DE "DEXFIT",', 0, 1, "C");
-			}else{
-				$pdf->Cell(61, $h, "SE\xD1OR/A ".strtoupper($name).",", 0, 1, "C");
+			} else {
+				$pdf->Cell(61, $h, "SE\xD1OR/A " . strtoupper($name) . ",", 0, 1, "C");
 				$pdf->Cell(65, $h, "");
 				$pdf->Cell(61, $h, 'APODERADO/A LEGAL DE "DEXFIT",', 0, 1, "C");
 			}
 		}
 		$pdf->Cell(65, $h, "");
 		$pdf->Cell(61, $h, "SOCIEDAD AN\xD3NIMA DE CAPITAL VARIABLE.", 0, 1, "C");
-		$pdf->Ln($h*4);
+		$pdf->Ln($h * 4);
 
 		$pdf->Cell(65, $h, "");
 		$pdf->Cell(7, $h, "SR(A).");
 		$pdf->Cell(56, $h, $info["TITULAR"], "B");
 		$pdf->Cell(2, $h, ".", 0, 1);
 
-		$this->add_page_footer($pdf,$address,$address_n,$neighborhood);
+		$this->add_page_footer($pdf, $address, $address_n, $neighborhood);
 
 		$pdf->Output("Dexfit - Contrato.pdf", "D");
 		exit;
 	}
 
-	function pdf_contrato($info=array()){
+	function pdf_contrato($info = array())
+	{
 		//die(print_r($info));
 		$member_checks = array(
 			'Basic'	=> '',
@@ -3224,13 +3188,12 @@ class ANT_Controller extends CI_Controller
 		);
 
 		foreach ($member_checks as $k => $v) {
-			if ($k == $info['TIPOMEMBRESIA']){
+			if ($k == $info['TIPOMEMBRESIA']) {
 				$member_checks[$k] = 'X';
 
-				if ($info['PERIODO'] == 'Semestral' || $info['PERIODO'] == 'Anual'){
+				if ($info['PERIODO'] == 'Semestral' || $info['PERIODO'] == 'Anual') {
 					$costo_checks[$k] = $info['quote_anualidad'];
-				}
-				else{
+				} else {
 					$costo_checks[$k] = $info['quote_mensualidad'];
 				}
 			}
@@ -3245,22 +3208,17 @@ class ANT_Controller extends CI_Controller
 			'O'   => ''
 		);
 
-		if ($info['PERIODO'] == 'Mensual'){
+		if ($info['PERIODO'] == 'Mensual') {
 			$type_checks['M'] = 'X';
-		}
-		elseif ($info['PERIODO'] == 'Mensual Domiciliado Libre') {
+		} elseif ($info['PERIODO'] == 'Mensual Domiciliado Libre') {
 			$type_checks['MD'] = 'X';
-		}
-		elseif ($info['PERIODO'] == 'Mensual Domiciliado 1 Año') {
+		} elseif ($info['PERIODO'] == 'Mensual Domiciliado 1 Año') {
 			$type_checks['MDA'] = 'X';
-		}
-		elseif ($info['PERIODO'] == 'Semestral') {
+		} elseif ($info['PERIODO'] == 'Semestral') {
 			$type_checks['S'] = 'X';
-		}
-		elseif ($info['PERIODO'] == 'Anual') {
+		} elseif ($info['PERIODO'] == 'Anual') {
 			$type_checks['A'] = 'X';
-		}
-		else{
+		} else {
 			$type_checks['O'] = 'X';
 		}
 
@@ -3302,104 +3260,104 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetXY(63, 30);
 		$pdf->Cell(15, 5, utf8_decode('I. GENERALES DEL USUARIO TITULAR, PAQUETE CONTRATADO Y MODALIDAD DE PAGO. '), 0, 1, 'C');
 		$pdf->SetXY(10, 38);
-		$pdf->SetFillColor(64,64,64);
+		$pdf->SetFillColor(64, 64, 64);
 		$pdf->SetTextColor(238, 180, 5);
-		$pdf->Cell(0, 5, utf8_decode('INFORMACIÓN Y DATOS PERSONALES'), 1, 1, 'C',true);
-		$pdf->SetFillColor(255,255,255);
+		$pdf->Cell(0, 5, utf8_decode('INFORMACIÓN Y DATOS PERSONALES'), 1, 1, 'C', true);
+		$pdf->SetFillColor(255, 255, 255);
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetXY(10, 43);
-		$pdf->Cell(67, 5, utf8_decode('Nombre (s): '.$info['first_name']), 1, 0, 'L',true);
-		$pdf->Cell(67, 5, utf8_decode('Apellidos: '."{$info['last_name']} {$info['second_last_name']}"), 1, 0, 'L',true);
-		$pdf->Cell(67, 5, utf8_decode('Fecha de nacimiento: '.$info['birthday']), 1, 1, 'L',true);
-		$pdf->Cell(0, 10, utf8_decode('Identificación:'), 1, 0, 'L',true);
+		$pdf->Cell(67, 5, utf8_decode('Nombre (s): ' . $info['first_name']), 1, 0, 'L', true);
+		$pdf->Cell(67, 5, utf8_decode('Apellidos: ' . "{$info['last_name']} {$info['second_last_name']}"), 1, 0, 'L', true);
+		$pdf->Cell(67, 5, utf8_decode('Fecha de nacimiento: ' . $info['birthday']), 1, 1, 'L', true);
+		$pdf->Cell(0, 10, utf8_decode('Identificación:'), 1, 0, 'L', true);
 		$pdf->SetXY(32, 50);
-		$pdf->Cell(5, 5, utf8_decode(''), 1, 0, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode(''), 1, 0, 'L', true);
 		$pdf->SetXY(37, 50);
 		$pdf->SetFont('Arial', '', 7);
-		$pdf->Cell(5, 5, utf8_decode('IFE/INE'), 0, 0, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode('IFE/INE'), 0, 0, 'L', true);
 		$pdf->SetXY(50, 50);
-		$pdf->Cell(5, 5, utf8_decode(''), 1, 0, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode(''), 1, 0, 'L', true);
 		$pdf->SetXY(55, 50);
-		$pdf->Cell(5, 5, utf8_decode('Pasaporte'), 0, 0, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode('Pasaporte'), 0, 0, 'L', true);
 		$pdf->SetXY(70, 50);
-		$pdf->Cell(5, 5, utf8_decode(''), 1, 0, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode(''), 1, 0, 'L', true);
 		$pdf->SetXY(75, 50);
-		$pdf->Cell(5, 5, utf8_decode('Licencia de conducir'), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode('Licencia de conducir'), 0, 1, 'L', true);
 		$pdf->SetFont('Arial', 'B', 8);
 		$pdf->SetXY(10, 58);
-		$pdf->Cell(0, 8, utf8_decode('Domicilio: '.$info['DOMICILIO']), 1, 1, 'L',true);
-		$pdf->Cell(120, 8, utf8_decode('Correo electrónico (e-mail): '.$info['email']), 1, 0, 'L',true);
-		$pdf->Cell(81, 8, utf8_decode('Teléfono de contacto: '.$info['client_number']), 1, 1, 'L',true);
-		$pdf->SetFillColor(64,64,64);
+		$pdf->Cell(0, 8, utf8_decode('Domicilio: ' . $info['DOMICILIO']), 1, 1, 'L', true);
+		$pdf->Cell(120, 8, utf8_decode('Correo electrónico (e-mail): ' . $info['email']), 1, 0, 'L', true);
+		$pdf->Cell(81, 8, utf8_decode('Teléfono de contacto: ' . $info['client_number']), 1, 1, 'L', true);
+		$pdf->SetFillColor(64, 64, 64);
 		$pdf->SetTextColor(238, 180, 5);
-		$pdf->Cell(0, 5, utf8_decode('TIPO DE PAQUETE Y MODALIDAD DE PAGO'), 1, 1, 'C',true);
-		$pdf->SetFillColor(255,255,255);
+		$pdf->Cell(0, 5, utf8_decode('TIPO DE PAQUETE Y MODALIDAD DE PAGO'), 1, 1, 'C', true);
+		$pdf->SetFillColor(255, 255, 255);
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFont('Arial', 'B', 8);
-		$pdf->Cell(0, 10, utf8_decode('Tipo de Paquete contratado:'), 1, 1, 'L',true);
+		$pdf->Cell(0, 10, utf8_decode('Tipo de Paquete contratado:'), 1, 1, 'L', true);
 		$pdf->SetFont('Arial', '', 7);
 		$pdf->SetXY(50, 81);
-		$pdf->Cell(5, 5, utf8_decode($member_checks['Basic']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode("Basic ($ {$costo_checks['Basic']} )"), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($member_checks['Basic']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode("Basic ($ {$costo_checks['Basic']} )"), 0, 1, 'L', true);
 
 		$pdf->SetXY(85, 81);
-		$pdf->Cell(5, 5, utf8_decode($member_checks['Light']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode("Light ($ {$costo_checks['Light']} )"), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($member_checks['Light']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode("Light ($ {$costo_checks['Light']} )"), 0, 1, 'L', true);
 
 		$pdf->SetXY(115, 81);
-		$pdf->Cell(5, 5, utf8_decode($member_checks['Premium']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode("Premium ($ {$costo_checks['Premium']} )"), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($member_checks['Premium']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode("Premium ($ {$costo_checks['Premium']} )"), 0, 1, 'L', true);
 
 		$pdf->SetXY(155, 81);
-		$pdf->Cell(5, 5, utf8_decode($member_checks['Full Experience']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode("Full Experience ($ {$costo_checks['Full Experience']} )"), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($member_checks['Full Experience']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode("Full Experience ($ {$costo_checks['Full Experience']} )"), 0, 1, 'L', true);
 
 		$pdf->SetXY(10, 88);
 		$pdf->SetFont('Arial', 'B', 8);
-		$pdf->Cell(0, 10, utf8_decode('Modalidad de pago'), 1, 0, 'L',true);
+		$pdf->Cell(0, 10, utf8_decode('Modalidad de pago'), 1, 0, 'L', true);
 
 		$pdf->SetFont('Arial', '', 7);
 		$pdf->SetXY(40, 90);
-		$pdf->Cell(5, 5, utf8_decode($type_checks['M']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode('Mensual al contado'), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($type_checks['M']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode('Mensual al contado'), 0, 1, 'L', true);
 
 		$pdf->SetXY(70, 90);
-		$pdf->Cell(5, 5, utf8_decode($type_checks['MD']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode('Mensual domiciliado libre'), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($type_checks['MD']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode('Mensual domiciliado libre'), 0, 1, 'L', true);
 
 		$pdf->SetXY(107, 90);
-		$pdf->Cell(5, 5, utf8_decode($type_checks['S']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode('Semestral'), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($type_checks['S']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode('Semestral'), 0, 1, 'L', true);
 
 		$pdf->SetXY(125, 90);
-		$pdf->Cell(5, 5, utf8_decode($type_checks['MDA']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode('Mensual domiciliado a 12 meses'), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($type_checks['MDA']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode('Mensual domiciliado a 12 meses'), 0, 1, 'L', true);
 
 		$pdf->SetXY(170, 90);
-		$pdf->Cell(5, 5, utf8_decode($type_checks['A']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode('Anual'), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($type_checks['A']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode('Anual'), 0, 1, 'L', true);
 
 		$pdf->SetXY(185, 90);
-		$pdf->Cell(5, 5, utf8_decode($type_checks['O']), 1, 0, 'L',true);
-		$pdf->Cell(10, 5, utf8_decode('Otro'), 0, 1, 'L',true);
+		$pdf->Cell(5, 5, utf8_decode($type_checks['O']), 1, 0, 'L', true);
+		$pdf->Cell(10, 5, utf8_decode('Otro'), 0, 1, 'L', true);
 		$pdf->SetFont('Arial', 'B', 8);
 		$pdf->SetXY(10, 98);
-		$pdf->Cell(67, 8, utf8_decode('Cantidad a Pagar: $ '.$info['quote_total']), 1, 0, 'L',true);
-		$pdf->Cell(67, 8, utf8_decode('Monto de Inscripción: $'.$info['INSCRIPCION']), 1, 0, 'L',true);
-		$pdf->Cell(67, 8, utf8_decode('Fecha de pago:'), 1, 0, 'L',true);
+		$pdf->Cell(67, 8, utf8_decode('Cantidad a Pagar: $ ' . $info['quote_total']), 1, 0, 'L', true);
+		$pdf->Cell(67, 8, utf8_decode('Monto de Inscripción: $' . $info['INSCRIPCION']), 1, 0, 'L', true);
+		$pdf->Cell(67, 8, utf8_decode('Fecha de pago:'), 1, 0, 'L', true);
 		$pdf->SetXY(10, 106);
-		$pdf->SetFillColor(64,64,64);
+		$pdf->SetFillColor(64, 64, 64);
 		$pdf->SetTextColor(238, 180, 5);
 		$pdf->SetFont('Arial', 'B', 8);
-		$pdf->Cell(0, 5, utf8_decode('INFORMACIÓN DE LA SUCURSAL DE INSCRIPCIÓN'), 1, 0, 'C',true);
-		$pdf->SetFillColor(255,255,255);
+		$pdf->Cell(0, 5, utf8_decode('INFORMACIÓN DE LA SUCURSAL DE INSCRIPCIÓN'), 1, 0, 'C', true);
+		$pdf->SetFillColor(255, 255, 255);
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetXY(10, 111);
-		$pdf->Cell(0, 10, utf8_decode('Domicilio: '.$info['DOMICILIO_FISCAL']), 1, 1, 'L');
-		$pdf->Cell(0, 5, utf8_decode('Telefonos de contacto: '.$info['TELEFONOS']), 1, 1, 'L');
+		$pdf->Cell(0, 10, utf8_decode('Domicilio: ' . $info['DOMICILIO_FISCAL']), 1, 1, 'L');
+		$pdf->Cell(0, 5, utf8_decode('Telefonos de contacto: ' . $info['TELEFONOS']), 1, 1, 'L');
 		$pdf->SetFont('Arial', '', 8);
 		$pdf->SetXY(10, 128);
-		$pdf->MultiCell(0, 3,utf8_decode('CONTRATO QUE CELEBRAN POR UNA PARTE LA SOCIEDAD DENOMINADA "TRAINING INNOVATION", S.A.P.I. DE C.V., (EN LO SUCESIVO "DEXFIT"), Y POR LA OTRA, EL (LA) SEÑOR (A) CUYO (S) NOMBRE(S) Y APELLIDO(S) SE ENCUENTRAN MENCIONADOS DENTRO DEL CONTENIDO DE LA "CARÁTULA DE CONTRATO" INCISO I., POR SU PROPIO DERECHO (EN LO SUCESIVO "EL USUARIO TITULAR"); SUJETÁNDOSE AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS:'), 0, 'J',FALSE);
+		$pdf->MultiCell(0, 3, utf8_decode('CONTRATO QUE CELEBRAN POR UNA PARTE LA SOCIEDAD DENOMINADA "TRAINING INNOVATION", S.A.P.I. DE C.V., (EN LO SUCESIVO "DEXFIT"), Y POR LA OTRA, EL (LA) SEÑOR (A) CUYO (S) NOMBRE(S) Y APELLIDO(S) SE ENCUENTRAN MENCIONADOS DENTRO DEL CONTENIDO DE LA "CARÁTULA DE CONTRATO" INCISO I., POR SU PROPIO DERECHO (EN LO SUCESIVO "EL USUARIO TITULAR"); SUJETÁNDOSE AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS:'), 0, 'J', FALSE);
 		$pdf->SetXY(10, 140);
 		$pdf->SetFont('Arial', 'B', 8);
 		$pdf->Cell(0, 5, utf8_decode('D E C L A R A C I O N E S'), 0, 1, 'C');
@@ -3414,7 +3372,7 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetXY(10, 168);
 		$pdf->Cell(0, 5, utf8_decode('II. Declara "EL USUARIO TITULAR", por su propio derecho, lo siguiente:'), 0, 1, 'L');
 		$pdf->Cell(0, 3, utf8_decode(' a) Que es una persona física de nacionalidad mexicana, con la capacidad suficiente para llevar a cabo la celebración del presente Contrato.'), 0, 1, 'L');
-		$pdf->MultiCell(0, 3,utf8_decode(' b) Que sus datos e información personal, así como tipo de paquetes de servicios, modalidad de pagos, información para domiciliación de pagos, en su caso,         y/o cualquier otro dato e información necesaria para su suscripcion a cualesquiera de las sucursales de gimnasios "DEXFIT", se encuentran mencionados         dentro del contenido de la "Carátula del Contrato" Inciso I.,  que adjunto al presente Contrato forma parte integrante del mismo '), 0, 'J',FALSE);
+		$pdf->MultiCell(0, 3, utf8_decode(' b) Que sus datos e información personal, así como tipo de paquetes de servicios, modalidad de pagos, información para domiciliación de pagos, en su caso,         y/o cualquier otro dato e información necesaria para su suscripcion a cualesquiera de las sucursales de gimnasios "DEXFIT", se encuentran mencionados         dentro del contenido de la "Carátula del Contrato" Inciso I.,  que adjunto al presente Contrato forma parte integrante del mismo '), 0, 'J', FALSE);
 		$pdf->Cell(0, 3, utf8_decode(' c) Que las características respectivas de lo que incluye cada paquete le ha sido debidamente informada por parte de "DEXFIT".'), 0, 1, 'L');
 		$pdf->MultiCell(0, 3, utf8_decode(' d) Que previo a recabar sus datos personales "DEXFIT" puso a su disposición e hizo de su conocimiento el correspondiente Aviso de Privacidad para el                correcto uso y protección de los mismos'), 0, 'J');
 		$pdf->MultiCell(0, 3, utf8_decode(' e) Que "DEXFIT" ha hecho de su conocimiento el reglamento interno de las instalaciones de gimnasios "DEXFIT", que contiene las normas a seguir dentro de       cualesquiera de las instalaciones de los gimnasios "DEXFIT" y que adjunto dentro del "Anexo A", formará parte integrante del presente Contrato.'), 0, 'J');
@@ -3764,68 +3722,67 @@ class ANT_Controller extends CI_Controller
 	/**
 	 * Documentos Internos: Documento Modificaciones Membresia
 	 */
-	function pdf_modificaciones($info=array())
+	function pdf_modificaciones($info = array())
 	{
 		$pdf = new Pdf();
 		$this->contract_atributes($pdf);
-		foreach (array("FECHA"=>time(), "TITULAR"=>"", "MEMBRESIA"=>"", "MOTIVO"=>"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _", "CANTIDAD"=>"500", "TIPOMODIFICACION"=>"", "PORCIENTO"=>"33") as $field=>$default)
-		{
-			$info[$field] = isset($info[$field])?utf8_decode($info[$field]):$default;
+		foreach (array("FECHA" => time(), "TITULAR" => "", "MEMBRESIA" => "", "MOTIVO" => "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _", "CANTIDAD" => "500", "TIPOMODIFICACION" => "", "PORCIENTO" => "33") as $field => $default) {
+			$info[$field] = isset($info[$field]) ? utf8_decode($info[$field]) : $default;
 		}
 		$this->add_page_header($pdf, "right", $info["FECHA"]);
 
-		$pdf->SetFont("Arial","B",10);
+		$pdf->SetFont("Arial", "B", 10);
 		$pdf->Text(16, 33, "MODIFICACI\xD3N DE MEMBRES\xCDA");
 		$pdf->Text(16, 37, "DATOS DEL SOCIO TITULAR:");
 		$pdf->Ln(10);
-		$pdf->SetFont("Arial","",9);
-		$pdf->Cell(14,5,"Nombre");
-		$pdf->Cell(110,5,$info["TITULAR"],"B");
-		$pdf->Cell(26,5,"Membres\xEDa No.:");
-		$pdf->Cell(36,5,$info["MEMBRESIA"],"B",1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->Cell(14, 5, "Nombre");
+		$pdf->Cell(110, 5, $info["TITULAR"], "B");
+		$pdf->Cell(26, 5, "Membres\xEDa No.:");
+		$pdf->Cell(36, 5, $info["MEMBRESIA"], "B", 1);
 		$pdf->Ln(8);
 
-		$pdf->SetFont("Arial","",8);
-		$pdf->Cell(90,5,"CAMBIO DE TIPO DE MEMBRES\xCDA",1);
-		$pdf->Cell(6,5,($info["TIPOMODIFICACION"]=="MEMBRESIA"?"X":""),1,1);
-		$pdf->Cell(90,5,"CAMBIO DE DEPENDIENTE",1);
-		$pdf->Cell(6,5,($info["TIPOMODIFICACION"]=="DEPENDIENTE"?"X":""),1,1);
-		$pdf->Cell(90,5,"BAJA DE SOCIO",1);
-		$pdf->Cell(6,5,($info["TIPOMODIFICACION"]=="BAJA"?"X":""),1,1);
-		$pdf->Cell(90,5,"REACTIVACI\xD3N",1);
-		$pdf->Cell(6,5,($info["TIPOMODIFICACION"]=="REACTIVACION"?"X":""),1,1);
-		$pdf->Cell(90,5,"REFERIDOS",1);
-		$pdf->Cell(6,5,($info["TIPOMODIFICACION"]=="REFERIDO"?"X":""),1,1);
+		$pdf->SetFont("Arial", "", 8);
+		$pdf->Cell(90, 5, "CAMBIO DE TIPO DE MEMBRES\xCDA", 1);
+		$pdf->Cell(6, 5, ($info["TIPOMODIFICACION"] == "MEMBRESIA" ? "X" : ""), 1, 1);
+		$pdf->Cell(90, 5, "CAMBIO DE DEPENDIENTE", 1);
+		$pdf->Cell(6, 5, ($info["TIPOMODIFICACION"] == "DEPENDIENTE" ? "X" : ""), 1, 1);
+		$pdf->Cell(90, 5, "BAJA DE SOCIO", 1);
+		$pdf->Cell(6, 5, ($info["TIPOMODIFICACION"] == "BAJA" ? "X" : ""), 1, 1);
+		$pdf->Cell(90, 5, "REACTIVACI\xD3N", 1);
+		$pdf->Cell(6, 5, ($info["TIPOMODIFICACION"] == "REACTIVACION" ? "X" : ""), 1, 1);
+		$pdf->Cell(90, 5, "REFERIDOS", 1);
+		$pdf->Cell(6, 5, ($info["TIPOMODIFICACION"] == "REFERIDO" ? "X" : ""), 1, 1);
 		$pdf->Ln(8);
 
-		$pdf->SetFont("Arial","B",9);
-		$pdf->Cell(186,4,"CAMBIO DE TIPO DE MEMBRESIA",0,1);
-		$pdf->SetFont("Arial","",9);
-		$pdf->MultiCell(186,4,"Autorizo al club deportivo Life & Fitness, realizar el cambio de tipo de membres\xEDa, ajust\xE1ndome a los costos de Mantenimiento e inscripci\xF3n correspondientes.");
+		$pdf->SetFont("Arial", "B", 9);
+		$pdf->Cell(186, 4, "CAMBIO DE TIPO DE MEMBRESIA", 0, 1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->MultiCell(186, 4, "Autorizo al club deportivo Life & Fitness, realizar el cambio de tipo de membres\xEDa, ajust\xE1ndome a los costos de Mantenimiento e inscripci\xF3n correspondientes.");
 
-		$pdf->SetFont("Arial","B",9);
-		$pdf->Cell(186,4,"CAMBIO DE DEPENDIENTE",0,1);
-		$pdf->SetFont("Arial","",9);
-		$pdf->MultiCell(186,4,"Autorizo realizar el cambio de dependiente definitivamente por lo cual el dependiente anterior pierde todos los derechos como socio de Life & Fitness");
+		$pdf->SetFont("Arial", "B", 9);
+		$pdf->Cell(186, 4, "CAMBIO DE DEPENDIENTE", 0, 1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->MultiCell(186, 4, "Autorizo realizar el cambio de dependiente definitivamente por lo cual el dependiente anterior pierde todos los derechos como socio de Life & Fitness");
 
-		$pdf->SetFont("Arial","B",9);
-		$pdf->Cell(186,4,"BAJA DE SOCIO",0,1);
-		$pdf->SetFont("Arial","",9);
-		$pdf->MultiCell(186,4,"Por este conducto el socio titular aprueba que el o los socios mencionados en este documento quedan dados de baja por el siguiente motivo: ".$info["MOTIVO"]." de tal forma que entregar\xE1 su credencial y no tendr\xE1 acceso al club ni a sus servicios desde la fecha se\xF1alada. En dado caso de querer regresar a ser socio de Life & Fitness a su membres\xEDa deber\xE1 realizar el tr\xE1mite de reactivaci\xF3n o adquirir una nueva membres\xEDa ajust\xE1ndose a los requerimientos al momento de la nueva inscripci\xF3n.");
+		$pdf->SetFont("Arial", "B", 9);
+		$pdf->Cell(186, 4, "BAJA DE SOCIO", 0, 1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->MultiCell(186, 4, "Por este conducto el socio titular aprueba que el o los socios mencionados en este documento quedan dados de baja por el siguiente motivo: " . $info["MOTIVO"] . " de tal forma que entregar\xE1 su credencial y no tendr\xE1 acceso al club ni a sus servicios desde la fecha se\xF1alada. En dado caso de querer regresar a ser socio de Life & Fitness a su membres\xEDa deber\xE1 realizar el tr\xE1mite de reactivaci\xF3n o adquirir una nueva membres\xEDa ajust\xE1ndose a los requerimientos al momento de la nueva inscripci\xF3n.");
 
-		$pdf->SetFont("Arial","B",9);
-		$pdf->Cell(186,5,"REACTIVACI\xD3N",0,1);
-		$pdf->SetFont("Arial","",9);
-		$pdf->MultiCell(186,4,"Para poder reactivar, es necesario cubrir una cuota de reingreso (reactivaci\xF3n), que ser\xE1 el ".$info["PORCIENTO"]."% del costo de inscripci\xF3n actual por cada socio, m\xE1s el mes de mantenimiento que corresponda seg\xFAn el tipo de membres\xEDa. En caso de querer realizar el pago de sus pr\xF3ximos mantenimientos con cargo autom\xE1tico a su tarjeta, es necesario volver a hacer el documento correspondiente. Al realizar este tr\xE1mite y pago, la membres\xEDa vuelve a estar vigente");
+		$pdf->SetFont("Arial", "B", 9);
+		$pdf->Cell(186, 5, "REACTIVACI\xD3N", 0, 1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->MultiCell(186, 4, "Para poder reactivar, es necesario cubrir una cuota de reingreso (reactivaci\xF3n), que ser\xE1 el " . $info["PORCIENTO"] . "% del costo de inscripci\xF3n actual por cada socio, m\xE1s el mes de mantenimiento que corresponda seg\xFAn el tipo de membres\xEDa. En caso de querer realizar el pago de sus pr\xF3ximos mantenimientos con cargo autom\xE1tico a su tarjeta, es necesario volver a hacer el documento correspondiente. Al realizar este tr\xE1mite y pago, la membres\xEDa vuelve a estar vigente");
 
-		$pdf->SetFont("Arial","B",9);
-		$pdf->Cell(186,5,"REFERIDOS",0,1);
-		$pdf->SetFont("Arial","",9);
-		$pdf->MultiCell(186,4,"Por este conducto, hago constar que refer\xED a la membres\xEDa No.".$info["MEMBRESIA"]." por lo cual me hago acreedor de $ ".$info["CANTIDAD"]." pesos en billetes promocionales Life & Fitness, v\xE1lidos para ser aplicados en el pr\xF3ximo pago de mantenimiento correspondiente a mi membres\xEDa, en caso de haber realizado el pago anual, estos ser\xE1n v\xE1lidos para el pago de visitas de invitados al club, servicio de locker fijo, o el pago de la siguiente anualidad. Estos billetes son promocionales, por lo cual no se dar\xE1 cambio en efectivo ni en billetes promocionales en caso de hacer el pago de una cantidad menos a los $ ".$info["CANTIDAD"].".");
+		$pdf->SetFont("Arial", "B", 9);
+		$pdf->Cell(186, 5, "REFERIDOS", 0, 1);
+		$pdf->SetFont("Arial", "", 9);
+		$pdf->MultiCell(186, 4, "Por este conducto, hago constar que refer\xED a la membres\xEDa No." . $info["MEMBRESIA"] . " por lo cual me hago acreedor de $ " . $info["CANTIDAD"] . " pesos en billetes promocionales Life & Fitness, v\xE1lidos para ser aplicados en el pr\xF3ximo pago de mantenimiento correspondiente a mi membres\xEDa, en caso de haber realizado el pago anual, estos ser\xE1n v\xE1lidos para el pago de visitas de invitados al club, servicio de locker fijo, o el pago de la siguiente anualidad. Estos billetes son promocionales, por lo cual no se dar\xE1 cambio en efectivo ni en billetes promocionales en caso de hacer el pago de una cantidad menos a los $ " . $info["CANTIDAD"] . ".");
 		$pdf->Ln(40);
-		$pdf->Cell(85,5,"Nombre y firma de conformidad socio titular","T",0,"C");
-		$pdf->Cell(16,5,"");
-		$pdf->Cell(85,5,"Nombre y sello de quien recibe","T",1,"C");
+		$pdf->Cell(85, 5, "Nombre y firma de conformidad socio titular", "T", 0, "C");
+		$pdf->Cell(16, 5, "");
+		$pdf->Cell(85, 5, "Nombre y sello de quien recibe", "T", 1, "C");
 		$this->add_page_footer($pdf);
 
 		$pdf->Output("Life & Fitness - Modificaciones Membresia.pdf", "D");
@@ -3834,12 +3791,12 @@ class ANT_Controller extends CI_Controller
 
 	function pdf_credencial($info = '')
 	{
-		$path = realpath(dirname(__FILE__).'/../../assets/images');
-		$pathimages = realpath(dirname(__FILE__).'/../../assets');
+		$path = realpath(dirname(__FILE__) . '/../../assets/images');
+		$pathimages = realpath(dirname(__FILE__) . '/../../assets');
 		$pdf = new Pdf_code();
 		$size = array(86, 56);
 		$paper = 'A';
- 		$pdf->SetMargins(0,0,0);
+		$pdf->SetMargins(0, 0, 0);
 		$pdf->AddPage($paper, $size);
 		$pdf->AliasNbPages();
 		$pdf->SetTitle('Life and Fitness');
@@ -3847,75 +3804,75 @@ class ANT_Controller extends CI_Controller
 		$pdf->SetCreator('ant.com.mx');
 		$pdf->SetSubject('Credencial');
 		$pdf->SetKeywords('Gimnasio, Life, Fitness, Mexico, Swimming, Sport, club');
-		$pdf->SetDisplayMode('default','single');
-		$pdf->SetTextColor(0,0,0);
+		$pdf->SetDisplayMode('default', 'single');
+		$pdf->SetTextColor(0, 0, 0);
 
-		$img1 = $info['foto']!=NULL&&$info['foto']!=''?(file_exists($pathimages.DIRECTORY_SEPARATOR.$info['foto'])?$pathimages.DIRECTORY_SEPARATOR.$info['foto']:$path.DIRECTORY_SEPARATOR.'no_foto.png'):$path.DIRECTORY_SEPARATOR.'no_foto.png';
+		$img1 = $info['foto'] != NULL && $info['foto'] != '' ? (file_exists($pathimages . DIRECTORY_SEPARATOR . $info['foto']) ? $pathimages . DIRECTORY_SEPARATOR . $info['foto'] : $path . DIRECTORY_SEPARATOR . 'no_foto.png') : $path . DIRECTORY_SEPARATOR . 'no_foto.png';
 		$imgwidth = 27;
 		$imgheight = 27;
-		$x = $info['foto']!=NULL&&$info['foto']!=''&&file_exists($pathimages.DIRECTORY_SEPARATOR.$info['foto'])?8:8;
+		$x = $info['foto'] != NULL && $info['foto'] != '' && file_exists($pathimages . DIRECTORY_SEPARATOR . $info['foto']) ? 8 : 8;
 		$y = 6;
-		$pdf->Image($img1,$x,$y,$imgwidth,$imgheight);
+		$pdf->Image($img1, $x, $y, $imgwidth, $imgheight);
 
-		$img1 = $img1 = $info['logo']!=NULL&&$info['logo']!=''?(file_exists($pathimages.DIRECTORY_SEPARATOR.$info['logo'])?$pathimages.DIRECTORY_SEPARATOR.$info['logo']:$path.DIRECTORY_SEPARATOR.'esprezza.png'):$path.DIRECTORY_SEPARATOR.'esprezza.png';
+		$img1 = $img1 = $info['logo'] != NULL && $info['logo'] != '' ? (file_exists($pathimages . DIRECTORY_SEPARATOR . $info['logo']) ? $pathimages . DIRECTORY_SEPARATOR . $info['logo'] : $path . DIRECTORY_SEPARATOR . 'esprezza.png') : $path . DIRECTORY_SEPARATOR . 'esprezza.png';
 		$x = 45;
 		$y = 5;
 		$imgwidth = 37;
 		$imgheight = 12;
-		$pdf->Image($img1,$x,$y,$imgwidth,$imgheight);
+		$pdf->Image($img1, $x, $y, $imgwidth, $imgheight);
 
-		$pdf->SetXY(38,21);
-		$pdf->SetFont("Arial","",7);
-		$pdf->Cell(6,3,"No. Socio:",0,1);
-		$pdf->SetXY(38,24);
-		$pdf->Cell(6,3,$info['folio'].$info['numero'],0,1);
-		$pdf->SetXY(38,27);
-		$pdf->Cell(6,3,"Nombre:",0,1);
-		$pdf->SetXY(38,30);
-		if(strlen($info['first_name']) > 31){
-			$pdf->Text(39,32,utf8_decode($info['first_name']));
-			if(strlen($info['last_name']." ".$info['second_last_name']) > 31){
-				$pdf->Text(39,35,utf8_decode($info['last_name']));
-				$pdf->Text(39,38,utf8_decode($info['second_last_name']));
-			}else{
-				$pdf->Text(39,35,utf8_decode($info['last_name']." ".$info['second_last_name']));
+		$pdf->SetXY(38, 21);
+		$pdf->SetFont("Arial", "", 7);
+		$pdf->Cell(6, 3, "No. Socio:", 0, 1);
+		$pdf->SetXY(38, 24);
+		$pdf->Cell(6, 3, $info['folio'] . $info['numero'], 0, 1);
+		$pdf->SetXY(38, 27);
+		$pdf->Cell(6, 3, "Nombre:", 0, 1);
+		$pdf->SetXY(38, 30);
+		if (strlen($info['first_name']) > 31) {
+			$pdf->Text(39, 32, utf8_decode($info['first_name']));
+			if (strlen($info['last_name'] . " " . $info['second_last_name']) > 31) {
+				$pdf->Text(39, 35, utf8_decode($info['last_name']));
+				$pdf->Text(39, 38, utf8_decode($info['second_last_name']));
+			} else {
+				$pdf->Text(39, 35, utf8_decode($info['last_name'] . " " . $info['second_last_name']));
 			}
-		}else if(strlen($info['first_name']." ".$info['last_name']) > 31){
-			$pdf->Text(39,32,utf8_decode($info['first_name']));
-			$pdf->Text(39,35,utf8_decode($info['last_name']." ".$info['second_last_name']));
-		}else if(strlen($info['contacto']) > 31){
-			$pdf->Text(39,32,utf8_decode($info['first_name']." ".$info['last_name']));
-			$pdf->Text(39,35,utf8_decode($info['second_last_name']));
-		}else{
-			$pdf->Text(39,32,utf8_decode($info['contacto']));
+		} else if (strlen($info['first_name'] . " " . $info['last_name']) > 31) {
+			$pdf->Text(39, 32, utf8_decode($info['first_name']));
+			$pdf->Text(39, 35, utf8_decode($info['last_name'] . " " . $info['second_last_name']));
+		} else if (strlen($info['contacto']) > 31) {
+			$pdf->Text(39, 32, utf8_decode($info['first_name'] . " " . $info['last_name']));
+			$pdf->Text(39, 35, utf8_decode($info['second_last_name']));
+		} else {
+			$pdf->Text(39, 32, utf8_decode($info['contacto']));
 		}
-		$pdf->SetFont("Arial","",6.3);
-		$pdf->Text(9,40,utf8_decode($info['fiscal_address']." ".$info['fiscal_address_ext_num']." ".$info['fiscal_address_int_num']));
-		$pdf->Text(9,43,utf8_decode($info['neighborhood']." ".$info['fiscal_address_zip']));
-		$pdf->Text(9,46,utf8_decode($info['fiscal_address_municipality'].", ".$info['fiscal_address_state'].", ".$info['fiscal_country']));
-		$pdf->Text(9,49,$info['fiscal_phone']);
+		$pdf->SetFont("Arial", "", 6.3);
+		$pdf->Text(9, 40, utf8_decode($info['fiscal_address'] . " " . $info['fiscal_address_ext_num'] . " " . $info['fiscal_address_int_num']));
+		$pdf->Text(9, 43, utf8_decode($info['neighborhood'] . " " . $info['fiscal_address_zip']));
+		$pdf->Text(9, 46, utf8_decode($info['fiscal_address_municipality'] . ", " . $info['fiscal_address_state'] . ", " . $info['fiscal_country']));
+		$pdf->Text(9, 49, $info['fiscal_phone']);
 
 		//$pdf->MultiCell(30,1.8,$domicilio,0);
-		$pdf->setXY(8,37);
-		$pdf->Text(8,54,"www.lifeandfitness.com.mx");
+		$pdf->setXY(8, 37);
+		$pdf->Text(8, 54, "www.lifeandfitness.com.mx");
 
 		$pdf->AddPage($paper, $size);
 
-		$img1 = $path.DIRECTORY_SEPARATOR.'esprezza.png';
+		$img1 = $path . DIRECTORY_SEPARATOR . 'esprezza.png';
 		$x = 50;
 		$y = 5;
 		$imgwidth = 25;
 		$imgheight = 10;
-		$pdf->Image($img1,$x,$y,$imgwidth,$imgheight);
+		$pdf->Image($img1, $x, $y, $imgwidth, $imgheight);
 
-		$pdf->SetFont("Arial","",5.5);
-		$pdf->SetXY(8,16);
-		$pdf->MultiCell(100,2,"No Transferible.\n Para mantener vigente la inscripci\xF3n es necesario estar al corriente en sus pagos. \n Para acceder es necesario la credencial.",0);
+		$pdf->SetFont("Arial", "", 5.5);
+		$pdf->SetXY(8, 16);
+		$pdf->MultiCell(100, 2, "No Transferible.\n Para mantener vigente la inscripci\xF3n es necesario estar al corriente en sus pagos. \n Para acceder es necesario la credencial.", 0);
 
-		$code=$info['folio'].$info['numero'];
-		$pdf->Code128(40,29,$code,40,20);
+		$code = $info['folio'] . $info['numero'];
+		$pdf->Code128(40, 29, $code, 40, 20);
 		$pdf->SetFontSize(10);
-		$pdf->Text(53,52,$code);
+		$pdf->Text(53, 52, $code);
 
 		/*$pdf->Cell(186,4,"CAMBIO DE TIPO DE MEMBRESIA",0,1);
 		$pdf->SetFont("Arial","",9);
@@ -3924,7 +3881,6 @@ class ANT_Controller extends CI_Controller
 
 		$pdf->Output("Life & Fitness - Credencial.pdf", "D");
 		exit;
-
 	}
 
 	/**
@@ -3934,15 +3890,14 @@ class ANT_Controller extends CI_Controller
 	 * @param integer $status: [optional] Number of status for record.
 	 * @param string $response: [optional] String or xml of response.
 	 */
-	function ant_send_email($type='', $request='', $status='0', $response='')
+	function ant_send_email($type = '', $request = '', $status = '0', $response = '')
 	{
-		if ($type!='' && $request!='')
-		{
-			require_once(BASEPATH.'../orchestrator/orchestrator.php');
+		if ($type != '' && $request != '') {
+			require_once(BASEPATH . '../orchestrator/orchestrator.php');
 			$orch = new orchestrator();
 			$orch->client = $this->tank_auth->get_user_ant_account();
 			$orch->type = $type;
-			$orch->status= $status;
+			$orch->status = $status;
 			$orch->request = $request;
 			$orch->response = $response;
 			$orch->insertOrchestration();
@@ -3950,25 +3905,27 @@ class ANT_Controller extends CI_Controller
 		return TRUE;
 	}
 
-    function get_text_color($back_color = 'FFFFFF') {
-        $color = '000000';
-        $back_color = str_replace(array('#'), '', $color);
-        $maxdiv = (strlen($back_color) > 3) ? 2 : 1;
-        list($r, $g, $b) = str_split($back_color, $maxdiv);
-        $r = hexdec($r);
-        $g = hexdec($g);
-        $b = hexdec($b);
-        $a = hexdec(25);
-        $s0 = ($r + $g + $b) / 3;
-        if ($s0 > 127) {
-            $color = '000000';
-        } else {
-            $color = 'FFFFFF';
-        }
-        return $color;
-    }
+	function get_text_color($back_color = 'FFFFFF')
+	{
+		$color = '000000';
+		$back_color = str_replace(array('#'), '', $color);
+		$maxdiv = (strlen($back_color) > 3) ? 2 : 1;
+		list($r, $g, $b) = str_split($back_color, $maxdiv);
+		$r = hexdec($r);
+		$g = hexdec($g);
+		$b = hexdec($b);
+		$a = hexdec(25);
+		$s0 = ($r + $g + $b) / 3;
+		if ($s0 > 127) {
+			$color = '000000';
+		} else {
+			$color = 'FFFFFF';
+		}
+		return $color;
+	}
 
-	function device_connect(){
+	function device_connect()
+	{
 		$tablet_browser = 0;
 		$mobile_browser = 0;
 		$body_class = 'desktop';
@@ -3983,43 +3940,118 @@ class ANT_Controller extends CI_Controller
 			$body_class = "mobile";
 		}
 
-		if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') > 0) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE'])))) {
+		if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/vnd.wap.xhtml+xml') > 0) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE'])))) {
 			$mobile_browser++;
 			$body_class = "mobile";
 		}
 
 		$mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
 		$mobile_agents = array(
-				'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
-				'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
-				'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
-				'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',
-				'newt','noki','palm','pana','pant','phil','play','port','prox',
-				'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
-				'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
-				'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
-				'wapr','webc','winw','winw','xda ','xda-');
+			'w3c ',
+			'acs-',
+			'alav',
+			'alca',
+			'amoi',
+			'audi',
+			'avan',
+			'benq',
+			'bird',
+			'blac',
+			'blaz',
+			'brew',
+			'cell',
+			'cldc',
+			'cmd-',
+			'dang',
+			'doco',
+			'eric',
+			'hipt',
+			'inno',
+			'ipaq',
+			'java',
+			'jigs',
+			'kddi',
+			'keji',
+			'leno',
+			'lg-c',
+			'lg-d',
+			'lg-g',
+			'lge-',
+			'maui',
+			'maxo',
+			'midp',
+			'mits',
+			'mmef',
+			'mobi',
+			'mot-',
+			'moto',
+			'mwbp',
+			'nec-',
+			'newt',
+			'noki',
+			'palm',
+			'pana',
+			'pant',
+			'phil',
+			'play',
+			'port',
+			'prox',
+			'qwap',
+			'sage',
+			'sams',
+			'sany',
+			'sch-',
+			'sec-',
+			'send',
+			'seri',
+			'sgh-',
+			'shar',
+			'sie-',
+			'siem',
+			'smal',
+			'smar',
+			'sony',
+			'sph-',
+			'symb',
+			't-mo',
+			'teli',
+			'tim-',
+			'tosh',
+			'tsm-',
+			'upg1',
+			'upsi',
+			'vk-v',
+			'voda',
+			'wap-',
+			'wapa',
+			'wapi',
+			'wapp',
+			'wapr',
+			'webc',
+			'winw',
+			'winw',
+			'xda ',
+			'xda-'
+		);
 
-		if (in_array($mobile_ua,$mobile_agents)) {
+		if (in_array($mobile_ua, $mobile_agents)) {
 			$mobile_browser++;
 		}
 
-		if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'opera mini') > 0) {
+		if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera mini') > 0) {
 			$mobile_browser++;
 			//Check for tablets on opera mini alternative headers
-			$stock_ua = strtolower(isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'])?$_SERVER['HTTP_X_OPERAMINI_PHONE_UA']:(isset($_SERVER['HTTP_DEVICE_STOCK_UA'])?$_SERVER['HTTP_DEVICE_STOCK_UA']:''));
+			$stock_ua = strtolower(isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ? $_SERVER['HTTP_X_OPERAMINI_PHONE_UA'] : (isset($_SERVER['HTTP_DEVICE_STOCK_UA']) ? $_SERVER['HTTP_DEVICE_STOCK_UA'] : ''));
 			if (preg_match('/(tablet|ipad|playbook)|(android(?!.*mobile))/i', $stock_ua)) {
 				$tablet_browser++;
 			}
 		}
 		if ($tablet_browser > 0) {
 			return "is tablet";
-		}
-		else if ($mobile_browser > 0) {
+		} else if ($mobile_browser > 0) {
 			return "is mobil";
-		}else {
+		} else {
 			return 'is desktop';
 		}
 	}
-
 }

@@ -1,6 +1,10 @@
 <!--Page Container Start Here-->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
-
+<style>
+    .permisoEdicion {
+        display: <?php echo ($this->tank_auth->user_has_privilege('Modificar respuestas encuestas') ? "block" :  "none"); ?>;
+    }
+</style>
 <section class="sec-bread main-container">
     <div class="container-fluid">
         <div style="padding-left: 0px; padding-right: 0px;" class="col-lg-12 col-md-12">
@@ -23,7 +27,7 @@
                         <div class="widget-content">
                             <div class="data-action-bar">
                                 <p class="title-sec"><?php echo $title; ?></p>
-                                <div class="row row-buscar-agregar">
+                                <div class="row row-buscar-agregar permisoEdicion">
                                     <div class="col-lg-6 col-md-6">
                                           </div>
 

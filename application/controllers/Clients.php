@@ -69,8 +69,8 @@ class Clients extends ANT_Controller
         $data['table'] = '';
         if ($aux) {
             foreach ($aux as $a) {
-                $botones = '<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>
-				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
+                $botones = '<button type="button" class="btn btn-default row-edit permisoEdicion" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>
+				<button type="button" class="btn btn-default row-delete permisoEdicion" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
                 $data['table'] .= '<tr><td>' . $a['name'] . '</td>
 			<td>' . $a['middle_name'] . '</td>
 			<td>' . $a['user_name'] . '</td>

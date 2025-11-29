@@ -1,5 +1,10 @@
 <!--Page Container Start Here-->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
+<style>
+    .permisoEdicion {
+        display: <?php echo ($this->tank_auth->user_has_privilege('Modificar colaboradores') ? "block" :  "none"); ?>;
+    }
+</style>
 
 <section class="sec-bread main-container">
     <div class="container-fluid">
@@ -23,19 +28,30 @@
                         <div class="widget-content">
                             <div class="data-action-bar">
                                 <p class="title-sec"><?php echo $title; ?></p>
-                                <div class="row row-buscar-agregar">
+                                <div class="row row-buscar-agregar permisoEdicion">
                                     <div class="col-lg-6 col-md-6">
                                         <!-- Espacio para búsqueda u otros filtros si los necesitas -->
                                     </div>
 
-                                    <div class="col-lg-6 col-md-6 d-flex justify-content-end align-items-center gap-2 flex-wrap">
-                                        <div class="d-btn-agregar">
-                                            <form method="post" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
-                                                <input type="file" id="archivo_excel" accept=".xlsx" style="display:none">
-                                                <button type="button" id="carga_masiva" class="btn btn-sm  add-row">Carga Masiva</button>
-                                            </form>
-                                            <br>
-                                            <a id="btn_add_new" class="btn btn-sm add-row"><i class="fa fa-plus"></i> Agregar Colaborador</a>
+                                    <div class="col-lg-6 col-md-6 d-flex justify-content-end align-items-center gap-3 flex-wrap">
+                                        <div class="d-btn-agregar d-flex flex-column align-items-end gap-3">
+                                            <label for="descargar_formato" class="btn btn-sm add-row mb-0 cursor-pointer" onclick="window.open('Colaboradores/Formato/activo','_blank')">
+                                                <i class="fa fa-download me-1"></i> Descargar información
+                                            </label>
+                                            <label for="archivo_excel_baja" class="btn btn-sm add-row mb-0 cursor-pointer">
+                                                <i class="fa fa-upload me-1"></i> Subir acuse de baja
+                                            </label>
+                                            <input type="file" id="archivo_excel_baja" accept=".pdf" style="display:none">
+
+                                            <label for="archivo_excel_prebaja" class="btn btn-sm add-row mb-0 cursor-pointer">
+                                                <i class="fa fa-upload me-1"></i> Subir acuse de pre baja
+                                            </label>
+                                            <input type="file" id="archivo_excel_prebaja" accept=".pdf" style="display:none">
+
+                                            <a id="btn_add_new" class="btn btn-sm add-row mt-2">
+                                                <i class="fa fa-plus"></i> Agregar Colaborador
+                                            </a>
+
                                         </div>
                                     </div>
                                 </div>

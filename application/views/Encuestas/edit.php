@@ -36,8 +36,15 @@
 
                                                 <div class="form-group col-lg-6 col-md-6 pl-0">
                                                     <div class="floating-label-group">
+                                                    <label class="floating-label-text">Nombre *</label>
                                                         <input type="text" name="users[nombre]" class="form-control input-form" required />
-                                                        <label class="floating-label">Nombre *</label>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 pl-0">
+                                                    <div class="floating-label-group">
+                                                        <label class="floating-label-text">Introducción *</label>
+                                                        <textarea type="text" name="users[introduccion]" class="form-control input-form"></textarea>
                                                     </div>
                                                 </div>
 

@@ -28,7 +28,7 @@ class Empresas_Model extends ANT_Model
 			'result' => 'array',
 			'where' => $where ? $where . " AND empresas.status=1" : "empresas.status=1"
 		);
-		
+
 
 		$result = Empresas_Model::Load($options);
 		return $result;
@@ -45,8 +45,10 @@ class Empresas_Model extends ANT_Model
 		);
 
 		$result = Empresas_Model::Load($options);
-		foreach ($result as $key) {
-			$lista .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
+		if ($result) {
+			foreach ($result as $key) {
+				$lista .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
+			}
 		}
 		return $lista;
 	}

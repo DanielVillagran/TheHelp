@@ -27,6 +27,21 @@
                                 <p class="title" style="font-weight: bold;"><?php echo $hc->empresa; ?></p>
                                 <p class="title" style="font-weight: bold;"><?php echo $hc->encuesta; ?></p>
                                 <p class="title" style="font-weight: bold;"><?php echo $hc->fecha; ?></p>
+                                <p class="title" style="font-weight: bold;"><?php echo (isset($meses[$hc->mes]) ? $meses[$hc->mes] : "") . " "; ?> <?php echo $hc->anio > 0 ? $hc->anio : ""; ?></p>
+                                <p class="title" style="font-weight: bold;">
+                                    <?php if (isset($hc->firmado_por) && $hc->firmado_por > 0): ?>
+                                        Firmado por: <?php echo $this->tank_auth->get_user_name($hc->firmado_por); ?>
+                                        <?php if (!empty($hc->firma_url)): ?>
+                                            <a href="<?php echo $hc->firma_url; ?>"
+                                                class="btn btn-default btn-sm"
+                                                download="firma_<?php echo $hc->firmado_por; ?>.png"
+                                                style="margin-left: 10px;">
+                                                <i class="fa fa-download"></i> Descargar firma
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </p>
+
                                 <div class="row row-buscar-agregar">
 
 
@@ -42,7 +57,7 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            
+
                                         </tr>
                                     </tfoot>
                                     <tbody>

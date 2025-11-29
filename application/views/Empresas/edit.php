@@ -1,5 +1,19 @@
 <!--Page Container Start Here-->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
+<style>
+    .etiquetaCampos {
+        top: -20px;
+        bottom: 0px;
+        left: 0px;
+        font-size: 12px;
+        color: rgba(0, 0, 0, .5);
+        font-weight: 400 !important;
+    }
+
+    .informacionSensible {
+        display: <?php echo ($this->tank_auth->user_has_privilege('Información sensible') ? "block" :  "none"); ?>;
+    }
+</style>
 
 <section class="sec-bread main-container">
     <div class="container-fluid">
@@ -196,7 +210,11 @@
                             <div id="puestos" class="tab-pane">
                                 <div class="d-form-agregar-dep">
                                     <p class="title-sec">Puestos por horario</p>
-                                    <div class="col-lg-6 col-md-6"></div>
+                                    <h3>Cantidad de personas: <span id="total_personas"></span></h3>
+                                    <h3 class="informacionSensible">Total de costo de personas: <span id="total_cantidad"></span></h3>
+                                    <div class="col-lg-6 col-md-6">
+
+                                    </div>
                                     <div class="col-lg-6 col-md-6">
                                         <div class="d-btn-agregar">
                                             <a id="btn_add_new_puesto" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar puesto</a>
@@ -368,7 +386,7 @@
                             <div class="form-group col-lg-6 col-md-6 pl-0">
                                 <div class="floating-label-group">
                                     <input type="text" name="horario[horario]" class="form-control input-form" required />
-                                    <label class="floating-label">Horario (ej. 08:00 - 17:00) *</label>
+                                    <label class="floating-label">Horario*</label>
                                 </div>
                             </div>
 
@@ -453,55 +471,56 @@
                                     <option value="Sin bonos">Sin bonos</option>
                                 </select>
                             </div>
-                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                            <div class="form-group col-lg-12 col-md-12 pl-0 ">
                                 <div class="floating-label-group">
-                                    <input type="number" name="puesto[salario_diario]" class="form-control input-form" required />
-                                    <label class="floating-label">Salario Diario*</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0">
-                                <div class="floating-label-group">
-                                    <input type="number" name="puesto[sueldo_neto_semanal]" class="form-control input-form" required />
-                                    <label class="floating-label">Sueldo Neto Semanal*</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0">
-                                <div class="floating-label-group">
-                                    <input type="number" name="puesto[costo_unitario]" id="costo_unitario" class="form-control input-form" required />
-                                    <label class="floating-label">Costo Unitario*</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0">
-                                <div class="floating-label-group">
-
-                                    <input type="number" name="puesto[costo_por_dia]" readonly class="form-control input-form" required />
+                                    <label class="floating-label-text etiquetaCampos">Salario Diario*</label>
+                                    <input type="number" name="puesto[salario_diario]" class="form-control input-form formatoMoneda" required />
 
                                 </div>
                             </div>
 
-                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                            <div class="form-group col-lg-12 col-md-12 pl-0 ">
+                                <div class="floating-label-group">
+                                    <label class="floating-label-text etiquetaCampos">Sueldo Neto Semanal*</label>
+                                    <input type="number" name="puesto[sueldo_neto_semanal]" class="form-control input-form formatoMoneda" required />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
+                                <div class="floating-label-group">
+                                    <label class="floating-label-text etiquetaCampos">Costo Unitario*</label>
+                                    <input type="number" name="puesto[costo_unitario]" id="costo_unitario" class="form-control input-form formatoMoneda" required />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
+                                <div class="floating-label-group">
+                                    <span class="floating-label-text">Costo por Dia*</span>
+                                    <input type="number" name="puesto[costo_por_dia]" readonly class="form-control input-form formatoMoneda" required />
+
+                                </div>
+                            </div>
+
+                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
                                 <div class="floating-label-group">
                                     <span class="floating-label-text">Costo por Descanso Laborado*</span>
-                                    <input type="number" name="puesto[costo_descanso_laborado]" readonly class="form-control input-form" required />
+                                    <input type="number" name="puesto[costo_descanso_laborado]" readonly class="form-control input-form formatoMoneda" required />
 
                                 </div>
                             </div>
 
-                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
                                 <div class="floating-label-group">
                                     <span class="floating-label-text">Costo por Día Festivo*</span>
-                                    <input type="number" name="puesto[costo_dia_festivo]" readonly class="form-control input-form" required />
+                                    <input type="number" name="puesto[costo_dia_festivo]" readonly class="form-control input-form formatoMoneda" required />
 
                                 </div>
                             </div>
 
-                            <div class="form-group col-lg-12 col-md-12 pl-0">
+                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
                                 <div class="floating-label-group">
                                     <span class="floating-label-text">Costo Hora Extra*</span>
-                                    <input type="number" name="puesto[costo_hora_extra]" readonly class="form-control input-form" required />
+                                    <input type="number" name="puesto[costo_hora_extra]" readonly class="form-control input-form formatoMoneda" required />
 
                                 </div>
                             </div>

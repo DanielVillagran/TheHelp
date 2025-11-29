@@ -473,12 +473,12 @@ class User extends ANT_Controller {
 
 	public function cambia_contrasena() {
 		$options = array("select" => "user_name", "where" => "id=" . $this->tank_auth->get_user_id(), "result" => "1row");
-		$recupera = Users_model::Load($options);
+		$recupera = Users_Model::Load($options);
 
 		$clave = $this->input->post()['clave'];
 		$clave = $recupera->user_name . "?" . $clave . "?" . "uralvasm";
 		$clave = password_hash($clave, PASSWORD_DEFAULT);
-		Users_model::Update(array("user_passwd" => $clave), array("id" => $this->tank_auth->get_user_id()));
+		Users_Model::Update(array("user_passwd" => $clave), array("id" => $this->tank_auth->get_user_id()));
 		$this->output_json(array("status" => "ok"));
 
 	}

@@ -95,6 +95,7 @@
                                 <span class="floating-label-text">Empresa *</span>
                                 <select class="form-control input-form " name="users[empresa_id]">
                                     <option hidden>Seleccionar empresa</option>
+                                    <option value="0">Todas las empresas</option>
                                     <?php echo $empresas; ?>
                                 </select>
                             </div>

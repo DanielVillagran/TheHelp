@@ -90,11 +90,10 @@ class Reportes extends ANT_Controller
 				'empresas_horarios_cubiertos ecc' => 'ecc.id=empresas_horarios_cubiertos_detalle.horario_cubierto_id',
 				'empresas_puestos_horarios as ep' => 'ep.id=empresas_horarios_cubiertos_detalle.puesto_horario_id',
 				'puestos as p' => 'p.id=ep.puesto_id',
-
 				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id',
 				'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id',
 				'empresas_horarios as eh' => 'eh.id=c.horario_id',
-				'empresas as e' => 'e.id=c.departamento',
+				'empresas as e' => 'e.id=c.cliente',
 				'empresas_sedes as es' => 'es.id=ecc.sede_id'
 			),
 			'sortBy' => 'c.codigo, ecc.fecha',
@@ -223,7 +222,7 @@ class Reportes extends ANT_Controller
 				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id',
 				'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id',
 				'empresas_horarios as eh' => 'eh.id=c.horario_id',
-				'empresas as e' => 'e.id=c.departamento',
+				'empresas as e' => 'e.id=c.cliente',
 				'empresas_sedes as es' => 'es.id=ecc.sede_id'
 			),
 			'sortBy' => 'c.codigo, ecc.fecha',
@@ -382,7 +381,7 @@ class Reportes extends ANT_Controller
 				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id',
 				'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id',
 				'empresas_horarios as eh' => 'eh.id=c.horario_id',
-				'empresas as e' => 'e.id=c.departamento',
+				'empresas as e' => 'e.id=c.cliente',
 				'empresas_sedes as es' => 'es.id=ecc.sede_id'
 			),
 			'result' => 'array'
@@ -455,7 +454,7 @@ class Reportes extends ANT_Controller
 				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id',
 				'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id',
 				'empresas_horarios as eh' => 'eh.id=c.horario_id',
-				'empresas as e' => 'e.id=c.departamento',
+				'empresas as e' => 'e.id=c.cliente',
 				'empresas_sedes as es' => 'es.id=ecc.sede_id'
 			),
 			'sortBy' => 'c.codigo, ecc.fecha',
@@ -544,7 +543,7 @@ class Reportes extends ANT_Controller
 				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id',
 				'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id',
 				'empresas_horarios as eh' => 'eh.id=c.horario_id',
-				'empresas as e' => 'e.id=c.departamento',
+				'empresas as e' => 'e.id=c.cliente',
 				'empresas_sedes as es' => 'es.id=ecc.sede_id'
 			),
 			'result' => 'array'
@@ -621,7 +620,7 @@ class Reportes extends ANT_Controller
 				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id',
 				'colaboradores as c' => 'c.id=empresas_horarios_cubiertos_detalle.colaborador_id',
 				'empresas_horarios as eh' => 'eh.id=c.horario_id',
-				'empresas as e' => 'e.id=c.departamento',
+				'empresas as e' => 'e.id=c.cliente',
 				'empresas_sedes as es' => 'es.id=ecc.sede_id'
 			),
 			'sortBy' => 'c.codigo, ecc.fecha',
@@ -715,7 +714,7 @@ class Reportes extends ANT_Controller
 				// Obtener colaboradores activos en ese departamento
 				$colaboradores = Colaboradores_Model::Load(array(
 					'select' => "COUNT(*) as total",
-					'where' => "estatus=1 AND departamento=" . $empresa_id . " AND horario_id=" . $horario_id,
+					'where' => "status=1 AND cliente=" . $empresa_id . " AND horario_id=" . $horario_id,
 					'result' => '1row'
 				));
 				$totalColaboradores = $colaboradores ? (int)$colaboradores->total : 0;
@@ -750,12 +749,13 @@ class Reportes extends ANT_Controller
 			}
 
 			$puestos = Empresas_Puestos_Horarios_Model::Load(array(
-				'select' => "empresas_puestos_horarios.empresa_id, empresas_puestos_horarios.horario_id, SUM(empresas_puestos_horarios.cantidad) as cantidad",
+				'select' => "empresas_puestos_horarios.empresa_id, e.nombre as empresa_name, eh.nombre as horario_name, empresas_puestos_horarios.horario_id, SUM(empresas_puestos_horarios.cantidad) as cantidad",
 				'where' => "empresas_puestos_horarios.status=1 " . $where,
 				'joinsLeft' => array(
 					'empresas as e' => 'e.id=empresas_puestos_horarios.empresa_id',
+					'empresas_horarios as eh' => 'eh.id=empresas_puestos_horarios.horario_id',
 				),
-				'groupBy' => "empresas_puestos_horarios.empresa_id,empresas_puestos_horarios.horario_id",
+				'groupBy' => "empresas_puestos_horarios.empresa_id,empresas_puestos_horarios.horario_id, e.nombre, eh.nombre",
 				'result' => 'array'
 			));
 
@@ -775,14 +775,14 @@ class Reportes extends ANT_Controller
 					// Obtener colaboradores activos en ese departamento
 					$colaboradores = Colaboradores_Model::Load(array(
 						'select' => "COUNT(*) as total",
-						'where' => "estatus=1 AND departamento=" . $empresa_id . " AND horario_id=" . $horario_id,
+						'where' => "status=1 AND cliente=" . $empresa_id . " AND horario_id=" . $horario_id,
 						'result' => '1row'
 					));
 					$totalColaboradores = $colaboradores ? (int)$colaboradores->total : 0;
 					if ($cantidad > $totalColaboradores) {
 
-						$data['table'] .= '<tr><td>' . $horario_id . '</td>
-						<td>' . $empresa_id . '</td>
+						$data['table'] .= '<tr><td>' . $puesto['horario_name'] . '</td>
+						<td>' . $puesto['empresa_name'] . '</td>
 						<td>' . ($cantidad - $totalColaboradores) . '</td>
 						</tr>';
 					}
@@ -795,7 +795,7 @@ class Reportes extends ANT_Controller
 			}
 			$aux = Colaboradores_Model::Load(array(
 				'select' => "*",
-				'where' => "estatus=1 " . $where,
+				'where' => "status=1 " . $where,
 				'result' => 'array'
 			));
 
@@ -818,6 +818,54 @@ class Reportes extends ANT_Controller
 		}
 		$this->output_json($data);
 	}
+	public function get_satisfaccion_encuestas()
+	{
+		$start_date = $this->input->post('fecha_inicio');
+		$end_date = $this->input->post('fecha_fin');
+		$empresa_id = $this->input->post('empresa_id');
+		$razon_social_id = $this->input->post('razon_social');
+
+		$where = '';
+
+		if (!empty($empresa_id) && $empresa_id !== 'Seleccionar empresa') {
+			$empresa_id = (int)$empresa_id;
+			$where .= " AND e.id = $empresa_id";
+		}
+
+		if (!empty($razon_social_id) && $razon_social_id !== 'Seleccionar empresa') {
+			$razon_social_id = (int)$razon_social_id;
+			$where .= " AND e.razon_social_id = $razon_social_id";
+		}
+
+		$query = "
+        SELECT
+            IFNULL(
+                AVG(
+                    CAST(
+                        CASE WHEN ep.tipo IN (2,4) THEN eprd.valor * 2 ELSE eprd.valor END 
+                    AS DECIMAL
+                    ) / 10
+                ) * 100,
+            0
+            ) AS promedio
+        FROM encuestas_preguntas_respuestas_detalle eprd
+        INNER JOIN encuestas_preguntas_respuestas epr ON epr.id = eprd.encuestas_preguntas_respuesta_id
+        INNER JOIN empresas e ON e.id = epr.empresa_id
+        INNER JOIN encuestas_preguntas ep ON ep.id = eprd.encuestas_pregunta_id
+        WHERE eprd.valor REGEXP '^[0-9]+$'
+		AND CAST(eprd.valor AS UNSIGNED) BETWEEN 1 AND 10
+        AND eprd.created_at >= '$start_date'
+        AND eprd.created_at <= '$end_date'
+        $where
+    ";
+
+		$data = Encuestas_Model::Query($query);
+
+		$promedio = isset($data[0]['promedio']) ? floatval($data[0]['promedio']) : 0;
+
+		$this->output_json($promedio);
+	}
+
 	public function get_graficas_encuestas()
 	{
 		$start_date = $this->input->post('fecha_inicio');
@@ -842,13 +890,24 @@ class Reportes extends ANT_Controller
 		$data = Encuestas_Model::Query("SELECT
 			ep.id AS pregunta_id,
 			ep.pregunta AS pregunta,
-			AVG(CAST(eprd.valor AS DECIMAL)) AS promedio
+			AVG(
+				CAST(
+					CASE WHEN ep.tipo IN (2,4) THEN eprd.valor * 2 ELSE eprd.valor END 
+				AS DECIMAL)
+				/
+				10
+			) * 100 AS promedio
 		FROM encuestas_preguntas_respuestas_detalle eprd
-		INNER JOIN encuestas_preguntas_respuestas epr ON epr.id=eprd.encuestas_preguntas_respuesta_id
-		INNER JOIN empresas e on e.id=epr.empresa_id
+		INNER JOIN encuestas_preguntas_respuestas epr ON epr.id = eprd.encuestas_preguntas_respuesta_id
+		INNER JOIN empresas e ON e.id = epr.empresa_id
 		INNER JOIN encuestas_preguntas ep ON ep.id = eprd.encuestas_pregunta_id
-		WHERE eprd.valor REGEXP '^[0-9]+$' AND eprd.created_at >= '$start_date' AND eprd.created_at <= '$end_date' $where
+		WHERE eprd.valor REGEXP '^[0-9]+$'
+		AND CAST(eprd.valor AS UNSIGNED) BETWEEN 1 AND 10
+		AND eprd.created_at >= '$start_date'
+		AND eprd.created_at <= '$end_date'
+		$where
 		GROUP BY ep.id, ep.pregunta
+
 		");
 		$this->output_json($data);
 	}

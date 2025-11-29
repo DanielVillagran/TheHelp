@@ -9770,7 +9770,7 @@ output {
 .form-control[readonly],
 fieldset[disabled] .form-control {
   cursor: not-allowed;
-  background-color: #fafafa;
+  background-color: #E4E4E4;
   opacity: 1;
 }
 textarea.form-control {
