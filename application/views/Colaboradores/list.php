@@ -33,27 +33,38 @@
                                         <!-- Espacio para búsqueda u otros filtros si los necesitas -->
                                     </div>
 
-                                    <div class="col-lg-6 col-md-6 d-flex justify-content-end align-items-center gap-3 flex-wrap">
-                                        <div class="d-btn-agregar d-flex flex-column align-items-end gap-3">
-                                            <label for="descargar_formato" class="btn btn-sm add-row mb-0 cursor-pointer" onclick="window.open('Colaboradores/Formato/activo','_blank')">
-                                                <i class="fa fa-download me-1"></i> Descargar información
+                                    <div class="col-lg-6 col-md-6 text-right">
+
+                                        <div class="btn-toolbar" role="toolbar"
+                                            style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+
+                                            <!-- Descargar información -->
+                                            <label class="btn btn-primary"
+                                                onclick="window.open('Colaboradores/Formato/activo','_blank')">
+                                                <i class="fa fa-download"></i> Descargar
                                             </label>
-                                            <label for="archivo_excel_baja" class="btn btn-sm add-row mb-0 cursor-pointer">
-                                                <i class="fa fa-upload me-1"></i> Subir acuse de baja
+
+                                            <!-- Subir acuse de baja -->
+                                            <label for="archivo_excel_baja" class="btn btn-info">
+                                                <i class="fa fa-upload"></i> Acuse Baja
                                             </label>
                                             <input type="file" id="archivo_excel_baja" accept=".pdf" style="display:none">
 
-                                            <label for="archivo_excel_prebaja" class="btn btn-sm add-row mb-0 cursor-pointer">
-                                                <i class="fa fa-upload me-1"></i> Subir acuse de pre baja
+                                            <!-- Subir acuse de pre baja -->
+                                            <label for="archivo_excel_prebaja" class="btn btn-info">
+                                                <i class="fa fa-upload"></i> Acuse Pre-Baja
                                             </label>
                                             <input type="file" id="archivo_excel_prebaja" accept=".pdf" style="display:none">
 
-                                            <a id="btn_add_new" class="btn btn-sm add-row mt-2">
+                                            <!-- Agregar colaborador -->
+                                            <a id="btn_add_new" class="btn btn-success">
                                                 <i class="fa fa-plus"></i> Agregar Colaborador
                                             </a>
 
                                         </div>
+
                                     </div>
+
                                 </div>
                             </div>
                         </div>

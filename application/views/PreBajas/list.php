@@ -32,18 +32,27 @@
                                     <div class="col-lg-6 col-md-6">
                                         <!-- Espacio para búsqueda u otros filtros si los necesitas -->
                                     </div>
-                                    <div class="col-lg-6 col-md-6 d-flex justify-content-end align-items-center gap-3 flex-wrap">
-                                        <div class="d-btn-agregar d-flex flex-column align-items-end gap-3">
-                                            <label for="descargar_formato" class="btn btn-sm add-row mb-0 cursor-pointer" onclick="window.open('Colaboradores/Formato/prebaja','_blank')">
-                                                <i class="fa fa-download me-1"></i> Descargar información
+                                    <div class="col-lg-6 col-md-6 text-right">
+
+                                        <div class="btn-toolbar" role="toolbar"
+                                            style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+
+                                            <!-- Descargar -->
+                                            <label class="btn btn-primary"
+                                                onclick="window.open('Colaboradores/Formato/prebaja','_blank')">
+                                                <i class="fa fa-download"></i> Descargar
                                             </label>
-                                            <label for="archivo_excel_baja" class="btn btn-sm add-row mb-0 cursor-pointer">
-                                                <i class="fa fa-upload me-1"></i> Subir acuse de baja
+
+                                            <!-- Subir acuse de baja -->
+                                            <label for="archivo_excel_baja" class="btn btn-info">
+                                                <i class="fa fa-upload"></i> Acuse Baja
                                             </label>
                                             <input type="file" id="archivo_excel_baja" accept=".pdf" style="display:none">
 
                                         </div>
+
                                     </div>
+
 
                                 </div>
                             </div>
