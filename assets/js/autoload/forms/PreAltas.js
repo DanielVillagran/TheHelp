@@ -2,6 +2,11 @@ var states = "";
 $(document).ready(function () {
     if ($("#id").val() != 0) {
         get_info_Departamentos($("#id").val());
+    } else {
+        let hace5 = new Date();
+        hace5.setDate(hace5.getDate() - 5);
+        let hace5Str = hace5.toISOString().split("T")[0];
+        $("input[name='users[fecha_alta]']").attr("min", hace5Str);
     }
 
 });

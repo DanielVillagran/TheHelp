@@ -139,9 +139,9 @@
 
                                         <!-- Fecha de Alta -->
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
-                                            <span class="floating-label-text">Fecha de Alta *</span>
-                                            <input type="date" name="users[fecha_alta]" class="form-control input-form" />
-                                        </div>
+                                                    <span class="floating-label-text">Fecha de Alta *</span>
+                                                    <input type="date" name="users[fecha_alta]" class="form-control input-form" required />
+                                                </div>
 
                                         <!-- Fecha de Nacimiento -->
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
@@ -169,13 +169,29 @@
 
                                         <!-- Dirección -->
                                         <div class="form-group col-lg-12 col-md-12 pl-0">
-                                            <span class="floating-label-text">Dirección *</span>
-                                            <input type="text" name="users[direccion]" class="form-control input-form" />
+                                            <span class="floating-label-text">Calle *</span>
+                                            <input type="text" name="users[calle]" class="form-control input-form" />
                                         </div>
+
+                                        <div class="form-group col-lg-12 col-md-12 pl-0">
+                                            <span class="floating-label-text">Número *</span>
+                                            <input type="text" name="users[numero]" class="form-control input-form" />
+                                        </div>
+
+                                        <div class="form-group col-lg-12 col-md-12 pl-0">
+                                            <span class="floating-label-text">Colonia *</span>
+                                            <input type="text" name="users[colonia]" class="form-control input-form" />
+                                        </div>
+
+                                        <div class="form-group col-lg-12 col-md-12 pl-0">
+                                            <span class="floating-label-text">Municipio *</span>
+                                            <input type="text" name="users[municipio]" class="form-control input-form" />
+                                        </div>
+
 
                                         <!-- Estado -->
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
-                                            <span class="floating-label-text">Estado *</span>
+                                            <span class="floating-label-text">Estado CIF *</span>
                                             <select class="form-control input-form" name="users[estado]">
                                                 <?php echo $estados_mexico; ?>
                                             </select>
@@ -183,7 +199,7 @@
 
                                         <!-- Código Postal -->
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
-                                            <span class="floating-label-text">Código Postal *</span>
+                                            <span class="floating-label-text">Código Postal CIF *</span>
                                             <input type="text" name="users[codigo_postal]" maxlength="5" class="form-control input-form" />
                                         </div>
 
