@@ -20,10 +20,20 @@ class Colaboradores_Model extends ANT_Model
 		$result = array();
 		$status = '(1,2)';
 		$options = array(
-			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, empresas.nombre as empresa, razones_sociales.name as razon',
+			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, 
+			empresas.nombre as empresa, 
+			razones_sociales.name as razon, 
+			empresas_sedes.nombre as sede_nombre,
+			puestos.nombre as puesto_nombre,
+			empresas_horarios.nombre as horario_nombre,
+			tipos_nominas.nombre as nomina_nombre',
 			'joinsLeft' => [
 				'colaboradores_status' => 'colaboradores.status=colaboradores_status.id',
 				'empresas' => 'colaboradores.cliente=empresas.id',
+				'empresas_horarios' => 'colaboradores.horario_id=empresas_horarios.id',
+				'puestos' => 'colaboradores.puesto=puestos.id',
+				'empresas_sedes' => 'colaboradores.sede=empresas_sedes.id',
+				'tipos_nominas' => 'colaboradores.tipo_nomina=tipos_nominas.id',
 				'razones_sociales' => 'colaboradores.razon_social=razones_sociales.id'
 			],
 			'result' => 'array',
@@ -39,10 +49,20 @@ class Colaboradores_Model extends ANT_Model
 		$result = array();
 		$status = '(4,5)';
 		$options = array(
-			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, empresas.nombre as empresa, razones_sociales.name as razon',
+			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, 
+			empresas.nombre as empresa, 
+			razones_sociales.name as razon, 
+			empresas_sedes.nombre as sede_nombre,
+			puestos.nombre as puesto_nombre,
+			empresas_horarios.nombre as horario_nombre,
+			tipos_nominas.nombre as nomina_nombre',
 			'joinsLeft' => [
 				'colaboradores_status' => 'colaboradores.status=colaboradores_status.id',
 				'empresas' => 'colaboradores.cliente=empresas.id',
+				'empresas_horarios' => 'colaboradores.horario_id=empresas_horarios.id',
+				'puestos' => 'colaboradores.puesto=puestos.id',
+				'empresas_sedes' => 'colaboradores.sede=empresas_sedes.id',
+				'tipos_nominas' => 'colaboradores.tipo_nomina=tipos_nominas.id',
 				'razones_sociales' => 'colaboradores.razon_social=razones_sociales.id'
 			],
 			'result' => 'array',

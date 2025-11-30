@@ -39,10 +39,10 @@
                                             style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
 
                                             <!-- Descargar información -->
-                                            <label class="btn btn-primary"
+                                            <button class="btn btn-primary"
                                                 onclick="window.open('Colaboradores/Formato/activo','_blank')">
                                                 <i class="fa fa-download"></i> Descargar
-                                            </label>
+                                            </button>
 
                                             <!-- Subir acuse de baja -->
                                             <label for="archivo_excel_baja" class="btn btn-info">
