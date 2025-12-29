@@ -43,15 +43,15 @@
                                             </label>
 
                                             <!-- Subir alta -->
-                                            <label for="archivo_excel_alta" class="btn btn-info">
+                                            <button onclick="$('#archivo_excel_alta').trigger('click')" class="btn btn-info">
                                                 <i class="fa fa-upload"></i> Acuse Alta
-                                            </label>
+                                            </button>
                                             <input type="file" id="archivo_excel_alta" accept=".pdf" style="display:none">
 
                                             <!-- Subir pre-alta -->
-                                            <label for="archivo_excel_prealta" class="btn btn-info">
+                                            <button onclick="$('#archivo_excel_prealta').trigger('click')" class="btn btn-info">
                                                 <i class="fa fa-upload"></i> Acuse PreAlta
-                                            </label>
+                                            </button>
                                             <input type="file" id="archivo_excel_prealta" accept=".pdf" style="display:none">
 
                                             <!-- Agregar -->
