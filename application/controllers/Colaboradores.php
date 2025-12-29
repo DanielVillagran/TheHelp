@@ -142,7 +142,7 @@ class Colaboradores extends ANT_Controller
 	function reactivar()
 	{
 		$id = $this->input->post("id");
-		$result = Colaboradores_Model::Update(['status' => 5], 'id=' . $id);
+		$result = Colaboradores_Model::Update(['status' => 6], 'id=' . $id);
 		Colaboradores_Movimientos_Model::Insert([
 			'status' => 1,
 			'colaborador_id' => $id,
