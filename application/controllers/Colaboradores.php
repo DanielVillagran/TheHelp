@@ -417,4 +417,62 @@ class Colaboradores extends ANT_Controller
 		fclose($out);
 		exit;
 	}
+	public function Costos()
+	{
+		$aux = Empresas_Puestos_Horarios_Model::Query("select r.name as razon, e.nombre as empresa, 
+		p.nombre as puesto, ep.cantidad, ep.costo_unitario, ep.costo_por_dia, 
+		ep.salario_diario from empresas as e inner join razones_sociales as r on 
+		r.id=e.razon_social_id inner join empresas_puestos_horarios as ep on 
+		ep.empresa_id=e.id inner join puestos as p on p.id=ep.puesto_id");
+
+		// Nombre del archivo
+		$filename = 'costos_'  . date('Ymd_His') . '.csv';
+
+		// Encabezados para descarga
+		header('Content-Type: text/csv; charset=UTF-8');
+		header('Content-Disposition: attachment; filename="' . $filename . '"');
+		header('Pragma: no-cache');
+		header('Expires: 0');
+
+		$out = fopen('php://output', 'w');
+
+		// BOM para que Excel respete UTF-8
+		fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+		// Encabezados en el orden solicitado
+		$headers = [
+			'Razón Social',
+			'Cliente',
+			'Puesto',
+			'Cantidad',
+			'Costo Unitario',
+			'Costo Por dia',
+			'Salario Diario',
+		];
+		fputcsv($out, $headers);
+
+		// Filas
+		if (!empty($aux)) {
+			foreach ($aux as $a) {
+				// Asegura arreglo indexado por nombre
+				$a = (array)$a;
+
+				$row = [
+					isset($a['razon']) ? $a['razon'] : '',
+					isset($a['empresa']) ? $a['empresa'] : '',
+					isset($a['puesto']) ? $a['puesto'] : '',
+					isset($a['cantidad']) ? $a['cantidad'] : '',
+					isset($a['costo_unitario']) ? $a['costo_unitario'] : '',
+					isset($a['costo_por_dia']) ? $a['costo_por_dia'] : '',
+					isset($a['salario_diario ']) ? $a['salario_diario '] : '',
+					
+				];
+
+				fputcsv($out, $row);
+			}
+		}
+
+		fclose($out);
+		exit;
+	}
 }
