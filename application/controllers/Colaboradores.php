@@ -142,7 +142,7 @@ class Colaboradores extends ANT_Controller
 	function reactivar()
 	{
 		$id = $this->input->post("id");
-		$result = Colaboradores_Model::Update(['status' => 1], 'id=' . $id);
+		$result = Colaboradores_Model::Update(['status' => 5], 'id=' . $id);
 		Colaboradores_Movimientos_Model::Insert([
 			'status' => 1,
 			'colaborador_id' => $id,
@@ -216,10 +216,10 @@ class Colaboradores extends ANT_Controller
 		$toStatus = null;
 
 		if (strcasecmp($statusParam, 'prealta') === 0 || $statusParam === '2') {
-			$fromStatus = "(1)";
+			$fromStatus = "(1,6)";
 			$toStatus = 2;
 		} elseif (strcasecmp($statusParam, 'alta') === 0 || $statusParam === '3') {
-			$fromStatus = "(2,1)";
+			$fromStatus = "(2,1,6)";
 			$toStatus = 3;
 		} elseif (strcasecmp($statusParam, 'alta') === 0 || $statusParam === '4') {
 			$fromStatus = "(3)";

@@ -18,7 +18,7 @@ class Colaboradores_Model extends ANT_Model
 	{
 		$lista = '';
 		$result = array();
-		$status = '(1,2)';
+		$status = '(1,2,6)';
 		$options = array(
 			'select' => 'colaboradores.*, colaboradores_status.nombre as estatus, 
 			empresas.nombre as empresa, 
