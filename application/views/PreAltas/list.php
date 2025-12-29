@@ -43,16 +43,18 @@
                                             </label>
 
                                             <!-- Subir alta -->
-                                            <button onclick="$('#archivo_excel_alta').trigger('click')" class="btn btn-info">
-                                                <i class="fa fa-upload"></i> Acuse Alta
-                                            </button>
-                                            <input type="file" id="archivo_excel_alta" accept=".pdf" style="display:none">
+                                           <!-- Subir alta -->
+<button type="button" id="btn_alta" class="btn btn-info">
+  <i class="fa fa-upload"></i> Acuse Alta
+</button>
+<input type="file" id="archivo_excel_alta" accept="application/pdf" style="display:none">
 
-                                            <!-- Subir pre-alta -->
-                                            <button onclick="$('#archivo_excel_prealta').trigger('click')" class="btn btn-info">
-                                                <i class="fa fa-upload"></i> Acuse PreAlta
-                                            </button>
-                                            <input type="file" id="archivo_excel_prealta" accept=".pdf" style="display:none">
+<!-- Subir pre-alta -->
+<button type="button" id="btn_prealta" class="btn btn-info">
+  <i class="fa fa-upload"></i> Acuse PreAlta
+</button>
+<input type="file" id="archivo_excel_prealta" accept="application/pdf" style="display:none">
+
 
                                             <!-- Agregar -->
                                             <a id="btn_add_new" class="btn btn-success">
@@ -105,3 +107,21 @@
     </div>
 </section>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    $(function () {
+
+  $('#btn_alta').on('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $('#archivo_excel_alta').trigger('click');
+  });
+
+  $('#btn_prealta').on('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $('#archivo_excel_prealta').trigger('click');
+  });
+
+});
+
+</script>
