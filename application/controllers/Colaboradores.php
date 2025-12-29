@@ -464,7 +464,7 @@ class Colaboradores extends ANT_Controller
 					isset($a['cantidad']) ? $a['cantidad'] : '',
 					isset($a['costo_unitario']) ? $a['costo_unitario'] : '',
 					isset($a['costo_por_dia']) ? $a['costo_por_dia'] : '',
-					isset($a['salario_diario ']) ? $a['salario_diario '] : '',
+					isset($a['salario_diario']) ? $a['salario_diario'] : '',
 					
 				];
 
