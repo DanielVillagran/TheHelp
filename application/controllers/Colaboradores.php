@@ -419,9 +419,15 @@ class Colaboradores extends ANT_Controller
 	}
 	public function Costos()
 	{
-		$aux = Empresas_Puestos_Horarios_Model::Query("select r.name as razon, e.nombre as empresa, 
-		p.nombre as puesto, ep.cantidad, ep.costo_unitario, ep.costo_por_dia, 
-		ep.salario_diario from empresas as e inner join razones_sociales as r on 
+		$aux = Empresas_Puestos_Horarios_Model::Query("select r.name as razon,
+		e.nombre as empresa, 
+		p.nombre as puesto, 
+		ep.cantidad, 
+		ep.costo_unitario, 
+		ep.costo_por_dia, 
+		ep.tipo_nomina,
+		ep.salario_diario from empresas as e
+		inner join razones_sociales as r on 
 		r.id=e.razon_social_id inner join empresas_puestos_horarios as ep on 
 		ep.empresa_id=e.id inner join puestos as p on p.id=ep.puesto_id");
 
@@ -448,6 +454,7 @@ class Colaboradores extends ANT_Controller
 			'Costo Unitario',
 			'Costo Por dia',
 			'Salario Diario',
+			'Con Bonos'
 		];
 		fputcsv($out, $headers);
 
@@ -465,7 +472,7 @@ class Colaboradores extends ANT_Controller
 					isset($a['costo_unitario']) ? $a['costo_unitario'] : '',
 					isset($a['costo_por_dia']) ? $a['costo_por_dia'] : '',
 					isset($a['salario_diario']) ? $a['salario_diario'] : '',
-					
+					isset($a['tipo_nomina']) ? $a['tipo_nomina'] : '',
 				];
 
 				fputcsv($out, $row);
