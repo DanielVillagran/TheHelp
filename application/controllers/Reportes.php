@@ -855,7 +855,7 @@ class Reportes extends ANT_Controller
         WHERE eprd.valor REGEXP '^[0-9]+$'
 		AND CAST(eprd.valor AS UNSIGNED) BETWEEN 1 AND 10
         AND eprd.created_at >= '$start_date'
-        AND eprd.created_at <= '$end_date'
+        AND eprd.created_at <= '$end_date' er
         $where
     ";
 
