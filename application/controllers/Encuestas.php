@@ -525,7 +525,7 @@ class Encuestas extends ANT_Controller
 						$respuesta = '<td><div class="d-flex gap-3">';
 						for ($i = 0; $i <= 10; $i++) {
 							$checked = ($valor == $i) ? 'checked' : '';
-							$respuesta .= '<label style="margin-right:10px"><input type="radio" disabled ' . $checked . ' /> ' . ($i == 0 ? 'N/A' : $i) . '</label>';
+							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . ($i == 0 ? 'N/A' : $i) . '</label>';
 						}
 						$respuesta .= '</div></td>';
 						$comentarioInput = '<td><input type="text" class="form-control" disabled value="' . htmlspecialchars($comentario) . '" /></td>';
