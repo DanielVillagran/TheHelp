@@ -852,10 +852,11 @@ class Reportes extends ANT_Controller
         INNER JOIN encuestas_preguntas_respuestas epr ON epr.id = eprd.encuestas_preguntas_respuesta_id
         INNER JOIN empresas e ON e.id = epr.empresa_id
         INNER JOIN encuestas_preguntas ep ON ep.id = eprd.encuestas_pregunta_id
-        WHERE eprd.valor REGEXP '^[0-9]+$'
-		AND CAST(eprd.valor AS UNSIGNED) BETWEEN 0 AND 11
-        AND eprd.created_at >= '$start_date'
-        AND eprd.created_at <= '$end_date' 
+        WHERE 
+		--eprd.valor REGEXP '^[0-9]+$'AND 
+		CAST(eprd.valor AS UNSIGNED) BETWEEN 0 AND 11 AND 
+		eprd.created_at >= '$start_date' AND
+		 eprd.created_at <= '$end_date' 
         $where
     ";
 

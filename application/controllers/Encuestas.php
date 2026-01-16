@@ -509,7 +509,7 @@ class Encuestas extends ANT_Controller
 						$respuesta .= '</div></td>';
 
 						if ($tipo == 3) {
-							$comentarioInput = '<td><textarea class="form-control" disabled rows="2">' . htmlspecialchars($comentario) . '</textarea><</td>';
+							$comentarioInput = '<td><textarea class="form-control" disabled rows="2">' . htmlspecialchars($comentario) . '</textarea></td>';
 						}
 						break;
 
@@ -523,7 +523,7 @@ class Encuestas extends ANT_Controller
 						$respuesta .= '</div></td>';
 
 						if ($tipo == 4) {
-							$comentarioInput = '<td><textarea class="form-control" disabled rows="2">' . htmlspecialchars($comentario) . '</textarea><</td>';
+							$comentarioInput = '<td><textarea class="form-control" disabled rows="2">' . htmlspecialchars($comentario) . '</textarea></td>';
 						}
 						break;
 
@@ -534,7 +534,7 @@ class Encuestas extends ANT_Controller
 							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . ($i == 0 ? 'N/A' : $i) . '</label>';
 						}
 						$respuesta .= '</div></td>';
-						$comentarioInput = '<td><textarea class="form-control" disabled rows="2">' . htmlspecialchars($comentario) . '</textarea><</td>';
+						$comentarioInput = '<td><textarea class="form-control" disabled rows="2">' . htmlspecialchars($comentario) . '</textarea></td>';
 						break;
 
 					case 6: // texto largo
