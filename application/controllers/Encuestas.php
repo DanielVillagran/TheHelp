@@ -498,7 +498,7 @@ class Encuestas extends ANT_Controller
 						$respuesta = '<td><div class="d-flex gap-3">';
 						foreach (['B', 'R', 'M', 'N/A'] as $op) {
 							$checked = ($valor == $op) ? 'checked' : '';
-							$respuesta .= '<label style="margin-right:10px"><input type="radio" disabled ' . $checked . ' /> ' . $op . '</label>';
+							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . $op . '</label>';
 						}
 						$respuesta .= '</div></td>';
 
@@ -512,7 +512,7 @@ class Encuestas extends ANT_Controller
 						$respuesta = '<td><div class="d-flex gap-3">';
 						for ($i = 1; $i <= 5; $i++) {
 							$checked = ($valor == $i) ? 'checked' : '';
-							$respuesta .= '<label style="margin-right:10px"><input type="radio" disabled ' . $checked . ' /> ' . $i . '</label>';
+							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . $i . '</label>';
 						}
 						$respuesta .= '</div></td>';
 
@@ -853,7 +853,7 @@ class Encuestas extends ANT_Controller
                                                     style="line-height: 1.2; font-size: 12px; font-family: \'Roboto\', Tahoma, Verdana, Segoe, sans-serif; color: #0081ff; mso-line-height-alt: 14px;">
                                                     <p
                                                         style="font-size: 18px; line-height: 1.2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 22px; margin: 0;">
-                                                        Encuesta: <span style="font-size: 18px;">' . $datos['encuesta']
+                                                        Encuesta: <span style="font-size: 18px;">' . utf8_decode($datos['encuesta'])
 			. '.</span></p>
                                                 </div>
                                             </div>
@@ -863,7 +863,7 @@ class Encuestas extends ANT_Controller
                                                     style="line-height: 1.2; font-size: 12px; font-family: \'Roboto\', Tahoma, Verdana, Segoe, sans-serif; color: #0081ff; mso-line-height-alt: 14px;">
                                                     <p
                                                         style="font-size: 18px; line-height: 1.2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 22px; margin: 0;">
-                                                        Cliente: <span style="font-size: 18px;">' . $datos['cliente']
+                                                        Cliente: <span style="font-size: 18px;">' . utf8_decode($datos['cliente'])
 			. '.</span></p>
                                                 </div>
                                             </div>
@@ -873,7 +873,7 @@ class Encuestas extends ANT_Controller
                                                     style="line-height: 1.2; font-size: 12px; font-family: \'Roboto\', Tahoma, Verdana, Segoe, sans-serif; color: #0081ff; mso-line-height-alt: 14px;">
                                                     <p
                                                         style="font-size: 18px; line-height: 1.2; word-break: break-word; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 22px; margin: 0;">
-                                                        Fecha: <span style="font-size: 18px;">' . $datos['fecha']
+                                                        Fecha: <span style="font-size: 18px;">' . utf8_decode($datos['fecha'])
 			. '.</span></p>
                                                 </div>
                                             </div>
