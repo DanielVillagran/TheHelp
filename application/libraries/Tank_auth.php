@@ -217,6 +217,23 @@ class Tank_auth
         }
         return $name;
     }
+    public function get_user_name_por_id($id)
+    {
+       
+        $name = 'Pedro Perez';
+        if ($id > 0) {
+            $options = array(
+                'select' => "CONCAT(name , ' ', middle_name ) as name",
+                'clauses' => array('id' => $id),
+                'result' => '1row',
+            );
+            $user = Users_Model::Load($options);
+            if ($user) {
+                $name = ucwords(strtolower($user->name));
+            }
+        }
+        return $name;
+    }
     public function get_user_role_id()
     {
         $id = $this->get_user_id();

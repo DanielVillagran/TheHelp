@@ -30,7 +30,7 @@
                                 <p class="title" style="font-weight: bold;"><?php echo (isset($meses[$hc->mes]) ? $meses[$hc->mes] : "") . " "; ?> <?php echo $hc->anio > 0 ? $hc->anio : ""; ?></p>
                                 <p class="title" style="font-weight: bold;">
                                     <?php if (isset($hc->firmado_por) && $hc->firmado_por > 0): ?>
-                                        Firmado por: <?php echo $this->tank_auth->get_user_name($hc->firmado_por); ?>
+                                        Firmado por: <?php echo $this->tank_auth->get_user_name_por_id($hc->firmado_por); ?>
                                         <?php if (!empty($hc->firma_url)): ?>
                                             <a href="<?php echo $hc->firma_url; ?>"
                                                 class="btn btn-default btn-sm"
