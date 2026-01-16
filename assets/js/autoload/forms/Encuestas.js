@@ -140,3 +140,35 @@ function grid_load_preguntas() {
         }
     });
 }
+$('#preguntas_grid').footable().on('click', '.row-delete', function(e) {
+    e.preventDefault();
+    var idemp = $(this).attr('rel');
+    swal({
+        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#0066D1",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar"
+      }, function() {
+        
+            $.ajax({
+                url: "/Encuestas/eliminar_pregunta",
+                type: 'POST',
+                data: {
+                    'id': idemp
+                },
+                dataType: 'json',
+                beforeSend: function(e) {
+                    
+                },
+                success: function(data) {
+                    //swal('Listo!',"El elemento ha sido eliminado con exito.",'success');
+                    grid_load_preguntas();
+                }
+            });
+        
+    });
+});

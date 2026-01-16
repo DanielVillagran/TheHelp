@@ -139,6 +139,12 @@ class Encuestas extends ANT_Controller
 		$result = Encuestas_Model::Update(['status' => 0], "id=" . $id);
 		$this->output_json($result);
 	}
+	function eliminar_pregunta()
+	{
+		$id = $this->input->post("id");
+		$result = Encuestas_Preguntas_Model::Update(['status' => 0], "id=" . $id);
+		$this->output_json($result);
+	}
 	function save_pregunta()
 	{
 		$post = $this->input->post('pregunta');
@@ -157,7 +163,7 @@ class Encuestas extends ANT_Controller
 	function get_Encuestas_preguntas()
 	{
 		$id = $this->input->post('id');
-		$aux = Encuestas_Preguntas_Model::get_grid_info("encuesta_id=" . $id);
+		$aux = Encuestas_Preguntas_Model::get_grid_info("status= 1 AND encuesta_id=" . $id);
 		$data['head'] = "<tr>
 		<th>Pregunta</th>
 		<th>Tipo</th>
@@ -234,7 +240,7 @@ class Encuestas extends ANT_Controller
 
 		$aux = Encuestas_Preguntas_Model::Load(array(
 			'select' => "*",
-			'where' => 'encuesta_id=' . $post['encuesta_id'],
+			'where' => 'status=1 AND encuesta_id=' . $post['encuesta_id'],
 			'sortBy' => 'orden',
 			'sortDirection' => 'ASC',
 			'result' => 'array'
