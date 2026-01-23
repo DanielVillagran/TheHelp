@@ -152,7 +152,7 @@ class Encuestas extends ANT_Controller
 		$hasValue = Encuestas_Preguntas_Model::Load(array(
 			'select' => '*',
 			'result' => '1row',
-			"where" => "encuesta_id=" . $post['encuesta_id'] . " AND pregunta='" . $post['pregunta'] . "'"
+			"where" => "status=1 AND encuesta_id=" . $post['encuesta_id'] . " AND pregunta='" . $post['pregunta'] . "'"
 		));
 		if ($hasValue) {
 			$this->output_json(false);
