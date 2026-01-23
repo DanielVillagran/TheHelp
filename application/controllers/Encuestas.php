@@ -17,7 +17,8 @@ class Encuestas extends ANT_Controller
 		3 => 'Escala (B,R,M,N/A) con comentario',
 		4 => 'Escala 1 a 5 con comentario',
 		5 => 'Valor numérico',
-		6 => 'Comentario'
+		6 => 'Comentario',
+		7 => 'Si/No'
 	];
 	private  $meses = [
 		1 => "Enero",
@@ -315,6 +316,16 @@ class Encuestas extends ANT_Controller
 					case 6:
 						$respuesta = '<textarea class="form-control" name="cubiertos[' . $id . ']" rows="2"></textarea></td>';
 						break;
+					case 7:
+						$respuesta = '<td>
+							<div class="d-flex gap-3">
+								<select name="cubiertos[' . $id . ']" class="form-control">
+									<option value="Si">Si</option>
+									<option value="So">No</option>
+								</select> 
+							';
+						$respuesta .= '</div></td>';
+						break;
 
 					default:
 						$respuesta = '<input class="form-control" name="cubiertos[' . $id . ']" /></td>';
@@ -539,6 +550,14 @@ class Encuestas extends ANT_Controller
 
 					case 6: // texto largo
 						$respuesta = '<td colspan="2"><textarea class="form-control" disabled rows="2">' . htmlspecialchars($valor) . '</textarea></td>';
+						break;
+					case 7:
+						$respuesta = '<td><div class="d-flex gap-3">';
+						foreach (['Si', 'No'] as $op) {
+							$checked = ($valor == $op) ? 'checked' : 'disabled';
+							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . $op . '</label>';
+						}
+						$respuesta .= '</div></td>';
 						break;
 
 					default: // texto libre
