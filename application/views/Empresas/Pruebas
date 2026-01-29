@@ -1,0 +1,58 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 26-01-2026 a las 04:41:38
+-- Versión del servidor: 10.1.36-MariaDB
+-- Versión de PHP: 7.3.33
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+--
+-- Base de datos: `thehelp`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empresas_puestos_horarios_precios`
+--
+
+CREATE TABLE `empresas_puestos_horarios_precios` (
+  `id` int(11) NOT NULL,
+  `empresas_puestos_horarios_id` int(11) NOT NULL,
+  `salario_diario` decimal(10,2) DEFAULT NULL,
+  `sueldo_neto_semanal` decimal(10,2) DEFAULT NULL,
+  `costo_unitario` decimal(10,2) DEFAULT NULL,
+  `costo_por_dia` decimal(10,2) DEFAULT NULL,
+  `costo_descanso_laborado` decimal(10,2) DEFAULT NULL,
+  `costo_dia_festivo` decimal(10,2) DEFAULT NULL,
+  `costo_hora_extra` decimal(10,2) DEFAULT NULL,
+  `vigente` int(11) DEFAULT '1',
+  'fecha_inicio' datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  'fecha_fin' datetime
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `empresas_puestos_horarios_precios`
+--
+ALTER TABLE `empresas_puestos_horarios_precios`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `empresas_puestos_horarios_precios`
+--
+ALTER TABLE `empresas_puestos_horarios_precios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;

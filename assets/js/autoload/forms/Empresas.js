@@ -1,13 +1,11 @@
 var states = "";
 var id_global = 0;
 $(document).ready(function () {
-
     if ($("#id").val() != 0) {
         id_global = $("#id").val();
         initFormatoMoneda();
         get_info_Departamentos($("#id").val());
     }
-
 });
 
 function get_info_Departamentos(id) {
@@ -16,20 +14,20 @@ function get_info_Departamentos(id) {
         type: "post",
         url: "/Empresas/get_info_Empresas",
         data: {
-            id: id
+            id: id,
         },
         dataType: "json",
         beforeSend: function () {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
+                imageUrl: "/assets/images/loader.gif",
             });
         },
         success: function (data) {
             swal.close();
             for (var key in data) {
-                if (key != 'logo') {
+                if (key != "logo") {
                     $('[name="users[' + key + ']"]').val($.trim(data[key]));
                 }
             }
@@ -38,7 +36,7 @@ function get_info_Departamentos(id) {
             grid_load_puestos();
             grid_load_asistencias();
             grid_load_encuestas();
-        }
+        },
     });
 }
 
@@ -55,25 +53,32 @@ function save_Departamentos() {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
+                imageUrl: "/assets/images/loader.gif",
             });
         },
         success: function (data) {
-
             swal.close();
 
             location.href = "/Empresas";
-
-
-        }
+        },
     });
 }
 
 function format_date(date) {
     var formated_date = "";
-    var array_date = date.split('T')[0].split('-');
-    var array_hour = date.split('T')[1].split(':');
-    formated_date += array_date[2] + "-" + array_date[1] + "-" + array_date[0] + " " + array_hour[0] + ":" + array_hour[1] + ":00";
+    var array_date = date.split("T")[0].split("-");
+    var array_hour = date.split("T")[1].split(":");
+    formated_date +=
+        array_date[2] +
+        "-" +
+        array_date[1] +
+        "-" +
+        array_date[0] +
+        " " +
+        array_hour[0] +
+        ":" +
+        array_hour[1] +
+        ":00";
     return formated_date;
 }
 
@@ -96,7 +101,7 @@ function save_sede() {
                 swal({
                     title: "Cargando",
                     showConfirmButton: false,
-                    imageUrl: "/assets/images/loader.gif"
+                    imageUrl: "/assets/images/loader.gif",
                 });
             },
             success: function (data) {
@@ -107,28 +112,27 @@ function save_sede() {
                     $("#modalSede").modal("hide");
                     grid_load_sedes();
                 } else {
-                    swal('Error!', "Ya existe una sede con ese nombre.", 'error');
+                    swal("Error!", "Ya existe una sede con ese nombre.", "error");
                 }
-
-            }
+            },
         });
     } else {
-        swal('Error!', "Debes completar todos los campos.", 'error');
+        swal("Error!", "Debes completar todos los campos.", "error");
     }
 }
 function grid_load_sedes() {
     $.ajax({
         url: "/Empresas/get_Empresas_sedes",
-        type: 'POST',
+        type: "POST",
         data: {
-            id: id_global
+            id: id_global,
         },
-        dataType: 'json',
+        dataType: "json",
         beforeSend: function (e) {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
+                imageUrl: "/assets/images/loader.gif",
             });
         },
         success: function (data) {
@@ -138,11 +142,15 @@ function grid_load_sedes() {
             if ($.fn.DataTable.isDataTable(id)) {
                 $(id).DataTable().destroy();
             }
-            $(id + ' thead').empty().append(data.head);
-            $(id + ' tbody').empty().append(data.table);
+            $(id + " thead")
+                .empty()
+                .append(data.head);
+            $(id + " tbody")
+                .empty()
+                .append(data.table);
             $(id).show();
             inicializarDatatable(id);
-        }
+        },
     });
 }
 
@@ -165,7 +173,7 @@ function save_horario() {
                 swal({
                     title: "Cargando",
                     showConfirmButton: false,
-                    imageUrl: "/assets/images/loader.gif"
+                    imageUrl: "/assets/images/loader.gif",
                 });
             },
             success: function (data) {
@@ -176,28 +184,27 @@ function save_horario() {
                     $("#modalHorario").modal("hide");
                     grid_load_horarios();
                 } else {
-                    swal('Error!', "Ya existe un horario con ese nombre.", 'error');
+                    swal("Error!", "Ya existe un horario con ese nombre.", "error");
                 }
-
-            }
+            },
         });
     } else {
-        swal('Error!', "Debes completar todos los campos.", 'error');
+        swal("Error!", "Debes completar todos los campos.", "error");
     }
 }
 function grid_load_horarios() {
     $.ajax({
         url: "/Empresas/get_Empresas_horarios",
-        type: 'POST',
+        type: "POST",
         data: {
-            id: id_global
+            id: id_global,
         },
-        dataType: 'json',
+        dataType: "json",
         beforeSend: function (e) {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
+                imageUrl: "/assets/images/loader.gif",
             });
         },
         success: function (data) {
@@ -207,12 +214,15 @@ function grid_load_horarios() {
             if ($.fn.DataTable.isDataTable(id)) {
                 $(id).DataTable().destroy();
             }
-            $(id + ' thead').empty().append(data.head);
-            $(id + ' tbody').empty().append(data.table);
+            $(id + " thead")
+                .empty()
+                .append(data.head);
+            $(id + " tbody")
+                .empty()
+                .append(data.table);
             $(id).show();
             inicializarDatatable(id);
-
-        }
+        },
     });
 }
 
@@ -220,14 +230,13 @@ $("#btn_add_new_puesto").click(function () {
     $('[name="puesto[id]"]').val(0);
     $("#modal_puesto")[0].reset();
 
-    document.querySelectorAll('input.formatoMoneda').forEach(input => {
-        if (input._hiddenMirror) input._hiddenMirror.value = ''; // limpiar hidden
-        input.value = ''; // limpiar visible
+    document.querySelectorAll("input.formatoMoneda").forEach((input) => {
+        if (input._hiddenMirror) input._hiddenMirror.value = ""; // limpiar hidden
+        input.value = ""; // limpiar visible
     });
 
     $("#modalPuesto").modal("show");
 });
-
 
 function save_puesto() {
     event.preventDefault();
@@ -237,10 +246,14 @@ function save_puesto() {
     var puesto = data.get("puesto[puesto_id]");
     var cantidad = data.get("puesto[cantidad]");
     if (
-        sede && sede.trim() !== "" &&
-        horario && horario.trim() !== "" &&
-        puesto && puesto.trim() !== "" &&
-        cantidad && cantidad.trim() !== ""
+        sede &&
+        sede.trim() !== "" &&
+        horario &&
+        horario.trim() !== "" &&
+        puesto &&
+        puesto.trim() !== "" &&
+        cantidad &&
+        cantidad.trim() !== ""
     ) {
         $.ajax({
             type: "post",
@@ -252,7 +265,7 @@ function save_puesto() {
                 swal({
                     title: "Cargando",
                     showConfirmButton: false,
-                    imageUrl: "/assets/images/loader.gif"
+                    imageUrl: "/assets/images/loader.gif",
                 });
             },
             success: function (data) {
@@ -263,59 +276,100 @@ function save_puesto() {
                     $("#modalPuesto").modal("hide");
                     grid_load_puestos();
                 } else {
-                    swal('Error!', "Ya existe un horario con ese nombre.", 'error');
+                    swal("Error!", "Ya existe un horario con ese nombre.", "error");
                 }
-
-            }
+            },
         });
     } else {
-        swal('Error!', "Debes completar todos los campos.", 'error');
+        swal("Error!", "Debes completar todos los campos.", "error");
     }
+}
+function save_precio() {
+    event.preventDefault();
+    var data = new FormData(document.getElementById("modal_precio"));
+    $.ajax({
+        type: "post",
+        url: "/Empresas/save_precio",
+        data: data,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif",
+            });
+        },
+        success: function (data) {
+            if (data) {
+                const form = document.getElementById("modal_precio");
+                form.reset();
+                swal.close();
+                $("#modalPrecio").modal("hide");
+                grid_load_puestos();
+            } else {
+                swal("Error!", "Ya existe un horario con ese nombre.", "error");
+            }
+        },
+    });
 }
 function grid_load_puestos() {
     $.ajax({
         url: "/Empresas/get_Empresas_puestos",
-        type: 'POST',
+        type: "POST",
         data: {
-            id: id_global
+            id: id_global,
         },
-        dataType: 'json',
+        dataType: "json",
         beforeSend: function (e) {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
+                imageUrl: "/assets/images/loader.gif",
             });
         },
         success: function (data) {
             swal.close();
             let numStr = data.total_cantidad;
-            $("#total_cantidad").empty().append(numStr ? new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(Number(numStr)) : '');
+            $("#total_cantidad")
+                .empty()
+                .append(
+                    numStr
+                        ? new Intl.NumberFormat("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                        }).format(Number(numStr))
+                        : ""
+                );
             $("#total_personas").empty().append(data.total_personas);
             let id = "#puestos_grid";
             if ($.fn.DataTable.isDataTable(id)) {
                 $(id).DataTable().destroy();
             }
-            $(id + ' thead').empty().append(data.head);
-            $(id + ' tbody').empty().append(data.table);
+            $(id + " thead")
+                .empty()
+                .append(data.head);
+            $(id + " tbody")
+                .empty()
+                .append(data.table);
             $(id).show();
             inicializarDatatable(id);
-        }
+        },
     });
 }
 function grid_load_asistencias() {
     $.ajax({
         url: "/Empresas/get_Empresas_asistencias",
-        type: 'POST',
+        type: "POST",
         data: {
-            id: id_global
+            id: id_global,
         },
-        dataType: 'json',
+        dataType: "json",
         beforeSend: function (e) {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
+                imageUrl: "/assets/images/loader.gif",
             });
         },
         success: function (data) {
@@ -324,32 +378,38 @@ function grid_load_asistencias() {
             if ($.fn.DataTable.isDataTable(id)) {
                 $(id).DataTable().destroy();
             }
-            $(id + ' thead').empty().append(data.head);
-            $(id + ' tbody').empty().append(data.table);
+            $(id + " thead")
+                .empty()
+                .append(data.head);
+            $(id + " tbody")
+                .empty()
+                .append(data.table);
             $(id).show();
             inicializarDatatable(id);
-        }
+        },
     });
 }
-$('#asistencias_grid').footable().on('click', '.row-delete', function (e) {
-    e.preventDefault();
-    var idemp = $(this).attr('rel');
-    window.location.href = "/asistencias/view/" + idemp;
-});
+$("#asistencias_grid")
+    .footable()
+    .on("click", ".row-delete", function (e) {
+        e.preventDefault();
+        var idemp = $(this).attr("rel");
+        window.location.href = "/asistencias/view/" + idemp;
+    });
 
 function grid_load_encuestas() {
     $.ajax({
         url: "/Empresas/get_Empresas_encuestas",
-        type: 'POST',
+        type: "POST",
         data: {
-            id: id_global
+            id: id_global,
         },
-        dataType: 'json',
+        dataType: "json",
         beforeSend: function (e) {
             swal({
                 title: "Cargando",
                 showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
+                imageUrl: "/assets/images/loader.gif",
             });
         },
         success: function (data) {
@@ -358,146 +418,225 @@ function grid_load_encuestas() {
             if ($.fn.DataTable.isDataTable(id)) {
                 $(id).DataTable().destroy();
             }
-            $(id + ' thead').empty().append(data.head);
-            $(id + ' tbody').empty().append(data.table);
+            $(id + " thead")
+                .empty()
+                .append(data.head);
+            $(id + " tbody")
+                .empty()
+                .append(data.table);
             $(id).show();
             inicializarDatatable(id);
-        }
+        },
     });
 }
-$('#encuestas_grid').footable().on('click', '.row-delete', function (e) {
-    e.preventDefault();
-    var idemp = $(this).attr('rel');
-    window.location.href = "/encuestas/respuestaView/" + idemp;
-});
-$('#puestos_grid').footable().on('click', '.row-edit', function (e) {
-    e.preventDefault();
-    var idemp = $(this).attr('rel');
-    $.ajax({
-        url: "/Empresas/get_Empresas_puesto_id",
-        type: 'POST',
-        data: {
-            id: idemp
-        },
-        dataType: 'json',
-        beforeSend: function (e) {
-            swal({
-                title: "Cargando",
-                showConfirmButton: false,
-                imageUrl: "/assets/images/loader.gif"
-            });
-        },
-        success: function (data) {
-            swal.close();
-            for (var key in data) {
-                if (key != 'logo') {
-                    var $input = $('[name="puesto[' + key + ']"]');
-                    if ($input.hasClass('formatoMoneda')) {
-                        debugger;
-                        setFormatoMoneda('[name="puesto[' + key + ']"]', data[key]);
-                    } else {
-                        $input.val($.trim(data[key]));
+$("#encuestas_grid")
+    .footable()
+    .on("click", ".row-delete", function (e) {
+        e.preventDefault();
+        var idemp = $(this).attr("rel");
+        window.location.href = "/encuestas/respuestaView/" + idemp;
+    });
+$("#puestos_grid")
+    .footable()
+    .on("click", ".row-edit", function (e) {
+        e.preventDefault();
+        var idemp = $(this).attr("rel");
+        $.ajax({
+            url: "/Empresas/get_Empresas_puesto_id",
+            type: "POST",
+            data: {
+                id: idemp,
+            },
+            dataType: "json",
+            beforeSend: function (e) {
+                swal({
+                    title: "Cargando",
+                    showConfirmButton: false,
+                    imageUrl: "/assets/images/loader.gif",
+                });
+            },
+            success: function (data) {
+                swal.close();
+                for (var key in data) {
+                    if (key != "logo") {
+                        var $input = $('[name="puesto[' + key + ']"]');
+                        if ($input.hasClass("formatoMoneda")) {
+                            setFormatoMoneda('[name="puesto[' + key + ']"]', data[key]);
+                        } else {
+                            $input.val($.trim(data[key]));
+                        }
                     }
                 }
-            }
-            refreshFormatoMoneda();
-            $("#modalPuesto").modal("show");
-        }
-    });
-});
-$('#puestos_grid').footable().on('click', '.row-delete', function (e) {
-    e.preventDefault();
-    var idemp = $(this).attr('rel');
-    swal({
-        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
-        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#0066D1",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar"
-    }, function () {
-
-        $.ajax({
-            url: "/Empresas/eliminar_Empresas_puesto_id",
-            type: 'POST',
-            data: {
-                'id': idemp
+                refreshFormatoMoneda();
+                $("#modalPuesto").modal("show");
             },
-            dataType: 'json',
+        });
+    });
+$("#puestos_grid")
+    .footable()
+    .on("click", ".row-precio", function (e) {
+        e.preventDefault();
+        var idemp = $(this).attr("rel");
+        $.ajax({
+            url: "/Empresas/get_Empresas_puesto_id",
+            type: "POST",
+            data: {
+                id: idemp,
+            },
+            dataType: "json",
             beforeSend: function (e) {
-
+                swal({
+                    title: "Cargando",
+                    showConfirmButton: false,
+                    imageUrl: "/assets/images/loader.gif",
+                });
             },
             success: function (data) {
-                grid_load_puestos();
-            }
-        });
-
-    });
-});
-$('#horarios_grid').footable().on('click', '.row-delete', function (e) {
-    e.preventDefault();
-    var idemp = $(this).attr('rel');
-    swal({
-        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
-        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#0066D1",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar"
-    }, function () {
-
-        $.ajax({
-            url: "/Empresas/eliminar_Empresas_horario_id",
-            type: 'POST',
-            data: {
-                'id': idemp
+                swal.close();
+                for (var key in data) {
+                    if (key != "logo") {
+                        var $input = $('[name="puesto[' + key + ']"]');
+                        if ($input.hasClass("formatoMoneda")) {
+                            setFormatoMoneda('[name="puesto[' + key + ']"]', data[key]);
+                        } else {
+                            $input.val($.trim(data[key]));
+                        }
+                    }
+                }
+                refreshFormatoMoneda();
+                $("#modalPrecio").modal("show");
             },
-            dataType: 'json',
+        });
+        $.ajax({
+            url: "/Empresas/get_Empresas_puesto_historico",
+            type: "POST",
+            data: {
+                id: idemp,
+            },
+            dataType: "json",
             beforeSend: function (e) {
-
+                swal({
+                    title: "Cargando",
+                    showConfirmButton: false,
+                    imageUrl: "/assets/images/loader.gif",
+                });
             },
             success: function (data) {
-                grid_load_horarios();
-            }
-        });
-
-    });
-});
-$('#sedes_grid').footable().on('click', '.row-delete', function (e) {
-    e.preventDefault();
-    var idemp = $(this).attr('rel');
-    swal({
-        title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
-        html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#0066D1",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar"
-    }, function () {
-
-        $.ajax({
-            url: "/Empresas/eliminar_Empresas_sede_id",
-            type: 'POST',
-            data: {
-                'id': idemp
+                swal.close();
+                let id = "#historico_costos_grid";
+                if ($.fn.DataTable.isDataTable(id)) {
+                    //$(id).DataTable().destroy();
+                }
+                $(id + " thead")
+                    .empty()
+                    .append(data.head);
+                $(id + " tbody")
+                    .empty()
+                    .append(data.table);
+                $(id).show();
+                //inicializarDatatable(id);
             },
-            dataType: 'json',
-            beforeSend: function (e) {
-
-            },
-            success: function (data) {
-                grid_load_sedes();
-            }
         });
-
     });
-});
+$("#puestos_grid")
+    .footable()
+    .on("click", ".row-delete", function (e) {
+        e.preventDefault();
+        var idemp = $(this).attr("rel");
+        swal(
+            {
+                title:
+                    "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+                html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#0066D1",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Aceptar",
+                cancelButtonText: "Cancelar",
+            },
+            function () {
+                $.ajax({
+                    url: "/Empresas/eliminar_Empresas_puesto_id",
+                    type: "POST",
+                    data: {
+                        id: idemp,
+                    },
+                    dataType: "json",
+                    beforeSend: function (e) { },
+                    success: function (data) {
+                        grid_load_puestos();
+                    },
+                });
+            }
+        );
+    });
+$("#horarios_grid")
+    .footable()
+    .on("click", ".row-delete", function (e) {
+        e.preventDefault();
+        var idemp = $(this).attr("rel");
+        swal(
+            {
+                title:
+                    "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+                html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#0066D1",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Aceptar",
+                cancelButtonText: "Cancelar",
+            },
+            function () {
+                $.ajax({
+                    url: "/Empresas/eliminar_Empresas_horario_id",
+                    type: "POST",
+                    data: {
+                        id: idemp,
+                    },
+                    dataType: "json",
+                    beforeSend: function (e) { },
+                    success: function (data) {
+                        grid_load_horarios();
+                    },
+                });
+            }
+        );
+    });
+$("#sedes_grid")
+    .footable()
+    .on("click", ".row-delete", function (e) {
+        e.preventDefault();
+        var idemp = $(this).attr("rel");
+        swal(
+            {
+                title:
+                    "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+                html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#0066D1",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Aceptar",
+                cancelButtonText: "Cancelar",
+            },
+            function () {
+                $.ajax({
+                    url: "/Empresas/eliminar_Empresas_sede_id",
+                    type: "POST",
+                    data: {
+                        id: idemp,
+                    },
+                    dataType: "json",
+                    beforeSend: function (e) { },
+                    success: function (data) {
+                        grid_load_sedes();
+                    },
+                });
+            }
+        );
+    });
 function actualizarCostos() {
     const valor = parseFloat($("#costo_unitario").val());
     if (!isNaN(valor)) {
@@ -514,7 +653,7 @@ function actualizarCostos() {
 }
 
 let debounceTimer;
-$("#costo_unitario").on('input', function () {
+$("#costo_unitario").on("input", function () {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(actualizarCostos, 2000);
 });
@@ -523,34 +662,43 @@ $("#costo_unitario").change(actualizarCostos);
 
 function setFormatoMoneda(selector, value) {
     debugger;
-    const input = document.querySelector(selector + '.formatoMoneda');
+    const input = document.querySelector(selector + ".formatoMoneda");
     if (!input) return;
 
     // Si todavía no tiene hidden asociado, lo creamos aquí mismo
     if (!input._hiddenMirror) {
-        const originalName = input.getAttribute('name');
+        const originalName = input.getAttribute("name");
         if (originalName) {
-            const hidden = document.createElement('input');
-            hidden.type = 'hidden';
+            const hidden = document.createElement("input");
+            hidden.type = "hidden";
             hidden.name = originalName;
-            input.removeAttribute('name');
+            input.removeAttribute("name");
             input._hiddenMirror = hidden;
-            input.type = 'text';
-            input.inputMode = 'decimal';
-            input.autocomplete = 'off';
+            input.type = "text";
+            input.inputMode = "decimal";
+            input.autocomplete = "off";
             input.parentNode.insertBefore(hidden, input.nextSibling);
 
             // Eventos focus/blur solo la primera vez
-            input.addEventListener('focus', () => {
+            input.addEventListener("focus", () => {
                 if (input.readOnly) return;
-                input.value = input._hiddenMirror.value || '';
-                setTimeout(() => { try { input.select(); } catch (_) { } }, 0);
+                input.value = input._hiddenMirror.value || "";
+                setTimeout(() => {
+                    try {
+                        input.select();
+                    } catch (_) { }
+                }, 0);
             });
 
-            input.addEventListener('blur', () => {
+            input.addEventListener("blur", () => {
                 const numStr = toNumberString(input.value);
                 input._hiddenMirror.value = numStr;
-                input.value = numStr ? new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(Number(numStr)) : '';
+                input.value = numStr
+                    ? new Intl.NumberFormat("es-MX", {
+                        style: "currency",
+                        currency: "MXN",
+                    }).format(Number(numStr))
+                    : "";
             });
         }
     }
@@ -558,93 +706,105 @@ function setFormatoMoneda(selector, value) {
     // Normalizar valor recibido
     const numStr = toNumberString(value);
     input._hiddenMirror.value = numStr;
-    input.value = numStr ? new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(Number(numStr)) : '';
+    input.value = numStr
+        ? new Intl.NumberFormat("es-MX", {
+            style: "currency",
+            currency: "MXN",
+        }).format(Number(numStr))
+        : "";
 }
 
 // Utilidad: limpiar el número de cualquier símbolo o separador
 function toNumberString(val) {
-    if (val == null) return '';
+    if (val == null) return "";
     let s = String(val).trim();
-    if (!s) return '';
-    s = s.replace(/[^\d.,-]/g, '');
-    const lastComma = s.lastIndexOf(',');
-    const lastDot = s.lastIndexOf('.');
+    if (!s) return "";
+    s = s.replace(/[^\d.,-]/g, "");
+    const lastComma = s.lastIndexOf(",");
+    const lastDot = s.lastIndexOf(".");
     if (lastComma > -1 && lastDot > -1) {
         if (lastComma > lastDot) {
-            s = s.replace(/\./g, '').replace(',', '.');
+            s = s.replace(/\./g, "").replace(",", ".");
         } else {
-            s = s.replace(/,/g, '');
+            s = s.replace(/,/g, "");
         }
     } else if (lastComma > -1 && lastDot === -1) {
-        const parts = s.split(',');
+        const parts = s.split(",");
         if (parts.length === 2 && parts[1].length <= 2) {
-            s = parts[0].replace(/\./g, '') + '.' + parts[1];
+            s = parts[0].replace(/\./g, "") + "." + parts[1];
         } else {
-            s = s.replace(/,/g, '');
+            s = s.replace(/,/g, "");
         }
     } else {
-        s = s.replace(/,/g, '');
+        s = s.replace(/,/g, "");
     }
     return s;
 }
 function refreshFormatoMoneda() {
-    document.querySelectorAll('input.formatoMoneda').forEach(input => {
+    document.querySelectorAll("input.formatoMoneda").forEach((input) => {
         if (input._hiddenMirror) {
             const numStr = input._hiddenMirror.value;
-            input.value = numStr ? new Intl.NumberFormat('es-MX', {
-                style: 'currency',
-                currency: 'MXN'
-            }).format(Number(numStr)) : '';
+            input.value = numStr
+                ? new Intl.NumberFormat("es-MX", {
+                    style: "currency",
+                    currency: "MXN",
+                }).format(Number(numStr))
+                : "";
         }
     });
 }
 function refreshFormulaFormatoMoneda() {
-    document.querySelectorAll('input.formatoMoneda').forEach(input => {
-
+    document.querySelectorAll("input.formatoMoneda").forEach((input) => {
         if (input._hiddenMirror) {
             if (input._hiddenMirror.name != "puesto[costo_unitario]") {
                 const numStr = input._hiddenMirror.value;
-                input.value = numStr ? new Intl.NumberFormat('es-MX', {
-                    style: 'currency',
-                    currency: 'MXN'
-                }).format(Number(numStr)) : '';
+                input.value = numStr
+                    ? new Intl.NumberFormat("es-MX", {
+                        style: "currency",
+                        currency: "MXN",
+                    }).format(Number(numStr))
+                    : "";
             }
         }
     });
 }
 function initFormatoMoneda() {
-    document.querySelectorAll('input.formatoMoneda').forEach(input => {
+    document.querySelectorAll("input.formatoMoneda").forEach((input) => {
         if (!input._hiddenMirror) {
-            const originalName = input.getAttribute('name');
+            const originalName = input.getAttribute("name");
             if (originalName) {
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
+                const hidden = document.createElement("input");
+                hidden.type = "hidden";
                 hidden.name = originalName;
-                input.removeAttribute('name');
+                input.removeAttribute("name");
                 input._hiddenMirror = hidden;
-                input.type = 'text';
-                input.inputMode = 'decimal';
-                input.autocomplete = 'off';
+                input.type = "text";
+                input.inputMode = "decimal";
+                input.autocomplete = "off";
                 input.parentNode.insertBefore(hidden, input.nextSibling);
 
                 // Eventos focus/blur
-                input.addEventListener('focus', () => {
+                input.addEventListener("focus", () => {
                     if (input.readOnly) return;
-                    input.value = input._hiddenMirror.value || '';
-                    setTimeout(() => { try { input.select(); } catch (_) { } }, 0);
+                    input.value = input._hiddenMirror.value || "";
+                    setTimeout(() => {
+                        try {
+                            input.select();
+                        } catch (_) { }
+                    }, 0);
                 });
 
-                input.addEventListener('blur', () => {
+                input.addEventListener("blur", () => {
                     const numStr = toNumberString(input.value);
                     input._hiddenMirror.value = numStr;
-                    input.value = numStr ? new Intl.NumberFormat('es-MX', {
-                        style: 'currency', currency: 'MXN'
-                    }).format(Number(numStr)) : '';
+                    input.value = numStr
+                        ? new Intl.NumberFormat("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                        }).format(Number(numStr))
+                        : "";
                 });
             }
         }
     });
 }
-
-
-

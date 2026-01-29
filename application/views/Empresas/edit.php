@@ -471,59 +471,6 @@
                                     <option value="Sin bonos">Sin bonos</option>
                                 </select>
                             </div>
-                            <div class="form-group col-lg-12 col-md-12 pl-0 ">
-                                <div class="floating-label-group">
-                                    <label class="floating-label-text etiquetaCampos">Salario Diario*</label>
-                                    <input type="number" name="puesto[salario_diario]" class="form-control input-form formatoMoneda" required />
-
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0 ">
-                                <div class="floating-label-group">
-                                    <label class="floating-label-text etiquetaCampos">Sueldo Neto Semanal*</label>
-                                    <input type="number" name="puesto[sueldo_neto_semanal]" class="form-control input-form formatoMoneda" required />
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
-                                <div class="floating-label-group">
-                                    <label class="floating-label-text etiquetaCampos">Costo Unitario*</label>
-                                    <input type="number" name="puesto[costo_unitario]" id="costo_unitario" class="form-control input-form formatoMoneda" required />
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
-                                <div class="floating-label-group">
-                                    <span class="floating-label-text">Costo por Dia*</span>
-                                    <input type="number" name="puesto[costo_por_dia]" readonly class="form-control input-form formatoMoneda" required />
-
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
-                                <div class="floating-label-group">
-                                    <span class="floating-label-text">Costo por Descanso Laborado*</span>
-                                    <input type="number" name="puesto[costo_descanso_laborado]" readonly class="form-control input-form formatoMoneda" required />
-
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
-                                <div class="floating-label-group">
-                                    <span class="floating-label-text">Costo por Día Festivo*</span>
-                                    <input type="number" name="puesto[costo_dia_festivo]" readonly class="form-control input-form formatoMoneda" required />
-
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
-                                <div class="floating-label-group">
-                                    <span class="floating-label-text">Costo Hora Extra*</span>
-                                    <input type="number" name="puesto[costo_hora_extra]" readonly class="form-control input-form formatoMoneda" required />
-
-                                </div>
-                            </div>
 
 
                             <div class="form-group ol-lg-12 col-md-12 pl-0">
@@ -544,6 +491,125 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-guardar" onclick="save_puesto();">Guardar</button>
+        </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade modal-servicios modal-citas" id="modalPrecio" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Agregar puesto por horario</h5>
+                <button type="button" class="close" onclick='limpiar_form_sede();' data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <input type="hidden" id="id_servicio" value="0">
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="empresaTabs">
+                    <li class="active"><a class="color-principal" data-toggle="tab" href="#datos_costos">Datos actuales</a></li>
+                    <li><a class="color-principal" data-toggle="tab" href="#historico_costos">Historico</a></li>
+                </ul>
+                <div class="tab-content" style="margin-top: 20px">
+                    <div id="datos_costos" class="tab-pane in active">
+                        <div class="row row-nueva-cita">
+                            <div class="col-lg-8 col-md-8 col-12">
+                                <form id="modal_precio" class="form-nuevo-servicio form-nueva-cita">
+                                    <input type="hidden" name="puesto[id]" class="form-control" />
+                                    <div class="form-group col-lg-12 col-md-12 pl-0 ">
+                                        <div class="floating-label-group">
+                                            <label class="floating-label-text etiquetaCampos">Salario Diario*</label>
+                                            <input type="number" name="puesto[salario_diario]" class="form-control input-form formatoMoneda" required />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-lg-12 col-md-12 pl-0 ">
+                                        <div class="floating-label-group">
+                                            <label class="floating-label-text etiquetaCampos">Sueldo Neto Semanal*</label>
+                                            <input type="number" name="puesto[sueldo_neto_semanal]" class="form-control input-form formatoMoneda" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
+                                        <div class="floating-label-group">
+                                            <label class="floating-label-text etiquetaCampos">Costo Unitario*</label>
+                                            <input type="number" name="puesto[costo_unitario]" id="costo_unitario" class="form-control input-form formatoMoneda" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
+                                        <div class="floating-label-group">
+                                            <span class="floating-label-text">Costo por Dia*</span>
+                                            <input type="number" name="puesto[costo_por_dia]" readonly class="form-control input-form formatoMoneda" required />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
+                                        <div class="floating-label-group">
+                                            <span class="floating-label-text">Costo por Descanso Laborado*</span>
+                                            <input type="number" name="puesto[costo_descanso_laborado]" readonly class="form-control input-form formatoMoneda" required />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
+                                        <div class="floating-label-group">
+                                            <span class="floating-label-text">Costo por Día Festivo*</span>
+                                            <input type="number" name="puesto[costo_dia_festivo]" readonly class="form-control input-form formatoMoneda" required />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-lg-12 col-md-12 pl-0 informacionSensible">
+                                        <div class="floating-label-group">
+                                            <span class="floating-label-text">Costo Hora Extra*</span>
+                                            <input type="number" name="puesto[costo_hora_extra]" readonly class="form-control input-form formatoMoneda" required />
+
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="historico_costos" class="tab-pane">
+                        <div class="table-responsive d-table-lg">
+                            <table id="historico_costos_grid" style="width:100%" class="datatable_wr datatable_wrapper table table-striped table-bordered">
+                                <thead class="datatable_wrapper">
+                                    <tr>
+
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+
+                                    </tr>
+                                </tfoot>
+
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+
+                                <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="footable-visible">
+                                            <div class="pagination pagination-centered"></div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-guardar" onclick="save_precio();">Guardar</button>
         </div>
         </form>
     </div>

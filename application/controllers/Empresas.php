@@ -329,6 +329,62 @@ class Empresas extends ANT_Controller
 			}
 		}
 	}
+
+	function get_Empresas_puesto_historico()
+	{
+		$id = $this->input->post('id');
+		$aux = Empresas_Puestos_Horarios_Precios_Model::get_grid_info("empresas_puestos_horarios_id=" . (int)$id);
+		$data['head'] = "<tr>
+        <th>Salario Diario</th>
+        <th>Sueldo Neto Semanal</th>
+        <th>Costo Unitario</th>
+        <th>Costo por Día</th>
+        <th>Costo por Descanso Laborado</th>
+        <th>Costo por Día Festivo</th>
+        <th>Costo Hora Extra</th>
+    </tr>";
+
+		$data['table'] = '';
+		$fmt = function ($val) {
+			if ($val === null || $val === '') return '—';
+
+			return "$" . number_format((float)$val, 2, '.', ',');
+		};
+
+		if (!empty($aux)) {
+			foreach ($aux as $a) {
+				$data['table'] .= '<tr>'
+					. '<td>' . $fmt($a['salario_diario'] ?? null) . '</td>'
+					. '<td>' . $fmt($a['sueldo_neto_semanal'] ?? null) . '</td>'
+					. '<td>' . $fmt($a['costo_unitario'] ?? null) . '</td>'
+					. '<td>' . $fmt($a['costo_por_dia'] ?? null) . '</td>'
+					. '<td>' . $fmt($a['costo_descanso_laborado'] ?? null) . '</td>'
+					. '<td>' . $fmt($a['costo_dia_festivo'] ?? null) . '</td>'
+					. '<td>' . $fmt($a['costo_hora_extra'] ?? null) . '</td>'
+					. '</tr>';
+			}
+		} else {
+
+			$data['table'] = '<tr><td colspan="7" style="text-align:center;">Sin registros</td></tr>';
+		}
+
+		$this->output_json($data);
+	}
+
+	function save_precio()
+	{
+		date_default_timezone_set('America/Mexico_City');
+		$post = $this->input->post('puesto');
+		if ($post['id'] != null && $post['id'] != 0) {
+			$result = Empresas_Puestos_Horarios_Model::Update($post, "id=" . $post['id']);
+			$post['empresas_puestos_horarios_id'] = $post['id'];
+			unset($post['id']);
+			$fecha = date('Y-m-d H:i:s');
+			$result = Empresas_Puestos_Horarios_Precios_Model::Update(['fecha_fin' => $fecha], 'fecha_fin is null AND empresas_puestos_horarios_id=' . $post['empresas_puestos_horarios_id']);
+			$result = Empresas_Puestos_Horarios_Precios_Model::Insert($post);
+			$this->output_json($result);
+		}
+	}
 	function get_Empresas_puestos()
 	{
 		$id = $this->input->post('id');
@@ -350,7 +406,8 @@ class Empresas extends ANT_Controller
 				$total_cantidad += ($a['cantidad'] * $a['costo_unitario']);
 				$botones = '
 				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>
-				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>';
+				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>
+				<button type="button" class="btn btn-default row-precio" rel="' . $a['id'] . '"><i class="fa fa-money"></i></button>';
 				$data['table'] .= '<tr>
 				<td>' . $a['puesto'] . '</td>
 				<td>' . $a['horario'] . '</td>
