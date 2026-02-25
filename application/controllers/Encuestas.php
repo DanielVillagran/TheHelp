@@ -556,6 +556,7 @@ class Encuestas extends ANT_Controller
 						
 						foreach (['Si', 'No'] as $op) {
 							var_dump($op);
+							var_dump($valor);
 							var_dump( ($valor == $op));
 							$checked = ($valor == $op) ? 'checked' : 'disabled';
 							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . $op . '</label>';
