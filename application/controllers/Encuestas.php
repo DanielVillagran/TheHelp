@@ -321,7 +321,7 @@ class Encuestas extends ANT_Controller
 							<div class="d-flex gap-3">
 								<select name="cubiertos[' . $id . ']" class="form-control">
 									<option value="Si">Si</option>
-									<option value="So">No</option>
+									<option value="No">No</option>
 								</select> 
 							';
 						$respuesta .= '</div></td>';
@@ -555,9 +555,6 @@ class Encuestas extends ANT_Controller
 						$respuesta = '<td><div class="d-flex gap-3">';
 						
 						foreach (['Si', 'No'] as $op) {
-							var_dump($op);
-							var_dump($valor);
-							var_dump( ($valor == $op));
 							$checked = ($valor == $op) ? 'checked' : 'disabled';
 							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . $op . '</label>';
 						}
