@@ -553,7 +553,10 @@ class Encuestas extends ANT_Controller
 						break;
 					case 7:
 						$respuesta = '<td><div class="d-flex gap-3">';
+						
 						foreach (['Si', 'No'] as $op) {
+							var_dump($op);
+							var_dump( ($valor == $op));
 							$checked = ($valor == $op) ? 'checked' : 'disabled';
 							$respuesta .= '<label style="margin-right:10px"><input type="radio" ' . $checked . ' /> ' . $op . '</label>';
 						}
