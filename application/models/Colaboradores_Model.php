@@ -99,7 +99,7 @@ class Colaboradores_Model extends ANT_Model
 		$options = array(
 			'select' => '*',
 			'result' => 'array',
-			'where' =>  $where ? $where . " AND estatus=1" : "estatus=1"
+			'where' =>  $where ? $where . " AND status=1" : "status=1"
 		);
 
 		$result = Colaboradores_Model::Load($options);
