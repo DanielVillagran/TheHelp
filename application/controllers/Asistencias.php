@@ -237,7 +237,7 @@ class Asistencias extends ANT_Controller
 				. ($post['horario_id'] != 'Seleccionar horario' ? (" AND empresas_puestos_horarios.horario_id=" . $post['horario_id']) : ""),
 			'result' => 'array'
 		));
-		$colaboradores = Colaboradores_Model::get_select("departamento=" . $post['empresa_id']);
+		$colaboradores = Colaboradores_Model::get_select("cliente=" . $post['empresa_id']);
 		$data['select_colaboradores'] = $colaboradores;
 		if ($aux) {
 			foreach ($aux as $a) {
