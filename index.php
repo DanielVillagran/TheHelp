@@ -30,6 +30,32 @@
 
  */
 
+if (file_exists(__DIR__ . '/.env')) {
+	$env_lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	foreach ($env_lines as $env_line) {
+		$env_line = trim($env_line);
+		if ($env_line === '' || strpos($env_line, '#') === 0 || strpos($env_line, '=') === false) {
+			continue;
+		}
+
+		list($env_name, $env_value) = explode('=', $env_line, 2);
+		$env_name = trim($env_name);
+		$env_value = trim($env_value);
+
+		if (
+			strlen($env_value) >= 2 &&
+			(($env_value[0] === '"' && substr($env_value, -1) === '"') ||
+				($env_value[0] === "'" && substr($env_value, -1) === "'"))
+		) {
+			$env_value = substr($env_value, 1, -1);
+		}
+
+		putenv($env_name . '=' . $env_value);
+		$_ENV[$env_name] = $env_value;
+		$_SERVER[$env_name] = $env_value;
+	}
+}
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT

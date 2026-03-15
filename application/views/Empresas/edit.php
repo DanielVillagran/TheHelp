@@ -1,7 +1,7 @@
 <!--Page Container Start Here-->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
 <script>
-    window.googleMapsApiKey = "AIzaSyDdB28AD5FuabTBpePEyHFnRQBMET_dQqE";
+    window.googleMapsApiKey = <?php echo json_encode(getenv('GOOGLE_MAPS_API_KEY') ?: ''); ?>;
 </script>
 <style>
     .etiquetaCampos {
