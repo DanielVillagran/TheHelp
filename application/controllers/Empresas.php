@@ -188,16 +188,31 @@ class Empresas extends ANT_Controller
 	function save_sede()
 	{
 		$post = $this->input->post('sede');
-		$hasValue = Empresas_Sedes_Model::Load(array(
-			'select' => '*',
-			'result' => '1row',
-			"where" => "empresa_id=" . $post['empresa_id'] . " AND nombre='" . $post['nombre'] . "'"
-		));
-		if ($hasValue) {
-			$this->output_json(false);
+		if ($post['id'] != null && $post['id'] != 0) {
+			$hasValue = Empresas_Sedes_Model::Load(array(
+				'select' => '*',
+				'result' => '1row',
+				"where" => "empresa_id=" . $post['empresa_id'] . " AND nombre='" . $post['nombre'] . "' AND id!=" . $post['id'] . ""
+			));
+			if ($hasValue) {
+				$this->output_json(false);
+			} else {
+				$result = Empresas_Sedes_Model::Update($post, "id=" . $post['id']);
+				$this->output_json($result);
+				return;
+			}
 		} else {
-			$result = Empresas_Sedes_Model::Insert($post);
-			$this->output_json($result);
+			$hasValue = Empresas_Sedes_Model::Load(array(
+				'select' => '*',
+				'result' => '1row',
+				"where" => "empresa_id=" . $post['empresa_id'] . " AND nombre='" . $post['nombre'] . "'"
+			));
+			if ($hasValue) {
+				$this->output_json(false);
+			} else {
+				$result = Empresas_Sedes_Model::Insert($post);
+				$this->output_json($result);
+			}
 		}
 	}
 	function get_Empresas_sedes()
@@ -212,7 +227,8 @@ class Empresas extends ANT_Controller
 		if ($aux) {
 			foreach ($aux as $a) {
 				$botones = '
-				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
+				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>
+				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>';
 				$data['table'] .= '<tr>
 				<td>' . $a['nombre'] . '</td>
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
@@ -425,6 +441,17 @@ class Empresas extends ANT_Controller
 	{
 		$id = $this->input->post('id');
 		$aux = Empresas_Puestos_Horarios_Model::get_grid_info("empresas_puestos_horarios.id=" . $id);
+		$data = null;
+		if ($aux) {
+			$data = $aux[0];
+		} else {
+		}
+		$this->output_json($data);
+	}
+	function get_Empresas_sede_id()
+	{
+		$id = $this->input->post('id');
+		$aux = Empresas_Sedes_Model::get_grid_info("empresas_sedes.id=" . $id);
 		$data = null;
 		if ($aux) {
 			$data = $aux[0];

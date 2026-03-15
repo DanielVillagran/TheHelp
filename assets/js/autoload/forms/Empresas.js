@@ -1,12 +1,121 @@
 var states = "";
 var id_global = 0;
+var sedeAutocomplete = null;
+var sedeAutocompleteLoading = false;
 $(document).ready(function () {
     if ($("#id").val() != 0) {
         id_global = $("#id").val();
         initFormatoMoneda();
         get_info_Departamentos($("#id").val());
     }
+
+    $("#modalSede").on("shown.bs.modal", function () {
+        ensureSedeGoogleAutocomplete();
+    });
 });
+
+function attachSedeGoogleAutocomplete() {
+    var input = document.getElementById("sede_google_autocomplete");
+    var latInput = document.getElementById("sede_lat");
+    var lngInput = document.getElementById("sede_lng");
+    if (
+        !input ||
+        sedeAutocomplete ||
+        typeof google === "undefined" ||
+        !google.maps ||
+        !google.maps.places
+    ) {
+        return;
+    }
+
+    sedeAutocomplete = new google.maps.places.Autocomplete(input, {
+        types: ["geocode"],
+        componentRestrictions: {
+            country: "mx"
+        },
+        fields: ["formatted_address", "name", "geometry"],
+    });
+
+    input.addEventListener("input", function () {
+        if (latInput) {
+            latInput.value = "";
+        }
+        if (lngInput) {
+            lngInput.value = "";
+        }
+    });
+
+    sedeAutocomplete.addListener("place_changed", function () {
+        var place = sedeAutocomplete.getPlace();
+        if (place && place.formatted_address) {
+            input.value = place.formatted_address;
+        } else if (place && place.name) {
+            input.value = place.name;
+        }
+
+        if (place && place.geometry && place.geometry.location) {
+            if (latInput) {
+                latInput.value = place.geometry.location.lat();
+            }
+            if (lngInput) {
+                lngInput.value = place.geometry.location.lng();
+            }
+        } else {
+            if (latInput) {
+                latInput.value = "";
+            }
+            if (lngInput) {
+                lngInput.value = "";
+            }
+        }
+    });
+}
+
+function ensureSedeGoogleAutocomplete() {
+    if (typeof google !== "undefined" && google.maps && google.maps.places) {
+        attachSedeGoogleAutocomplete();
+        return;
+    }
+
+    if (sedeAutocompleteLoading) {
+        return;
+    }
+
+    sedeAutocompleteLoading = true;
+
+    var apiKey = window.googleMapsApiKey;
+    if (!apiKey) {
+        console.error("No se encontro googleMapsApiKey para cargar Places.");
+        sedeAutocompleteLoading = false;
+        return;
+    }
+
+    window.initSedeGoogleAutocomplete = function () {
+        sedeAutocompleteLoading = false;
+        attachSedeGoogleAutocomplete();
+    };
+
+    var currentScript = document.querySelector(
+        'script[src*="maps.googleapis.com/maps/api/js"]'
+    );
+
+    if (currentScript) {
+        currentScript.parentNode.removeChild(currentScript);
+    }
+
+    var script = document.createElement("script");
+    script.src =
+        "https://maps.googleapis.com/maps/api/js?key=" +
+        encodeURIComponent(apiKey) +
+        "&libraries=places&callback=initSedeGoogleAutocomplete";
+    script.async = true;
+    script.defer = true;
+    script.onerror = function () {
+        sedeAutocompleteLoading = false;
+        console.error("No se pudo cargar Google Places.");
+    };
+    document.head.appendChild(script);
+}
 
 function get_info_Departamentos(id) {
     console.log(id);
@@ -85,6 +194,7 @@ function format_date(date) {
 $("#btn_add_new").click(function () {
     $("#modalSede").modal("show");
 });
+
 function save_sede() {
     event.preventDefault();
     var data = new FormData(document.getElementById("modal_sede"));
@@ -106,8 +216,7 @@ function save_sede() {
             },
             success: function (data) {
                 if (data) {
-                    const form = document.getElementById("modal_sede");
-                    form.reset();
+                    limpiar_form_sede();
                     swal.close();
                     $("#modalSede").modal("hide");
                     grid_load_sedes();
@@ -120,6 +229,22 @@ function save_sede() {
         swal("Error!", "Debes completar todos los campos.", "error");
     }
 }
+
+function limpiar_form_sede() {
+    var form = document.getElementById("modal_sede");
+    if (form) {
+        form.reset();
+    }
+
+    var input = document.getElementById("sede_google_autocomplete");
+    if (input) {
+        input.value = "";
+    }
+    $("#sede_lat").val("");
+    $("#sede_lng").val("");
+    $('[name="sede[id]"]').val(0);
+}
+
 function grid_load_sedes() {
     $.ajax({
         url: "/Empresas/get_Empresas_sedes",
@@ -157,6 +282,7 @@ function grid_load_sedes() {
 $("#btn_add_new_horario").click(function () {
     $("#modalHorario").modal("show");
 });
+
 function save_horario() {
     event.preventDefault();
     var data = new FormData(document.getElementById("modal_horario"));
@@ -192,6 +318,7 @@ function save_horario() {
         swal("Error!", "Debes completar todos los campos.", "error");
     }
 }
+
 function grid_load_horarios() {
     $.ajax({
         url: "/Empresas/get_Empresas_horarios",
@@ -284,6 +411,7 @@ function save_puesto() {
         swal("Error!", "Debes completar todos los campos.", "error");
     }
 }
+
 function save_precio() {
     event.preventDefault();
     var data = new FormData(document.getElementById("modal_precio"));
@@ -313,6 +441,7 @@ function save_precio() {
         },
     });
 }
+
 function grid_load_puestos() {
     $.ajax({
         url: "/Empresas/get_Empresas_puestos",
@@ -334,12 +463,12 @@ function grid_load_puestos() {
             $("#total_cantidad")
                 .empty()
                 .append(
-                    numStr
-                        ? new Intl.NumberFormat("es-MX", {
-                            style: "currency",
-                            currency: "MXN",
-                        }).format(Number(numStr))
-                        : ""
+                    numStr ?
+                    new Intl.NumberFormat("es-MX", {
+                        style: "currency",
+                        currency: "MXN",
+                    }).format(Number(numStr)) :
+                    ""
                 );
             $("#total_personas").empty().append(data.total_personas);
             let id = "#puestos_grid";
@@ -357,6 +486,7 @@ function grid_load_puestos() {
         },
     });
 }
+
 function grid_load_asistencias() {
     $.ajax({
         url: "/Empresas/get_Empresas_asistencias",
@@ -543,10 +673,8 @@ $("#puestos_grid")
     .on("click", ".row-delete", function (e) {
         e.preventDefault();
         var idemp = $(this).attr("rel");
-        swal(
-            {
-                title:
-                    "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        swal({
+                title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
                 html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
                 type: "warning",
                 showCancelButton: true,
@@ -563,7 +691,7 @@ $("#puestos_grid")
                         id: idemp,
                     },
                     dataType: "json",
-                    beforeSend: function (e) { },
+                    beforeSend: function (e) {},
                     success: function (data) {
                         grid_load_puestos();
                     },
@@ -576,10 +704,8 @@ $("#horarios_grid")
     .on("click", ".row-delete", function (e) {
         e.preventDefault();
         var idemp = $(this).attr("rel");
-        swal(
-            {
-                title:
-                    "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        swal({
+                title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
                 html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
                 type: "warning",
                 showCancelButton: true,
@@ -596,7 +722,7 @@ $("#horarios_grid")
                         id: idemp,
                     },
                     dataType: "json",
-                    beforeSend: function (e) { },
+                    beforeSend: function (e) {},
                     success: function (data) {
                         grid_load_horarios();
                     },
@@ -609,10 +735,8 @@ $("#sedes_grid")
     .on("click", ".row-delete", function (e) {
         e.preventDefault();
         var idemp = $(this).attr("rel");
-        swal(
-            {
-                title:
-                    "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
+        swal({
+                title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
                 html: "<p id='psswalerror'>Estas seguro que deseas eliminar este elemento?</p>",
                 type: "warning",
                 showCancelButton: true,
@@ -629,7 +753,7 @@ $("#sedes_grid")
                         id: idemp,
                     },
                     dataType: "json",
-                    beforeSend: function (e) { },
+                    beforeSend: function (e) {},
                     success: function (data) {
                         grid_load_sedes();
                     },
@@ -637,6 +761,37 @@ $("#sedes_grid")
             }
         );
     });
+$("#sedes_grid")
+    .footable()
+    .on("click", ".row-edit", function (e) {
+        var idemp = $(this).attr("rel");
+        $.ajax({
+            url: "/Empresas/get_Empresas_sede_id",
+            type: "POST",
+            data: {
+                id: idemp,
+            },
+            dataType: "json",
+            beforeSend: function (e) {
+                swal({
+                    title: "Cargando",
+                    showConfirmButton: false,
+                    imageUrl: "/assets/images/loader.gif",
+                });
+            },
+            success: function (data) {
+                swal.close();
+                for (var key in data) {
+                    if (key != "logo") {
+                        var $input = $('[name="sede[' + key + ']"]');
+                        $input.val($.trim(data[key]));
+                    }
+                }
+                $("#modalSede").modal("show");
+            },
+        });
+    });
+
 function actualizarCostos() {
     const valor = parseFloat($("#costo_unitario").val());
     if (!isNaN(valor)) {
@@ -686,19 +841,19 @@ function setFormatoMoneda(selector, value) {
                 setTimeout(() => {
                     try {
                         input.select();
-                    } catch (_) { }
+                    } catch (_) {}
                 }, 0);
             });
 
             input.addEventListener("blur", () => {
                 const numStr = toNumberString(input.value);
                 input._hiddenMirror.value = numStr;
-                input.value = numStr
-                    ? new Intl.NumberFormat("es-MX", {
+                input.value = numStr ?
+                    new Intl.NumberFormat("es-MX", {
                         style: "currency",
                         currency: "MXN",
-                    }).format(Number(numStr))
-                    : "";
+                    }).format(Number(numStr)) :
+                    "";
             });
         }
     }
@@ -706,12 +861,12 @@ function setFormatoMoneda(selector, value) {
     // Normalizar valor recibido
     const numStr = toNumberString(value);
     input._hiddenMirror.value = numStr;
-    input.value = numStr
-        ? new Intl.NumberFormat("es-MX", {
+    input.value = numStr ?
+        new Intl.NumberFormat("es-MX", {
             style: "currency",
             currency: "MXN",
-        }).format(Number(numStr))
-        : "";
+        }).format(Number(numStr)) :
+        "";
 }
 
 // Utilidad: limpiar el número de cualquier símbolo o separador
@@ -740,34 +895,37 @@ function toNumberString(val) {
     }
     return s;
 }
+
 function refreshFormatoMoneda() {
     document.querySelectorAll("input.formatoMoneda").forEach((input) => {
         if (input._hiddenMirror) {
             const numStr = input._hiddenMirror.value;
-            input.value = numStr
-                ? new Intl.NumberFormat("es-MX", {
+            input.value = numStr ?
+                new Intl.NumberFormat("es-MX", {
                     style: "currency",
                     currency: "MXN",
-                }).format(Number(numStr))
-                : "";
+                }).format(Number(numStr)) :
+                "";
         }
     });
 }
+
 function refreshFormulaFormatoMoneda() {
     document.querySelectorAll("input.formatoMoneda").forEach((input) => {
         if (input._hiddenMirror) {
             if (input._hiddenMirror.name != "puesto[costo_unitario]") {
                 const numStr = input._hiddenMirror.value;
-                input.value = numStr
-                    ? new Intl.NumberFormat("es-MX", {
+                input.value = numStr ?
+                    new Intl.NumberFormat("es-MX", {
                         style: "currency",
                         currency: "MXN",
-                    }).format(Number(numStr))
-                    : "";
+                    }).format(Number(numStr)) :
+                    "";
             }
         }
     });
 }
+
 function initFormatoMoneda() {
     document.querySelectorAll("input.formatoMoneda").forEach((input) => {
         if (!input._hiddenMirror) {
@@ -790,19 +948,19 @@ function initFormatoMoneda() {
                     setTimeout(() => {
                         try {
                             input.select();
-                        } catch (_) { }
+                        } catch (_) {}
                     }, 0);
                 });
 
                 input.addEventListener("blur", () => {
                     const numStr = toNumberString(input.value);
                     input._hiddenMirror.value = numStr;
-                    input.value = numStr
-                        ? new Intl.NumberFormat("es-MX", {
+                    input.value = numStr ?
+                        new Intl.NumberFormat("es-MX", {
                             style: "currency",
                             currency: "MXN",
-                        }).format(Number(numStr))
-                        : "";
+                        }).format(Number(numStr)) :
+                        "";
                 });
             }
         }

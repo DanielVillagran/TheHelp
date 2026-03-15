@@ -45,6 +45,25 @@ class Asistencias extends ANT_Controller
 		$data['departamentos'] = Empresas_Model::get_select();
 		$this->_load_views('Asistencias/add', $data);
 	}
+	function registro_asistencia()
+	{
+		$data['title'] = 'Agregar Vehiculo';
+		$data['view'] = 'forms/AsistenciasQR';
+		$data['id'] = 0;
+		$data['styles'] = 'jquery.shuttle';
+		$data['js_scripts'] = 'lib/jquery.shuttle';
+		$user_role_id = $this->tank_auth->get_user_role_id();
+		$user_id = $this->tank_auth->get_user_id();
+		$where = "";
+		if ($user_role_id > 2) {
+			$where = "empresas.id in (SELECT empresa_id from empresas_has_users where user_id=$user_id)";
+		}
+		$data['empresas'] = Empresas_Model::get_select($where);
+		$data['user_id'] = $this->tank_auth->get_user_id();
+		$data['puestos'] = Puestos_Model::get_select();
+		$data['departamentos'] = Empresas_Model::get_select();
+		$this->_load_views('Asistencias/qr', $data);
+	}
 	function edit($id)
 	{
 		$data['title'] = 'Editar Colonia';

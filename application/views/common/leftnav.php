@@ -101,6 +101,9 @@
                         <?php if ($this->tank_auth->user_has_privilege('Modificar asistencias')) : ?>
                             <a href="/Asistencias/add" class="list-group-item item-second-list">Agregar asistencias</a>
                         <?php endif; ?>
+                        <?php if ($this->tank_auth->user_has_privilege('Registro asistencias QR')) : ?>
+                            <a href="/Asistencias/registro_asistencia" class="list-group-item item-second-list">Registro asistencias QR</a>
+                        <?php endif; ?>
 
                     </div>
                 <?php endif; ?>

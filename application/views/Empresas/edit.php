@@ -1,5 +1,8 @@
 <!--Page Container Start Here-->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
+<script>
+    window.googleMapsApiKey = "AIzaSyDdB28AD5FuabTBpePEyHFnRQBMET_dQqE";
+</script>
 <style>
     .etiquetaCampos {
         top: -20px;
@@ -12,6 +15,10 @@
 
     .informacionSensible {
         display: <?php echo ($this->tank_auth->user_has_privilege('Información sensible') ? "block" :  "none"); ?>;
+    }
+
+    .pac-container {
+        z-index: 20000 !important;
     }
 </style>
 
@@ -339,27 +346,38 @@
             <div class="modal-body">
 
                 <div class="row row-nueva-cita">
-                    <div class="col-lg-8 col-md-8 col-12">
-                        <form id="modal_sede" class="form-nuevo-servicio form-nueva-cita">
+                    <form id="modal_sede" class="form-nuevo-servicio form-nueva-cita">
+                        <div class="form-group col-lg-12 col-md-12 pl-0">
                             <div class="floating-label-group">
+                                 <input type="hidden" name="sede[id]" class="form-control" value="0" />
                                 <input type="hidden" name="sede[empresa_id]" class="form-control" value="<?php echo $id; ?>" />
+                                <input type="hidden" name="sede[lat]" id="sede_lat" />
+                                <input type="hidden" name="sede[lng]" id="sede_lng" />
                                 <input type="text" name="sede[nombre]" class="form-control input-form" required />
                                 <label class="floating-label">Nombre*</label>
                             </div>
+                        </div>
+                        <div class="form-group col-lg-12 col-md-12 pl-0">
+                            <div class="floating-label-group">
+                                <span class="floating-label-text">Dirección *</span>
+                                <input type="text" id="sede_google_autocomplete" name="sede[direccion]" class="form-control input-form" autocomplete="true" required />
 
-                    </div>
+                            </div>
+                    </form>
                 </div>
-
-
             </div>
 
+
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-guardar" onclick="save_sede();">Guardar</button>
-        </div>
-        </form>
+
     </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-guardar" onclick="save_sede();">Guardar</button>
+    </div>
+
 </div>
+</div>
+
 <div class="modal fade modal-servicios modal-citas" id="modalHorario" tabindex="-1" role="dialog" aria-labelledby="modalHorarioTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
