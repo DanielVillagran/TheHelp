@@ -100,6 +100,7 @@ class Colaboradores extends ANT_Controller
 					<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-retweet"></i></button>';
 				} else {
 					$botones = '<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>
+					<button type="button" class="btn btn-default row-qr" rel="' . $a['id'] . '"><i class="fa fa-qrcode"></i></button>
 					<button type="button" class="btn btn-default row-delete permisoEdicion" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
 				}
 				$data['table'] .= '<tr>
@@ -492,5 +493,41 @@ class Colaboradores extends ANT_Controller
 
 		fclose($out);
 		exit;
+	}
+	public function qr_generator($id){
+		$this->load->library('ciqrcode');
+		$this->load->library('qr_tokenizer');
+		$colaborador = Colaboradores_Model::Load([
+			'select' => 'id, codigo, nombre, apellido_paterno, apellido_materno',
+			'where' => 'id=' . $id,
+			'result' => '1row'
+		]);
+		if (!$colaborador) {
+			show_error("Colaborador no encontrado", 404);
+			return;
+		}
+		$secret = getenv('QR_TOKEN') ?: '';
+		if ($secret === '') {
+			show_error("No se encontro el secreto QR_TOKEN.", 500);
+			return;
+		}
+
+		$token = $this->qr_tokenizer->encode($colaborador->id, $secret);
+		if ($token === false) {
+			show_error("No fue posible tokenizar el identificador.", 500);
+			return;
+		}
+
+		$png = $this->ciqrcode->generate($token);
+		if ($png === false) {
+			show_error("No fue posible generar el QR", 500);
+			return;
+		}
+
+		$file_name = 'qr_colaborador_' . $colaborador->id . '.png';
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="' . $file_name . '"');
+		header('Content-Length: ' . strlen($png));
+		echo $png;
 	}
 }

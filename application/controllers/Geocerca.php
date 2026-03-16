@@ -67,7 +67,7 @@ class Geocerca extends ANT_Controller
 		$this->output_json([
 			'status' => true,
 			'en_rango' => $en_rango,
-			'mensaje' => $en_rango ? 'La posicion esta en rango.' : 'La posicion no esta en rango.',
+			'mensaje' => $en_rango ? 'La posicion esta en rango.' : "La posicion no esta en rango. \n Se encuentra a " . round($distancia_metros, 2) . ' metros de la sede.',
 			'distancia_metros' => round($distancia_metros, 2),
 			'radio_metros' => $radio_metros
 		]);

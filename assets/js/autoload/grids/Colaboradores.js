@@ -71,6 +71,10 @@ $('#groups_grid').footable().on('click', '.row-edit', function (e) {
     var Nombre = $(this).attr('nom');
     window.location.href = '/Colaboradores/edit/' + idemp;
 });
+$('#groups_grid').footable().on('click', '.row-qr', function (e) {
+    e.preventDefault();
+    window.open('/Colaboradores/qr_generator/' + $(this).attr('rel'), '_blank');
+});
 function handleUpload($input, uploadUrl, status) {
     var file = $input[0].files[0];
     if (!file) return;

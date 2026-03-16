@@ -1,5 +1,38 @@
 <!--Page Container Start Here-->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
+<style>
+    .qr-badge-flotante {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 1050;
+        display: none;
+        min-width: 260px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #0f766e, #14b8a6);
+        color: #fff;
+        box-shadow: 0 14px 32px rgba(15, 118, 110, 0.28);
+    }
+
+    .qr-badge-flotante.error {
+        background: linear-gradient(135deg, #b91c1c, #ef4444);
+        box-shadow: 0 14px 32px rgba(185, 28, 28, 0.28);
+    }
+
+    .qr-badge-flotante strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .qr-badge-flotante span {
+        display: block;
+        font-size: 12px;
+        opacity: 0.95;
+    }
+</style>
 
 <section class="sec-bread main-container">
     <div class="container-fluid">
@@ -42,41 +75,14 @@
 
                                             </select>
                                         </div>
-                                       
-                                       
-                                        <legend></legend>
-                                        <div class="form-group col-lg-12 col-md-12 pl-0">
-                                            <div style="margin-top: 15px; display:none" id="addExtra" class="form-group col-lg-12 col-md-12 pl-0 text-right">
-                                                <button type="button" id="btn_add_new_extra" class="btn btn-guardar next-step">Agregar extra</button>
+                                        <input type="hidden" id="colaborador_qr_id" name="users[colaborador_id]" />
+
+                                        <div id="qr_scanner_wrapper" class="form-group col-lg-12 col-md-12 pl-0" style="display:none;">
+                                            <div class="widget-wrap material-table-widget" style="padding: 15px; border: 1px solid #e5e5e5;">
+                                                <p class="title-sec" style="margin-bottom: 10px;">Lector QR</p>
+                                                <p id="qr_scanner_status" style="margin-bottom: 15px;">Valida la sede para habilitar el lector.</p>
+                                                <div id="qr-reader" style="width:100%; max-width:420px;"></div>
                                             </div>
-                                            <div class="table-responsive d-table-lg">
-                                                <table id="asistencias_grid" class="table table-lg" data-filter="#filter" data-filter-text-only="true" data-page-size="10" data-limit-navigation="10">
-                                                    <thead>
-                                                        <tr>
-
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
-
-                                                    <tfoot class="hide-if-no-paging">
-                                                        <tr>
-                                                            <td colspan="7" class="footable-visible">
-                                                                <div class="pagination pagination-centered"></div>
-                                                            </td>
-                                                        </tr>
-                                                    </tfoot>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <legend></legend>
-
-                                        <div style="margin-top: 15px" class="form-group col-lg-12 col-md-12 pl-0">
-                                            <button type="submit" class="btn btn-guardar next-step">Guardar</button>
                                         </div>
                                     </form>
 
@@ -88,6 +94,11 @@
             </div>
         </div>
 </section>
+<div id="qr_colaborador_badge" class="qr-badge-flotante">
+    <strong id="qr_colaborador_badge_nombre"></strong>
+    <span id="qr_colaborador_badge_codigo"></span>
+    <span id="qr_colaborador_badge_id"></span>
+</div>
 <div class="modal fade modal-servicios modal-citas" id="modalExtra" tabindex="-1" role="dialog" aria-labelledby="modalHorarioTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

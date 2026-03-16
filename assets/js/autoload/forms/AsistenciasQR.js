@@ -1,4 +1,9 @@
 var states = "";
+var qrScanner = null;
+var qrScannerActivo = false;
+var ultimoQrLeido = null;
+var qrBadgeTimeout = null;
+var ubicacionGlobal = null;
 $(document).ready(function () {
     if ($("#id").val() != 0) {
         get_info_Departamentos($("#id").val());
@@ -28,6 +33,147 @@ function obtenerUbicacionActual() {
                 maximumAge: 0
             }
         );
+    });
+}
+
+function mostrarLectorQr() {
+    $("#qr_scanner_wrapper").show();
+    $("#qr_scanner_status").text("Escanea el QR del colaborador.");
+    iniciarLectorQr();
+}
+
+function ocultarLectorQr() {
+    $("#qr_scanner_wrapper").hide();
+    $("#qr_scanner_status").text("Valida la sede para habilitar el lector.");
+    $("#colaborador_qr_id").val("");
+    ocultarBadgeColaboradorQr();
+    detenerLectorQr();
+}
+
+function mostrarBadgeColaboradorQr(data, type) {
+    if (qrBadgeTimeout) {
+        clearTimeout(qrBadgeTimeout);
+    }
+
+    var badge = $("#qr_colaborador_badge");
+    badge.removeClass("error");
+    if (type === "error") {
+        badge.addClass("error");
+    }
+
+    $("#qr_colaborador_badge_nombre").text(data.nombre || "Colaborador detectado");
+    $("#qr_colaborador_badge_codigo").text("Codigo: " + (data.codigo || "-"));
+    $("#qr_colaborador_badge_id").text("ID: " + (data.colaborador_id || "-"));
+    badge.fadeIn(200);
+
+    qrBadgeTimeout = setTimeout(function () {
+        ocultarBadgeColaboradorQr();
+    }, 10000);
+}
+
+function ocultarBadgeColaboradorQr() {
+    if (qrBadgeTimeout) {
+        clearTimeout(qrBadgeTimeout);
+        qrBadgeTimeout = null;
+    }
+
+    $("#qr_colaborador_badge").hide();
+    $("#qr_colaborador_badge").removeClass("error");
+    $("#qr_colaborador_badge_nombre").text("");
+    $("#qr_colaborador_badge_codigo").text("");
+    $("#qr_colaborador_badge_id").text("");
+}
+
+function iniciarLectorQr() {
+    if (qrScannerActivo || typeof Html5Qrcode === "undefined") {
+        return;
+    }
+
+    qrScanner = new Html5Qrcode("qr-reader");
+    qrScanner.start({
+            facingMode: "environment"
+        }, {
+            fps: 10,
+            qrbox: {
+                width: 250,
+                height: 250
+            }
+        },
+        function (decodedText) {
+            procesarQrEscaneado(decodedText);
+        },
+        function () {}
+    ).then(function () {
+        qrScannerActivo = true;
+    }).catch(function () {
+        $("#qr_scanner_status").text("No fue posible iniciar la camara.");
+    });
+}
+
+function detenerLectorQr() {
+    if (!qrScanner || !qrScannerActivo) {
+        qrScanner = null;
+        qrScannerActivo = false;
+        return;
+    }
+
+    qrScanner.stop().then(function () {
+        qrScanner.clear();
+        qrScanner = null;
+        qrScannerActivo = false;
+    }).catch(function () {
+        qrScanner = null;
+        qrScannerActivo = false;
+    });
+}
+
+function procesarQrEscaneado(token) {
+    if (!token || token === ultimoQrLeido) {
+        return;
+    }
+    ultimoQrLeido = token;
+    $("#qr_scanner_status").text("Validando QR...");
+    $.ajax({
+        url: "/Asistencias/decode_qr_colaborador",
+        type: "POST",
+        data: {
+            token: token,
+            lat: ubicacionGlobal.lat,
+            lng: ubicacionGlobal.lng,
+            sede_id: $("#select_sede").val()
+        },
+        dataType: "json",
+        success: function (data) {
+            if (data && data.status) {
+                $("#colaborador_qr_id").val(data.colaborador_id);
+                $("#qr_scanner_status").text("Colaborador detectado con ID " + data.colaborador_id + ".");
+                mostrarBadgeColaboradorQr(data);
+            } else {
+                $("#colaborador_qr_id").val("");
+                $("#qr_scanner_status").text(data.mensaje || "No fue posible leer el QR.");
+                mostrarBadgeColaboradorQr({
+                    nombre: "QR invalido",
+                    codigo: data.mensaje || "No fue posible leer el QR.",
+                    colaborador_id: "-"
+                }, "error");
+            }
+
+            setTimeout(function () {
+                ultimoQrLeido = null;
+            }, 2000);
+        },
+        error: function () {
+            $("#colaborador_qr_id").val("");
+            $("#qr_scanner_status").text("No fue posible validar el QR.");
+            mostrarBadgeColaboradorQr({
+                nombre: "Error de lectura",
+                codigo: "No fue posible validar el QR.",
+                colaborador_id: "-"
+            }, "error");
+            setTimeout(function () {
+                ultimoQrLeido = null;
+            }, 2000);
+        }
     });
 }
 
@@ -95,6 +241,7 @@ function format_date(date) {
     return formated_date;
 }
 $("#empresa_select").change(function () {
+    ocultarLectorQr();
     $.ajax({
         url: "/Empresas/get_Empresas_sedes",
         type: 'POST',
@@ -119,6 +266,7 @@ $("#empresa_select").change(function () {
 $("#select_sede").change(async function () {
     var sedeId = $("#select_sede").val();
     if (!sedeId || sedeId === "Seleccionar sede") {
+        ocultarLectorQr();
         return;
     }
 
@@ -130,6 +278,7 @@ $("#select_sede").change(async function () {
         });
 
         var ubicacion = await obtenerUbicacionActual();
+        ubicacionGlobal = ubicacion;
 
         $.ajax({
             url: "/Geocerca/validar_posicion",
@@ -141,19 +290,26 @@ $("#select_sede").change(async function () {
             },
             dataType: 'json',
             success: function (data) {
-                //swal.close();
                 if (data && data.status) {
                     swal(data.en_rango ? "En rango" : "Fuera de rango", data.mensaje, data.en_rango ? "success" : "warning");
+                    if (data.en_rango) {
+                        mostrarLectorQr();
+                    } else {
+                        ocultarLectorQr();
+                    }
                 } else {
+                    ocultarLectorQr();
                     swal("Error", data.mensaje || "No fue posible validar la ubicacion.", "error");
                 }
             },
             error: function () {
+                ocultarLectorQr();
                 swal.close();
                 swal("Error", "No fue posible validar la ubicacion.", "error");
             }
         });
     } catch (error) {
+        ocultarLectorQr();
         swal.close();
         swal("Ubicacion", error.message, "warning");
     }
@@ -161,6 +317,7 @@ $("#select_sede").change(async function () {
 $("#search").click(function () {
     grid_load_data();
 })
+
 function grid_load_data() {
     $.ajax({
         url: "/Asistencias/get_asistencias_by_empresa",
@@ -218,6 +375,7 @@ $('#form-asistencias').on('submit', function (e) {
 $("#btn_add_new_extra").click(function () {
     $("#modalExtra").modal("show");
 });
+
 function save_extra() {
     event.preventDefault();
     var data = new FormData(document.getElementById("modal_extra"));
@@ -263,6 +421,7 @@ function save_extra() {
         swal('Error!', "Debes completar todos los campos.", 'error');
     }
 }
+
 function delete_extra(idemp) {
     swal({
         title: "<p id='pswalerror'>Estas seguro que deseas eliminar este elemento?</p>",

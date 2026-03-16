@@ -41,7 +41,9 @@ class Empresas_Model extends ANT_Model
 		$options = array(
 			'select' => '*',
 			'result' => 'array',
-			'where' => $where ? $where . " AND empresas.status=1" : "empresas.status=1"
+			'where' => $where ? $where . " AND empresas.status=1" : "empresas.status=1",
+			"sortBy" => "nombre",
+			"sortDirection" => "ASC"
 		);
 
 		$result = Empresas_Model::Load($options);

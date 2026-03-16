@@ -215,6 +215,70 @@ class Asistencias extends ANT_Controller
 		}
 		$this->output_json($result);
 	}
+	function decode_qr_colaborador()
+	{
+		date_default_timezone_set("America/Mexico_City");
+		$token = trim((string)$this->input->post('token'));
+		$lat = $this->input->post('lat');
+		$lng = $this->input->post('lng');
+		$sede_id = $this->input->post('sede_id');
+		if ($token === '') {
+			$this->output_json([
+				'status' => false,
+				'mensaje' => 'No se recibio el token del QR.'
+			]);
+			return;
+		}
+
+		$secret = getenv('QR_TOKEN') ?: '';
+		if ($secret === '') {
+			$this->output_json([
+				'status' => false,
+				'mensaje' => 'No se encontro el secreto QR_TOKEN.'
+			]);
+			return;
+		}
+		$this->load->library('qr_tokenizer');
+		$colaborador_id = $this->qr_tokenizer->decode($token, $secret);
+		if (!$colaborador_id || !ctype_digit((string)$colaborador_id)) {
+			$this->output_json([
+				'status' => false,
+				'mensaje' => 'El QR no es valido.'
+			]);
+			return;
+		}
+
+		$colaborador = Colaboradores_Model::Load([
+			'select' => 'id, codigo, nombre, apellido_paterno, apellido_materno',
+			'where' => 'id=' . intval($colaborador_id),
+			'result' => '1row'
+		]);
+
+		if (!$colaborador) {
+			$this->output_json([
+				'status' => false,
+				'mensaje' => 'No se encontro el colaborador.'
+			]);
+			return;
+		} else {
+			Asistencias_Validas_Model::Insert([
+				'colaborador_id' => $colaborador->id,
+				'user_id' => $this->tank_auth->get_user_id(),
+				'lat' => $lat,
+				'lng' => $lng,
+				'sede_id' => $sede_id,
+				'fecha' => date('Y-m-d')
+			]);
+		}
+
+		$this->output_json([
+			'status' => true,
+			'mensaje' => 'QR valido.',
+			'colaborador_id' => intval($colaborador->id),
+			'codigo' => $colaborador->codigo,
+			'nombre' => trim($colaborador->nombre . ' ' . $colaborador->apellido_paterno . ' ' . $colaborador->apellido_materno)
+		]);
+	}
 	function eliminar()
 	{
 		$id = $this->input->post("id");
