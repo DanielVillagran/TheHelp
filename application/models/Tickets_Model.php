@@ -17,19 +17,20 @@ class Tickets_Model extends ANT_Model
 
 	static function get_grid_info($where = NULL, $list = NULL, $agent = NULL)
 	{
-		$lista = '';
-		$result = array();
 		$options = array(
-			'select' => 'tickets.*,vehiculos.marca,vehiculos.modelo,vehiculos.serie,tipo_servicios.nombre as tipoServicio',
+			'select' => 'tickets.*, e.nombre as empresa_nombre, s.nombre as sede_nombre, ts.nombre as tipoServicio',
 			'joinsLeft' => array(
-				'vehiculos' => 'vehiculos.id = tickets.vehiculoId',
-				'tipo_servicios' => 'tipo_servicios.id = tickets.tipoServicioId',
+				'empresas as e' => 'e.id = tickets.empresaId',
+				'empresas_sedes as s' => 's.id = tickets.sedeId',
+				'tipo_servicios as ts' => 'ts.id = tickets.tipoServicioId',
 			),
+
 			'result' => 'array'
 		);
-
-		$result = Tickets_Model::Load($options);
-		return $result;
+		if ($where != NULL && $where != '') {
+			$options['where'] = $where;
+		}
+		return Tickets_Model::Load($options);
 	}
 	static function get_grid_info_by_vehiculo($id)
 	{

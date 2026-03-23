@@ -107,6 +107,15 @@
 
                     </div>
                 <?php endif; ?>
+                <?php if ($this->tank_auth->user_has_privilege('Tickets')) : ?>
+                    <a href="#tickets" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Tickets<i class="fa fa-caret-down pull-right"></i> </a>
+                    <div class="collapse list-group-submenu" id="tickets">
+                        <a href="/Tickets" class="list-group-item item-second-list">Ver tickets</a>
+                        <?php if ($this->tank_auth->user_has_privilege('Modificar tickets')) : ?>
+                            <a href="/Tickets/add" class="list-group-item item-second-list">Agregar tickets</a>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Encuestas')) : ?>
                     <a href="#encuestas" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Encuestas<i class="fa fa-caret-down pull-right"></i> </a>
                     <div class="collapse list-group-submenu" id="encuestas">
