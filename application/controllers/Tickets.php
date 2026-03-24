@@ -130,6 +130,25 @@ class Tickets extends ANT_Controller
 		}
 		$this->output_json($data);
 	}
+	function get_Tickets_pendientes()
+	{
+		$tickets = 0;
+		$completar = $this->tank_auth->user_has_privilege('Completar tickets');
+
+		if ($completar) {
+			$user_role_id = $this->tank_auth->get_user_role_id();
+			$user_id = $this->tank_auth->get_user_id();
+			$where = "tickets.status='Pendiente'";
+			if ($user_role_id > 2) {
+				$where .= " AND e.id in (SELECT empresa_id from empresas_has_users where user_id=$user_id)";
+			}
+			$aux = Tickets_Model::get_Tickets_pendientes($where);
+			if ($aux) {
+				$tickets = intval($aux->pendientes);
+			}
+		}
+		$this->output_json(array('pendientes' => $tickets));
+	}
 	function save_info()
 	{
 		$post = $this->input->post('users');

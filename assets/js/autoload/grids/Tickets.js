@@ -132,6 +132,9 @@ $('#groups_grid').footable().on('click', '.row-edit', function (e) {
                         return;
                     }
                     grid_load_data();
+                    if (typeof updateTicketsPendientesBadge === 'function') {
+                        updateTicketsPendientesBadge();
+                    }
                 }
             });
 

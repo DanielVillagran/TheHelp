@@ -32,6 +32,23 @@ class Tickets_Model extends ANT_Model
 		}
 		return Tickets_Model::Load($options);
 	}
+	static function get_Tickets_pendientes($where = NULL, $list = NULL, $agent = NULL)
+	{
+		$options = array(
+			'select' => 'COUNT(*) as pendientes',
+			'joinsLeft' => array(
+				'empresas as e' => 'e.id = tickets.empresaId',
+				'empresas_sedes as s' => 's.id = tickets.sedeId',
+				'tipo_servicios as ts' => 'ts.id = tickets.tipoServicioId',
+			),
+
+			'result' => '1row'
+		);
+		if ($where != NULL && $where != '') {
+			$options['where'] = $where;
+		}
+		return Tickets_Model::Load($options);
+	}
 	static function get_grid_info_by_vehiculo($id)
 	{
 		$lista = '';
