@@ -100,7 +100,7 @@ class Tickets extends ANT_Controller
 					$botones .= '<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>';
 				}
 				if (isset($a['status']) && $a['status'] == 'Pendiente') {
-					$botones .= '<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '" tipo="second" tipo-servicio-id="' . intval($a['tipoServicioId']) . '"><i class="fa fa-check"></i></button>';
+					$botones .= '<button type="button" class="permisoCompletar btn btn-default row-edit" rel="' . $a['id'] . '" tipo="second" tipo-servicio-id="' . intval($a['tipoServicioId']) . '"><i class="fa fa-check"></i></button>';
 				}
 				$status = isset($a['status']) ? $a['status'] : '';
 				$status_badge = '<span class="badge" style="background-color:#9e9e9e; color:#fff;">' . htmlspecialchars($status, ENT_QUOTES, 'UTF-8') . '</span>';
