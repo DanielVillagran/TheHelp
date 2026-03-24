@@ -1,3 +1,36 @@
+<style>
+    .menu-item-with-badge {
+        display: flex !important;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .menu-item-with-badge .menu-item-label {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .menu-item-with-badge .tickets-pending-badge {
+        background-color: #d9534f;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 4px 8px;
+        border-radius: 999px;
+        min-width: 22px;
+        text-align: center;
+    }
+
+    .menu-item-with-badge .fa-caret-down {
+        margin-left: auto;
+    }
+
+    .menu-item-with-badge .tickets-pending-badge.is-hidden {
+        display: none;
+    }
+</style>
+
 <aside class="leftbar material-leftbar">
     <div class="left-aside-container">
         <div class="user-profile-container">
@@ -108,7 +141,13 @@
                     </div>
                 <?php endif; ?>
                 <?php if ($this->tank_auth->user_has_privilege('Tickets')) : ?>
-                    <a href="#tickets" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Tickets<i class="fa fa-caret-down pull-right"></i> </a>
+                    <a href="#tickets" class="list-group-item list-group-item menu-item-with-badge" data-toggle="collapse" data-parent="#MainMenu">
+                        <span class="menu-item-label">Tickets</span>
+                        <?php if ($this->tank_auth->user_has_privilege('Completar tickets')) : ?>
+                            <span id="tickets-pending-badge" class="badge tickets-pending-badge is-hidden"></span>
+                        <?php endif; ?>
+                        <i class="fa fa-caret-down pull-right"></i>
+                    </a>
                     <div class="collapse list-group-submenu" id="tickets">
                         <a href="/Tickets" class="list-group-item item-second-list">Ver tickets</a>
                         <?php if ($this->tank_auth->user_has_privilege('Modificar tickets')) : ?>
@@ -163,6 +202,40 @@
 <script src="<?php echo base_url(); ?>assets/js/autoload/grids/change_pass.js"></script>
 
 <script>
+    function updateTicketsPendientesBadge() {
+        var $badge = $("#tickets-pending-badge");
+
+        if (!$badge.length) {
+            return;
+        }
+
+        $.ajax({
+            url: "/Tickets/get_Tickets_pendientes",
+            type: "POST",
+            dataType: "json",
+            success: function(data) {
+                var pendientes = 0;
+
+                if (data && typeof data.pendientes !== "undefined") {
+                    pendientes = parseInt(data.pendientes, 10) || 0;
+                }
+
+                if (pendientes > 0) {
+                    $badge.text(pendientes).removeClass("is-hidden");
+                } else {
+                    $badge.text("").addClass("is-hidden");
+                }
+            },
+            error: function() {
+                $badge.text("").addClass("is-hidden");
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        updateTicketsPendientesBadge();
+    });
+
     $(".list-group .list-group-item").click(function() {
 
 
