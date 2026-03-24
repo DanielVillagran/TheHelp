@@ -398,6 +398,24 @@ body {
     margin-left: 5px !important;
 }
 
+.btn.row-qr:hover {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    color: rgba(0, 0, 0, 1);
+}
+.btn.row-qr {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    color: rgba(0, 0, 0, .4);
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    font-size: 14px !important;
+    transition: .3s;
+    margin-left: 5px !important;
+}
+
 .btn.row-delete:hover {
     background-color: transparent;
     box-shadow: none;

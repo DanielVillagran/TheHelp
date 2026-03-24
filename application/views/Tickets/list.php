@@ -1,4 +1,12 @@
 <!--Page Container Start Here-->
+<style>
+    .permisoEdicion {
+        display: <?php echo ($this->tank_auth->user_has_privilege('Modificar tickets') ? "block" :  "none"); ?>;
+    }
+    .permisoCompletar {
+        display: <?php echo ($this->tank_auth->user_has_privilege('Completar tickets') ? "block" :  "none"); ?>;
+    }
+</style>
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/bracket.css">
 
 <section class="sec-bread main-container">
@@ -23,9 +31,9 @@
                         <div class="widget-content">
                             <div class="data-action-bar">
                                 <p class="title-sec"><?php echo $title; ?></p>
-                                <div class="row row-buscar-agregar">
+                                <div class="row row-buscar-agregar permisoEdicion">
                                     <div class="col-lg-6 col-md-6">
-                                          </div>
+                                    </div>
 
                                     <div class="col-lg-6 col-md-6">
                                         <div class="d-btn-agregar">
@@ -44,7 +52,7 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            
+
                                         </tr>
                                     </tfoot>
                                     <tbody>

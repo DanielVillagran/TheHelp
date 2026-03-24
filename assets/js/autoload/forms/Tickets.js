@@ -1,28 +1,9 @@
-var states = "";
-let objetoScanner = null;
+var currentSedeId = "";
+
 $(document).ready(function () {
     if ($("#id").val() != 0) {
         get_info_Departamentos($("#id").val());
     }
-    $(".input-file-icon").change(function () {
-        var t = $(this).val();
-        var labelText = 'Img: ' + t.substr(12, t.length);
-        $(this).prev('label').text(labelText);
-    });
-
-    var html5QrcodeScanner = new Html5QrcodeScanner(
-        "qr-reader", { fps: 10, qrbox: 150 });
-    objetoScanner = html5QrcodeScanner
-    html5QrcodeScanner.render(onScanSuccess);
-    function onScanSuccess(decodedText, decodedResult) {
-        //objetoScanner.stop();
-        if (decodedText.includes("vehiculos...")) {
-            let id = decodedText.split("vehiculos...")[1];
-            $('[name="users[vehiculoId]"]').val(id);
-            html5QrcodeScanner.clear();
-        }
-    }
-
 });
 
 function get_info_Departamentos(id) {
@@ -43,25 +24,26 @@ function get_info_Departamentos(id) {
         },
         success: function (data) {
             swal.close();
+            var empresaId = $.trim(data.empresa || data.empresa_id || data.empresaId || "");
+            currentSedeId = $.trim(data.sede || data.sede_id || data.sedeId || "");
             for (var key in data) {
-                if (key != 'evidencia') {
+                if (key != 'evidencia' && key != 'empresa' && key != 'empresa_id' && key != 'empresaId' && key != 'sede' && key != 'sede_id' && key != 'sedeId') {
                     $('[name="users[' + key + ']"]').val($.trim(data[key]));
-                } 
-                if (data.evidencia != null) {
-                    $(".current_logo").html('<img src="/assets/' + data.evidencia + '"/>');
                 }
+            }
+            if (data.descripcion && !$('[name="users[descripcion]"]').val()) {
+                $('[name="users[descripcion]"]').val($.trim(data.descripcion));
+            }
+            var tipoServicioId = $.trim(data.tipoServicioId || "");
+            if (tipoServicioId !== "") {
+                $("#tipoServicioId").val(tipoServicioId);
+            }
+            if (empresaId !== "") {
+                $("#empresa_select").val(empresaId);
+                loadSedesByEmpresa(empresaId, currentSedeId);
             }
         }
     });
-}
-function downloadAsImage() {
-    html2canvas($("#qrcode")[0]).then((canvas) => {
-        var a = document.createElement('a');
-        a.href = canvas.toDataURL("image/png");
-        a.download = 'image.png';
-        a.click();
-    });
-
 }
 
 function save_Departamentos() {
@@ -85,8 +67,6 @@ function save_Departamentos() {
             swal.close();
 
             location.href = "/Tickets";
-
-
         }
     });
 }
@@ -98,20 +78,42 @@ function format_date(date) {
     formated_date += array_date[2] + "-" + array_date[1] + "-" + array_date[0] + " " + array_hour[0] + ":" + array_hour[1] + ":00";
     return formated_date;
 }
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
 
-        reader.onload = function (e) {
-            $(".current_logo").html('<img src="' + e.target.result + '"/>');
-        }
-
-        reader.readAsDataURL(input.files[0]);
+$("#empresa_select").change(function () {
+    if ($("#empresa_select").prop("disabled")) {
+        return;
     }
-}
-
-$(".input-file-icon").change(function () {
-
-    readURL(this);
-    $("#icon-preview").show();
+    var empresaId = $(this).val();
+    currentSedeId = "";
+    loadSedesByEmpresa(empresaId, "");
 });
+
+function loadSedesByEmpresa(empresaId, selectedSedeId) {
+    if (!empresaId) {
+        $("#select_sede").empty().append('<option hidden>Seleccionar sede</option>');
+        return;
+    }
+
+    $.ajax({
+        url: "/Empresas/get_Empresas_sedes",
+        type: 'POST',
+        data: {
+            id: empresaId
+        },
+        dataType: 'json',
+        beforeSend: function () {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif"
+            });
+        },
+        success: function (data) {
+            swal.close();
+            $("#select_sede").empty().append(data.select);
+            if (selectedSedeId) {
+                $("#select_sede").val(selectedSedeId);
+            }
+        }
+    });
+}
