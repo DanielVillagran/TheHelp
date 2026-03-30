@@ -41,14 +41,16 @@ class Empresas_Puestos_Horarios_Model extends ANT_Model
 			'select' => "h.*",
 			'result' => 'array',
 			'joinsLeft' => array(
-				"empresas_horarios as h"=>'h.id=empresas_puestos_horarios.horario_id'
+				"empresas_horarios as h" => 'h.id=empresas_puestos_horarios.horario_id'
 			),
 			'where' =>  $where ? $where . " AND empresas_puestos_horarios.status=1" : "empresas_puestos_horarios.status=1"
 		);
 
 		$result = Empresas_Puestos_Horarios_Model::Load($options);
-		foreach ($result as $key) {
-			$lista .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
+		if ($result) {
+			foreach ($result as $key) {
+				$lista .= '<option value="' . $key['id'] . '">' . $key['nombre'] . '</option>';
+			}
 		}
 		return $lista;
 	}
@@ -60,7 +62,7 @@ class Empresas_Puestos_Horarios_Model extends ANT_Model
 			'select' => "h.*",
 			'result' => 'array',
 			'joinsLeft' => array(
-				"puestos as h"=>'h.id=empresas_puestos_horarios.puesto_id'
+				"puestos as h" => 'h.id=empresas_puestos_horarios.puesto_id'
 			),
 			'where' =>  $where
 		);
@@ -71,5 +73,4 @@ class Empresas_Puestos_Horarios_Model extends ANT_Model
 		}
 		return $lista;
 	}
-	
 }

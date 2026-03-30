@@ -99,7 +99,29 @@ class Colaboradores_Model extends ANT_Model
 		$options = array(
 			'select' => '*',
 			'result' => 'array',
-			'where' =>  $where ? $where . " AND status=1" : "status=1"
+			'where' =>  $where ? $where . " AND status=3" : "status=3"
+		);
+
+		$result = Colaboradores_Model::Load($options);
+		if ($result) {
+			foreach ($result as $key) {
+				$lista .= '<option value="' . $key['id'] . '">' . $key['codigo'] . ' - ' . $key['nombre'] . ' ' . $key['apellido_paterno'] . ' ' . $key['apellido_materno'] . '</option>';
+			}
+		}
+		return $lista;
+	}
+	static function get_asistencias_reales($where = NULL, $list = NULL, $agent = NULL)
+	{
+		$lista = '<option value="all">-- Todos los empresas --</option>';
+		$lista = "";
+		$result = array();
+		$options = array(
+			'select' => 'colaboradores.*',
+			'joins' => array(
+				'asistencias_validas' => 'colaboradores.id=asistencias_validas.colaborador_id and ' . $where
+			),
+			'result' => 'array',
+			//'where' =>  "status=1"
 		);
 
 		$result = Colaboradores_Model::Load($options);

@@ -321,6 +321,7 @@ class Asistencias extends ANT_Controller
 			'result' => 'array'
 		));
 		$colaboradores = Colaboradores_Model::get_select("cliente=" . $post['empresa_id']);
+		$colaboradores_asistencias = Colaboradores_Model::get_asistencias_reales("sede =" . $post['sede_id'] . " AND fecha='" . $post['fecha'] . "'");
 		$data['select_colaboradores'] = $colaboradores;
 		if ($aux) {
 			foreach ($aux as $a) {
@@ -328,10 +329,19 @@ class Asistencias extends ANT_Controller
 					$data['table'] .= '<tr>
 					<td>' . $a['horario'] . '</td>
 					<td>' . $a['puesto'] . '</td>
-					<td><select class="form-control input-form"  name="cubiertos[' . $a['id'] . '][]" >
+					<td>
+					<div id="colaborador_todos_' . $a['id'] . '_' . $i . '" class="colaborador-select-wrapper">
+					<select class="form-control input-form colaborador-select colaborador-select-todos" name="cubiertos[' . $a['id'] . '][]">
 					<option hidden>Seleccionar colaborador</option>
 					' . $colaboradores . '
 					</select>
+					</div>
+					<div id="colaborador_asistente_' . $a['id'] . '_' . $i . '" class="colaborador-select-wrapper" style="display:none;">
+					<select class="form-control input-form colaborador-select colaborador-select-asistencia" name="cubiertos[' . $a['id'] . '][]" disabled>
+					<option hidden>Seleccionar colaborador</option>
+					' . $colaboradores_asistencias . '
+					</select>
+					</div>
 					</td>
 					<td><select class="form-control input-form" style="margin-left:10px;" name="tipos[' . $a['id'] . '][]" >
 					<option hidden>Seleccionar tipo asistencia</option>
@@ -494,7 +504,7 @@ class Asistencias extends ANT_Controller
 					'result' => '1row'
 				));
 				$botones = '
-				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-eye"></i></button>';
+				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-eye"></i></button>';
 				$data['table'] .= '<tr>
 				<td>' . $a['empresa'] . '</td>
 				<td>' . $a['sede'] . '</td>

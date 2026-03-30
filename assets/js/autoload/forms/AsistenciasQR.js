@@ -318,6 +318,35 @@ $("#search").click(function () {
     grid_load_data();
 })
 
+function toggleColaboradorSelect($tipoSelect) {
+    var selectedValue = String($tipoSelect.val() || '');
+    var usarAsistencia = ['1', '7', '9'].indexOf(selectedValue) !== -1;
+    var $row = $tipoSelect.closest('tr');
+    var $todosWrapper = $row.find('.colaborador-select-todos').closest('.colaborador-select-wrapper');
+    var $asistenciaWrapper = $row.find('.colaborador-select-asistencia').closest('.colaborador-select-wrapper');
+    var $todosSelect = $row.find('.colaborador-select-todos');
+    var $asistenciaSelect = $row.find('.colaborador-select-asistencia');
+    var $heInput = $row.find('input[name^="he["]');
+
+    if (usarAsistencia) {
+        $todosWrapper.hide();
+        $todosSelect.prop('disabled', true).val('');
+        $asistenciaWrapper.show();
+        $asistenciaSelect.prop('disabled', false);
+    } else {
+        $asistenciaWrapper.hide();
+        $asistenciaSelect.prop('disabled', true).val('');
+        $todosWrapper.show();
+        $todosSelect.prop('disabled', false);
+    }
+
+    if (selectedValue == '7') {
+        $heInput.prop('readonly', false);
+    } else {
+        $heInput.prop('readonly', true).val('');
+    }
+}
+
 function grid_load_data() {
     $.ajax({
         url: "/Asistencias/get_asistencias_by_empresa",
@@ -339,6 +368,9 @@ function grid_load_data() {
         success: function (data) {
             $('#asistencias_grid thead').empty().append(data.head);
             $('#asistencias_grid tbody').empty().append(data.table).trigger('footable_redraw');
+            $('select[name^="tipos["]').each(function () {
+                toggleColaboradorSelect($(this));
+            });
             $('#asistencias_grid').show();
             $("#addExtra").show();
             $("#select_horario").empty().append(data.select_horarios);
@@ -453,13 +485,5 @@ function delete_extra(idemp) {
     });
 }
 $(document).on('change', 'select[name^="tipos["]', function () {
-    var selectedValue = $(this).val();
-    var $row = $(this).closest('tr');
-    var $heInput = $row.find('input[name^="he["]');
-
-    if (selectedValue == '7') {
-        $heInput.prop('readonly', false);
-    } else {
-        $heInput.prop('readonly', true).val('');
-    }
+    toggleColaboradorSelect($(this));
 });

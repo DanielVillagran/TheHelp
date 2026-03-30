@@ -69,5 +69,5 @@ $('#groups_grid').footable().on('click', '.row-edit', function(e) {
     e.preventDefault();
     var idemp = $(this).attr('rel');
     var Nombre = $(this).attr('nom');
-    window.location.href = '/Asistencias/edit/' + idemp;
+    window.location.href = '/Asistencias/view/' + idemp;
 });
