@@ -20,9 +20,16 @@ class Tipos_Servicios_Model extends ANT_Model
 		$lista = '';
 		$result = array();
 		$options = array(
-			'select' => '*',
+			'select' => "tipo_servicios.*, TRIM(CONCAT(COALESCE(users_user.name,''), ' ', COALESCE(users_user.middle_name,''), ' ', COALESCE(users_user.last_name,''))) as usuario_asignado_nombre, users_user.user_name as usuario_asignado_user_name",
+			'joinsLeft' => array(
+				'users_user' => 'users_user.id = tipo_servicios.usuario_asignado'
+			),
 			'result' => 'array'
 		);
+
+		if ($where) {
+			$options['where'] = $where;
+		}
 
 		$result = Tipos_Servicios_Model::Load($options);
 		return $result;

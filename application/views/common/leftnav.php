@@ -181,6 +181,7 @@
                     <div class="collapse list-group-submenu" id="configuracion">
                         <a href="/Municipios" class="list-group-item item-second-list">Ver Municipios</a>
                         <a href="/Zonas" class="list-group-item item-second-list">Ver Zonas</a>
+                        <a href="/Tipos_Tickets" class="list-group-item item-second-list">Ver Tipos de Tickets</a>
                         <a href="/Puestos" class="list-group-item item-second-list">Ver Puestos</a>
                         <a href="/FechasFestivas" class="list-group-item item-second-list">Ver Fechas Festivas</a>
                     </div>

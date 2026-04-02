@@ -3,6 +3,11 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 // require_once BASEPATH . '../application/models/common_library.php';
+use PHPMailer\PHPMailer\PHPMailer;
+
+require APPPATH . 'libraries/PHPMailer/src/Exception.php';
+require APPPATH . 'libraries/PHPMailer/src/PHPMailer.php';
+require APPPATH . 'libraries/PHPMailer/src/SMTP.php';
 
 class Tickets extends ANT_Controller
 {
@@ -157,7 +162,9 @@ class Tickets extends ANT_Controller
 		if ($post['id'] == 0) {
 			$result = Tickets_Model::Insert($payload);
 			if (!empty($result['insert_id'])) {
-				$this->log_ticket_history(intval($result['insert_id']), 'Pendiente');
+				$ticket_id = intval($result['insert_id']);
+				$this->log_ticket_history($ticket_id, 'Pendiente');
+				$this->send_email_nuevo_ticket($ticket_id);
 			}
 		} else {
 			$result = Tickets_Model::Update($payload, 'id=' . intval($post['id']));
@@ -267,6 +274,119 @@ class Tickets extends ANT_Controller
 			'documento' => $documento,
 			'createdBy' => $user_id > 0 ? $user_id : null
 		));
+	}
+
+	private function send_email_nuevo_ticket($ticket_id)
+	{
+		$ticket = Tickets_Model::Load(array(
+			'select' => "tickets.*, e.nombre as empresa_nombre, s.nombre as sede_nombre, ts.nombre as tipo_ticket_nombre, ts.usuario_asignado, ts.con_copia_correo, u.user_name as correo_destino, TRIM(CONCAT(COALESCE(u.name,''), ' ', COALESCE(u.middle_name,''), ' ', COALESCE(u.last_name,''))) as usuario_asignado_nombre",
+			'joinsLeft' => array(
+				'empresas as e' => 'e.id = tickets.empresaId',
+				'empresas_sedes as s' => 's.id = tickets.sedeId',
+				'tipo_servicios as ts' => 'ts.id = tickets.tipoServicioId',
+				'users_user as u' => 'u.id = ts.usuario_asignado'
+			),
+			'where' => 'tickets.id=' . intval($ticket_id),
+			'result' => '1row'
+		));
+
+		if (!$ticket || empty($ticket->correo_destino)) {
+			return;
+		}
+
+		$usuario_nombre = trim((string)$ticket->usuario_asignado_nombre);
+		if ($usuario_nombre === '') {
+			$usuario_nombre = trim((string)$ticket->correo_destino);
+		}
+
+		$this->send_email(array(
+			'correo' => trim((string)$ticket->correo_destino),
+			'con_copia_correo' => intval($ticket->con_copia_correo) === 1,
+			'usuario_asignado' => $usuario_nombre,
+			'empresa' => !empty($ticket->empresa_nombre) ? $ticket->empresa_nombre : 'Sin empresa',
+			'sede' => !empty($ticket->sede_nombre) ? $ticket->sede_nombre : 'Sin sede',
+			'tipo_ticket' => !empty($ticket->tipo_ticket_nombre) ? $ticket->tipo_ticket_nombre : 'Sin tipo',
+			'descripcion' => !empty($ticket->descripcion) ? $ticket->descripcion : '',
+			'ticket_id' => intval($ticket->id)
+		));
+	}
+
+	public function send_email($datos)
+	{
+		date_default_timezone_set("America/Mexico_City");
+
+		$correo_destino = trim((string)($datos['correo'] ?? ''));
+		if ($correo_destino === '') {
+			return;
+		}
+
+		$usuario_asignado = htmlspecialchars((string)($datos['usuario_asignado'] ?? ''), ENT_QUOTES, 'UTF-8');
+		$empresa = htmlspecialchars((string)($datos['empresa'] ?? ''), ENT_QUOTES, 'UTF-8');
+		$sede = htmlspecialchars((string)($datos['sede'] ?? ''), ENT_QUOTES, 'UTF-8');
+		$tipo_ticket = htmlspecialchars((string)($datos['tipo_ticket'] ?? ''), ENT_QUOTES, 'UTF-8');
+		$descripcion = nl2br(htmlspecialchars((string)($datos['descripcion'] ?? ''), ENT_QUOTES, 'UTF-8'));
+		$ticket_id = intval($datos['ticket_id'] ?? 0);
+
+		$message = '<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="width=device-width" name="viewport" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,600,700&display=swap" rel="stylesheet">
+    <style type="text/css">
+        body { margin: 0; padding: 0; background-color: #f4f4f4; font-family: Roboto, Arial, sans-serif; }
+        table, td, tr { vertical-align: top; border-collapse: collapse; }
+        .wrapper { width: 100%; background-color: #f4f4f4; padding: 24px 0; }
+        .card { width: 100%; max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; }
+        .header { background: #0066D1; color: #ffffff; padding: 24px; font-size: 22px; font-weight: 700; }
+        .content { padding: 24px; color: #333333; font-size: 14px; line-height: 1.6; }
+        .label { font-weight: 700; color: #111111; }
+        .box { margin-top: 18px; padding: 16px; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="card">
+            <div class="header">Nuevo ticket asignado</div>
+            <div class="content">
+                <p>Hola ' . $usuario_asignado . ',</p>
+                <p>Se ha creado un nuevo ticket y fue asignado a tu usuario.</p>
+                <div class="box">
+                    <p><span class="label">Ticket:</span> #' . $ticket_id . '</p>
+                    <p><span class="label">Empresa:</span> ' . $empresa . '</p>
+                    <p><span class="label">Sede:</span> ' . $sede . '</p>
+                    <p><span class="label">Tipo de ticket:</span> ' . $tipo_ticket . '</p>
+                    <p><span class="label">Descripcion:</span><br>' . $descripcion . '</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>';
+
+		$mail = new PHPMailer();
+		$mail->SMTPDebug = 0;
+		$mail->isSMTP();
+		$mail->Host = 'mail.vmcomp.com.mx';
+		$mail->SMTPAuth = true;
+		$mail->SMTPSecure = 'ssl';
+		$mail->Port = 465;
+		$mail->Username = 'sender@vmcomp.com.mx';
+		$mail->Password = 'Odvm200796*';
+
+		$mail->setFrom('sender@vmcomp.com.mx', 'The Help');
+		$mail->Subject = 'Nuevo ticket asignado';
+		$mail->isHTML(true);
+		$mail->Body = $message;
+		$mail->AddAddress($correo_destino);
+		if (!empty($datos['con_copia_correo'])) {
+			$mail->addCC('david.vl@thehelp.com.mx');
+		}
+
+		if (!$mail->Send()) {
+			log_message('error', 'Error al enviar correo de ticket: ' . $mail->ErrorInfo);
+		}
 	}
 
 	private function guardar_documento_historial($file, $ticket_id)
