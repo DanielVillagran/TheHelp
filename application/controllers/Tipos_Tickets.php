@@ -18,7 +18,7 @@ class Tipos_Tickets extends ANT_Controller
 
 	function index()
 	{
-		$data['title'] = 'Tipos de Tickets';
+		$data['title'] = 'Categorías de Tickets';
 		$data['view'] = 'grids/Tipos_Tickets';
 		$data['styles'] = 'jquery.shuttle';
 		$data['js_scripts'] = 'lib/jquery.shuttle';
@@ -28,7 +28,7 @@ class Tipos_Tickets extends ANT_Controller
 
 	function add()
 	{
-		$data['title'] = 'Agregar Tipo de Ticket';
+		$data['title'] = 'Agregar Categoría de Ticket';
 		$data['view'] = 'forms/Tipos_Tickets';
 		$data['id'] = 0;
 		$data['styles'] = 'jquery.shuttle';
@@ -40,7 +40,7 @@ class Tipos_Tickets extends ANT_Controller
 
 	function edit($id)
 	{
-		$data['title'] = 'Editar Tipo de Ticket';
+		$data['title'] = 'Editar Categoría de Ticket';
 		$data['view'] = 'forms/Tipos_Tickets';
 		$data['id'] = $id;
 		$data['styles'] = 'jquery.shuttle';
@@ -121,7 +121,7 @@ class Tipos_Tickets extends ANT_Controller
 		if (intval($id) === 2) {
 			$this->output_json(array(
 				'status' => false,
-				'message' => 'El tipo de ticket con id 2 no se puede eliminar porque esta asociado a procesos importantes.'
+				'message' => 'La categoría de ticket con id 2 no se puede eliminar porque está asociada a procesos importantes.'
 			));
 			return;
 		}

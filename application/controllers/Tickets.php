@@ -91,7 +91,7 @@ class Tickets extends ANT_Controller
 		$data['head'] = "<tr>
 		<th>Empresa</th>
 		<th>Sede</th>
-		<th>Tipo de Ticket</th>
+		<th>Categoría de Ticket</th>
 		<th>Status</th>
 		<th>Fecha</th>
 		<th>Descripcion</th>
@@ -356,7 +356,7 @@ class Tickets extends ANT_Controller
                     <p><span class="label">Ticket:</span> #' . $ticket_id . '</p>
                     <p><span class="label">Empresa:</span> ' . $empresa . '</p>
                     <p><span class="label">Sede:</span> ' . $sede . '</p>
-                    <p><span class="label">Tipo de ticket:</span> ' . $tipo_ticket . '</p>
+                    <p><span class="label">Categoría de ticket:</span> ' . $tipo_ticket . '</p>
                     <p><span class="label">Descripcion:</span><br>' . $descripcion . '</p>
                 </div>
             </div>

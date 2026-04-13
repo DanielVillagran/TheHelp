@@ -160,7 +160,7 @@
                                 <input type="hidden" name="tickets[vehiculoId]" id="id" class="form-control" value="<?php echo $id; ?>" />
                                 <div class="form-group col-lg-6 col-md-6 pl-0">
                                     <select class="form-control input-form input-contacto-principal" name="tickets[tipoServicioId]">
-                                        <option hidden>Seleccionar Tipo de Ticket</option>
+                                        <option hidden>Seleccionar Categoría de Ticket</option>
                                         <?php echo $tipos_servicios; ?>
                                     </select>
                                 </div>

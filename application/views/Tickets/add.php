@@ -41,9 +41,9 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-12 col-md-12 pl-0">
-                                            <span class="floating-label-text">Tipo de ticket</span>
+                                            <span class="floating-label-text">Categoría de ticket</span>
                                             <select class="form-control input-form" id="tipoServicioId" name="users[tipoServicioId]" required <?php echo $readonly_attr; ?>>
-                                                <option hidden>Seleccionar tipo de ticket</option>
+                                                <option hidden>Seleccionar categoría de ticket</option>
                                                 <?php echo $tipos_servicios; ?>
                                             </select>
                                         </div>

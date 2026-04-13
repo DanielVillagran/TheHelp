@@ -29,7 +29,7 @@
 
                                     <div class="col-lg-6 col-md-6">
                                         <div class="d-btn-agregar">
-                                            <a id="btn_add_new" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar Tipo de Ticket</a>
+                                            <a id="btn_add_new" class="btn add-row btn-agregar"><i class="fa fa-plus"></i>Agregar Categoría de Ticket</a>
                                         </div>
                                     </div>
                                 </div>
