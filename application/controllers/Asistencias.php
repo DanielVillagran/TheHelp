@@ -218,6 +218,7 @@ class Asistencias extends ANT_Controller
 	function decode_qr_colaborador()
 	{
 		date_default_timezone_set("America/Mexico_City");
+		$fecha_actual = date('Y-m-d');
 		$token = trim((string)$this->input->post('token'));
 		$lat = $this->input->post('lat');
 		$lng = $this->input->post('lng');
@@ -261,13 +262,27 @@ class Asistencias extends ANT_Controller
 			]);
 			return;
 		} else {
+			$asistencia_valida = Asistencias_Validas_Model::Load([
+				'select' => 'id',
+				'where' => 'colaborador_id=' . intval($colaborador->id) . ' AND fecha="' . $fecha_actual . '"',
+				'result' => '1row'
+			]);
+
+			if ($asistencia_valida) {
+				$this->output_json([
+					'status' => false,
+					'mensaje' => 'Ya existe un registro para este colaborador en la fecha ' . $fecha_actual . '.'
+				]);
+				return;
+			}
+
 			Asistencias_Validas_Model::Insert([
 				'colaborador_id' => $colaborador->id,
 				'user_id' => $this->tank_auth->get_user_id(),
 				'lat' => $lat,
 				'lng' => $lng,
 				'sede_id' => $sede_id,
-				'fecha' => date('Y-m-d')
+				'fecha' => $fecha_actual
 			]);
 		}
 
