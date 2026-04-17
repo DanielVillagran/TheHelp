@@ -228,7 +228,8 @@ class Empresas extends ANT_Controller
 			foreach ($aux as $a) {
 				$botones = '
 				<button type="button" class="btn btn-default row-delete" rel="' . $a['id'] . '"><i class="fa fa-trash"></i></button>
-				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>';
+				<button type="button" class="btn btn-default row-edit" rel="' . $a['id'] . '"><i class="fa fa-pencil"></i></button>
+				<button type="button" class="btn btn-default row-qr" rel="' . $a['id'] . '"><i class="fa fa-qrcode"></i></button>';
 				$data['table'] .= '<tr>
 				<td>' . $a['nombre'] . '</td>
 			<td class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td></tr>';
@@ -458,6 +459,52 @@ class Empresas extends ANT_Controller
 		} else {
 		}
 		$this->output_json($data);
+	}
+	public function qr_generator_sede($id)
+	{
+		$this->load->library('ciqrcode');
+		$this->load->library('qr_tokenizer');
+		$sede = Empresas_Sedes_Model::Load([
+			'select' => 'id, nombre, empresa_id',
+			'where' => 'id=' . intval($id),
+			'result' => '1row'
+		]);
+		if (!$sede) {
+			show_error("Sede no encontrada", 404);
+			return;
+		}
+
+		$secret = getenv('QR_SEDE_TOKEN') ?: '';
+		if ($secret === '') {
+			show_error("No se encontro el secreto QR_SEDE_TOKEN.", 500);
+			return;
+		}
+
+		$token = $this->qr_tokenizer->encode($sede->id, $secret);
+		if ($token === false) {
+			show_error("No fue posible tokenizar el identificador.", 500);
+			return;
+		}
+
+		$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+		$host = $_SERVER['HTTP_HOST'] ?? '';
+		if ($host === '') {
+			show_error("No fue posible detectar el dominio actual.", 500);
+			return;
+		}
+
+		$qr_url = $scheme . '://' . $host . '/QrAcceso/sede?token=' . rawurlencode($token);
+		$png = $this->ciqrcode->generate($qr_url);
+		if ($png === false) {
+			show_error("No fue posible generar el QR", 500);
+			return;
+		}
+
+		$file_name = 'qr_sede_' . $sede->id . '.png';
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="' . $file_name . '"');
+		header('Content-Length: ' . strlen($png));
+		echo $png;
 	}
 	function get_Empresas_asistencias()
 	{

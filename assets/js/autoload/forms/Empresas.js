@@ -791,6 +791,12 @@ $("#sedes_grid")
             },
         });
     });
+$("#sedes_grid")
+    .footable()
+    .on("click", ".row-qr", function (e) {
+        e.preventDefault();
+        window.open("/Empresas/qr_generator_sede/" + $(this).attr("rel"), "_blank");
+    });
 
 function actualizarCostos() {
     const valor = parseFloat($("#costo_unitario").val());
