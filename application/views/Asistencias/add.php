@@ -27,6 +27,7 @@
 
                                     <form id="form-asistencias" enctype="multipart/form-data" onsubmit="save_Departamentos()" class="form-agregar-Intereses">
                                         <input type="hidden" name="users[id]" id="id" class="form-control" value="<?php echo $id; ?>" />
+                                        <input type="hidden" name="finalizar_asistencias" id="finalizar_asistencias" value="0" />
 
                                         <div class="form-group col-lg-6 col-md-6 pl-0">
                                             <div class="floating-label-group">
@@ -90,8 +91,12 @@
                                         </div>
                                         <legend></legend>
 
-                                        <div style="margin-top: 15px" class="form-group col-lg-12 col-md-12 pl-0">
-                                            <button type="submit" class="btn btn-guardar next-step">Guardar</button>
+                                        <div id="acciones_asistencias" style="margin-top: 15px; display:none;" class="form-group col-lg-12 col-md-12 pl-0">
+                                            <div id="asistencias_finalizadas_msg" class="alert alert-warning" style="display:none; margin-bottom:15px;">
+                                                Las asistencias de esta fecha ya fueron finalizadas y no se pueden modificar.
+                                            </div>
+                                            <button type="submit" id="btn_guardar_asistencias" class="btn btn-guardar next-step">Guardar</button>
+                                            <button type="submit" id="btn_guardar_finalizar_asistencias" class="btn btn-guardar next-step">Guardar y finalizar</button>
                                         </div>
                                     </form>
 

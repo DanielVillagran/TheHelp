@@ -4,6 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class QrAcceso extends ANT_Controller
 {
+	private $horas_minimas_relectura_qr = 2;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -167,7 +169,7 @@ class QrAcceso extends ANT_Controller
 		}
 
 		$colaborador = Colaboradores_Model::Load([
-			'select' => 'id, codigo, nombre, apellido_paterno, apellido_materno, cliente, sede',
+			'select' => 'id, codigo, nombre, apellido_paterno, apellido_materno, cliente, sede, puesto, horario_id',
 			'where' => 'id=' . intval($colaborador_id),
 			'result' => '1row'
 		]);
@@ -196,21 +198,16 @@ class QrAcceso extends ANT_Controller
 			return;
 		}
 
-		$asistencia_valida = Asistencias_Validas_Model::Load([
-			'select' => 'id',
-			'where' => 'colaborador_id=' . intval($colaborador->id) . ' AND fecha="' . $fecha_actual . '"',
-			'result' => '1row'
-		]);
-
-		if ($asistencia_valida) {
+		$validacion_relectura = $this->validar_relectura_qr($colaborador->id, $fecha_actual);
+		if (!$validacion_relectura['status']) {
 			$this->output_json([
 				'status' => false,
-				'mensaje' => 'Ya existe un registro para este colaborador en la fecha ' . $fecha_actual . '.'
+				'mensaje' => $validacion_relectura['mensaje']
 			]);
 			return;
 		}
 
-		Asistencias_Validas_Model::Insert([
+		$insert_result = Asistencias_Validas_Model::Insert([
 			'colaborador_id' => $colaborador->id,
 			'user_id' => null,
 			'lat' => $lat,
@@ -219,6 +216,24 @@ class QrAcceso extends ANT_Controller
 			'fecha' => $fecha_actual
 		]);
 
+		$detalle_resultado = $this->registrar_detalle_qr_asistencia(
+			$colaborador,
+			$fecha_actual,
+			$sede_id,
+			$empresa_id,
+			!empty($validacion_relectura['doble_registro'])
+		);
+		if (!$detalle_resultado['status']) {
+			if (!empty($insert_result['insert_id'])) {
+				Asistencias_Validas_Model::Delete('id=' . intval($insert_result['insert_id']));
+			}
+			$this->output_json([
+				'status' => false,
+				'mensaje' => $detalle_resultado['mensaje']
+			]);
+			return;
+		}
+
 		$this->output_json([
 			'status' => true,
 			'mensaje' => 'QR valido.',
@@ -226,6 +241,240 @@ class QrAcceso extends ANT_Controller
 			'codigo' => $colaborador->codigo,
 			'nombre' => trim($colaborador->nombre . ' ' . $colaborador->apellido_paterno . ' ' . $colaborador->apellido_materno)
 		]);
+	}
+
+	private function registrar_detalle_qr_asistencia($colaborador, $fecha_actual, $sede_id, $empresa_id, $doble_registro = false)
+	{
+		$empresa_colaborador = intval($colaborador->cliente);
+		$puesto_id = intval($colaborador->puesto);
+		$horario_id = intval($colaborador->horario_id);
+		$sede_asociada = intval($colaborador->sede);
+		$sede_id = intval($sede_id);
+		$empresa_id = intval($empresa_id);
+
+		if ($empresa_colaborador <= 0 || $puesto_id <= 0 || $horario_id <= 0) {
+			return [
+				'status' => false,
+				'mensaje' => 'El colaborador no tiene empresa, puesto u horario configurado.'
+			];
+		}
+
+		if ($empresa_id > 0 && $empresa_colaborador !== $empresa_id) {
+			return [
+				'status' => false,
+				'mensaje' => 'El colaborador no pertenece a la empresa de esta sede.'
+			];
+		}
+
+		if ($sede_asociada > 0 && $sede_asociada !== $sede_id) {
+			return [
+				'status' => false,
+				'mensaje' => 'El colaborador no pertenece a la sede del registro.'
+			];
+		}
+
+		$puesto_horario = Empresas_Puestos_Horarios_Model::Load([
+			'select' => 'id',
+			'where' => 'empresa_id=' . $empresa_colaborador .
+				' AND sede_id=' . $sede_id .
+				' AND puesto_id=' . $puesto_id .
+				' AND horario_id=' . $horario_id .
+				' AND status=1',
+			'result' => '1row'
+		]);
+		if (!$puesto_horario) {
+			return [
+				'status' => false,
+				'mensaje' => 'No existe una configuracion activa de puesto y horario para este colaborador en la sede.'
+			];
+		}
+
+		$horario_cubierto = Empresas_Horarios_Cubiertos_Model::Load([
+			'select' => 'id',
+			'where' => 'empresa_id=' . $empresa_colaborador . ' AND sede_id=' . $sede_id . ' AND fecha="' . $fecha_actual . '"',
+			'result' => '1row'
+		]);
+		if (!$horario_cubierto) {
+			$insertado = Empresas_Horarios_Cubiertos_Model::Insert([
+				'empresa_id' => $empresa_colaborador,
+				'sede_id' => $sede_id,
+				'fecha' => $fecha_actual
+			]);
+			$horario_cubierto_id = isset($insertado['insert_id']) ? intval($insertado['insert_id']) : 0;
+		} else {
+			$horario_cubierto_id = intval($horario_cubierto->id);
+		}
+
+		if ($horario_cubierto_id <= 0) {
+			return [
+				'status' => false,
+				'mensaje' => 'No fue posible crear el registro principal de asistencias.'
+			];
+		}
+
+		$prefijo_tipo = 'A';
+		$tipo_asistencia = Asistencias_Tipo_Model::Load([
+			'select' => 'id',
+			'where' => "prefijo='" . $prefijo_tipo . "'",
+			'result' => '1row'
+		]);
+		if (!$tipo_asistencia) {
+			return [
+				'status' => false,
+				'mensaje' => 'No existe el tipo de asistencia con prefijo ' . $prefijo_tipo . '.'
+			];
+		}
+
+		$detalle_existente = Empresas_Horarios_Cubiertos_Detalle_Model::Load([
+			'select' => 'empresas_horarios_cubiertos_detalle.id, at.prefijo as asistencia_prefijo',
+			'where' => 'horario_cubierto_id=' . $horario_cubierto_id . ' AND colaborador_id=' . intval($colaborador->id),
+			'joinsLeft' => [
+				'asistencias_tipos as at' => 'at.id=empresas_horarios_cubiertos_detalle.asistencia_tipo_id'
+			],
+			'result' => '1row',
+			'sortBy' => 'id',
+			'sortDirection' => 'asc'
+		]);
+
+		if ($doble_registro) {
+			if ($detalle_existente) {
+				if ($detalle_existente->asistencia_prefijo === 'F') {
+					Empresas_Horarios_Cubiertos_Detalle_Model::Update([
+						'puesto_horario_id' => intval($puesto_horario->id),
+						'asistencia_tipo_id' => intval($tipo_asistencia->id),
+						'horas_extras' => null,
+						'confirmar_dl' => 0
+					], 'id=' . intval($detalle_existente->id));
+				}
+			} else {
+				Empresas_Horarios_Cubiertos_Detalle_Model::Insert([
+					'horario_cubierto_id' => $horario_cubierto_id,
+					'puesto_horario_id' => intval($puesto_horario->id),
+					'colaborador_id' => intval($colaborador->id),
+					'asistencia_tipo_id' => intval($tipo_asistencia->id),
+					'horas_extras' => null,
+					'confirmar_dl' => 0
+				]);
+			}
+
+			return $this->registrar_extra_qr_asistencia($colaborador, $fecha_actual, $sede_id, $empresa_colaborador);
+		} elseif ($detalle_existente && $detalle_existente->asistencia_prefijo === 'F') {
+			Empresas_Horarios_Cubiertos_Detalle_Model::Update([
+				'puesto_horario_id' => intval($puesto_horario->id),
+				'asistencia_tipo_id' => intval($tipo_asistencia->id),
+				'horas_extras' => null,
+				'confirmar_dl' => 0
+			], 'id=' . intval($detalle_existente->id));
+		} elseif (!$detalle_existente) {
+			Empresas_Horarios_Cubiertos_Detalle_Model::Insert([
+				'horario_cubierto_id' => $horario_cubierto_id,
+				'puesto_horario_id' => intval($puesto_horario->id),
+				'colaborador_id' => intval($colaborador->id),
+				'asistencia_tipo_id' => intval($tipo_asistencia->id),
+				'horas_extras' => null,
+				'confirmar_dl' => 0
+			]);
+		}
+
+		return [
+			'status' => true
+		];
+	}
+
+	private function registrar_extra_qr_asistencia($colaborador, $fecha_actual, $sede_id, $empresa_id)
+	{
+		$extra = [
+			'empresa_id' => intval($empresa_id),
+			'puesto_id' => intval($colaborador->puesto),
+			'sede_id' => intval($sede_id),
+			'horario_id' => intval($colaborador->horario_id),
+			'colaborador_id' => intval($colaborador->id),
+			'fecha' => $fecha_actual,
+			'confirmar_dl' => 0
+		];
+
+		$hasValue = Empresas_Horarios_Cubiertos_Extras_Model::Load([
+			'select' => 'id',
+			'result' => '1row',
+			'where' =>
+			'empresa_id = ' . $extra['empresa_id'] .
+				' AND puesto_id = ' . $extra['puesto_id'] .
+				' AND sede_id = ' . $extra['sede_id'] .
+				' AND horario_id = ' . $extra['horario_id'] .
+				' AND colaborador_id = ' . $extra['colaborador_id'] .
+				" AND fecha = '" . addslashes($extra['fecha']) . "'"
+		]);
+
+		if ($hasValue) {
+			return [
+				'status' => true
+			];
+		}
+
+		$result = Empresas_Horarios_Cubiertos_Extras_Model::Insert($extra);
+		if (empty($result['result'])) {
+			return [
+				'status' => false,
+				'mensaje' => 'No fue posible crear el registro extra de asistencia.'
+			];
+		}
+
+		return [
+			'status' => true
+		];
+	}
+
+	private function validar_relectura_qr($colaborador_id, $fecha_actual)
+	{
+		$ultima_asistencia = Asistencias_Validas_Model::Load([
+			'select' => 'id, created_at',
+			'where' => 'colaborador_id=' . intval($colaborador_id) . ' AND fecha="' . $fecha_actual . '"',
+			'result' => '1row',
+			'sortBy' => 'created_at',
+			'sortDirection' => 'desc'
+		]);
+
+		if (!$ultima_asistencia) {
+			return [
+				'status' => true,
+				'doble_registro' => false
+			];
+		}
+
+		if (empty($ultima_asistencia->created_at)) {
+			return [
+				'status' => false,
+				'mensaje' => 'Ya existe un registro para este colaborador en la fecha ' . $fecha_actual . '.'
+			];
+		}
+
+		$fecha_ultimo_registro = new DateTime($ultima_asistencia->created_at);
+		$fecha_actual_qr = new DateTime();
+		$segundos_transcurridos = $fecha_actual_qr->getTimestamp() - $fecha_ultimo_registro->getTimestamp();
+		$segundos_minimos = $this->horas_minimas_relectura_qr * 3600;
+
+		if ($segundos_transcurridos < $segundos_minimos) {
+			$segundos_restantes = $segundos_minimos - $segundos_transcurridos;
+			$horas_restantes = floor($segundos_restantes / 3600);
+			$minutos_restantes = ceil(($segundos_restantes % 3600) / 60);
+			$tiempo_restante = [];
+			if ($horas_restantes > 0) {
+				$tiempo_restante[] = $horas_restantes . ' hora' . ($horas_restantes === 1 ? '' : 's');
+			}
+			if ($minutos_restantes > 0) {
+				$tiempo_restante[] = $minutos_restantes . ' minuto' . ($minutos_restantes === 1 ? '' : 's');
+			}
+
+			return [
+				'status' => false,
+				'mensaje' => 'Ya existe un registro reciente para este colaborador. Deben pasar al menos ' . $this->horas_minimas_relectura_qr . ' horas entre lecturas. Tiempo restante: ' . implode(' ', $tiempo_restante) . '.'
+			];
+		}
+
+		return [
+			'status' => true,
+			'doble_registro' => true
+		];
 	}
 
 	private function get_radio_metros($post)

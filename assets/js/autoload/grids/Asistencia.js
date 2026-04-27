@@ -71,3 +71,37 @@ $('#groups_grid').footable().on('click', '.row-edit', function(e) {
     var Nombre = $(this).attr('nom');
     window.location.href = '/Asistencias/edit/' + idemp;
 });
+$('#groups_grid').footable().on('change', '.confirmar-dl', function(e) {
+    var idDetalle = $(this).data('id');
+    var confirmado = $(this).is(':checked') ? 1 : 0;
+    $.ajax({
+        url: "/Asistencias/confirmar_dl",
+        type: 'POST',
+        data: {
+            id: idDetalle,
+            confirmado: confirmado
+        },
+        dataType: 'json',
+        beforeSend: function() {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif"
+            });
+        },
+        success: function(data) {
+            swal.close();
+            if (data && data.status) {
+                grid_load_data();
+            } else {
+                swal('Error!', (data && data.mensaje) ? data.mensaje : 'No fue posible actualizar el detalle.', 'error');
+                grid_load_data();
+            }
+        },
+        error: function() {
+            swal.close();
+            swal('Error!', 'No fue posible actualizar el detalle.', 'error');
+            grid_load_data();
+        }
+    });
+});

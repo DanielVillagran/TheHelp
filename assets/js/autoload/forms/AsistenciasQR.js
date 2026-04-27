@@ -1,4 +1,6 @@
 var states = "";
+var COLOR_DL_PENDIENTE = '#fff3cd';
+var COLOR_FALTA = '#f4b183';
 var qrScanner = null;
 var qrScannerActivo = false;
 var ultimoQrLeido = null;
@@ -345,6 +347,26 @@ function toggleColaboradorSelect($tipoSelect) {
     } else {
         $heInput.prop('readonly', true).val('');
     }
+
+    syncFaltaRow($row);
+}
+
+function syncFaltaRow($row) {
+    var esDL = String($row.find('select[name^="tipos["]').val() || '') === '9';
+    var esFalta = getTipoAsistenciaPrefijo($row) === 'F';
+    $row.children('td').each(function () {
+        this.style.removeProperty('background-color');
+        if (esDL) {
+            this.style.setProperty('background-color', COLOR_DL_PENDIENTE, 'important');
+        } else if (esFalta) {
+            this.style.setProperty('background-color', COLOR_FALTA, 'important');
+        }
+    });
+}
+
+function getTipoAsistenciaPrefijo($row) {
+    var texto = $.trim($row.find('select[name^="tipos["] option:selected').text() || '');
+    return texto.split('-')[0].trim();
 }
 
 function grid_load_data() {
@@ -484,6 +506,74 @@ function delete_extra(idemp) {
 
     });
 }
+function update_extra_horario(select) {
+    var $select = $(select);
+    $.ajax({
+        url: "/Asistencias/update_extra_horario",
+        type: 'POST',
+        data: {
+            id: $select.data('id'),
+            horario_id: $select.val()
+        },
+        dataType: 'json',
+        beforeSend: function () {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif"
+            });
+        },
+        success: function (data) {
+            swal.close();
+            if (!data || data.status !== 'ok') {
+                swal('Error!', (data && data.mensaje) ? data.mensaje : 'No fue posible actualizar el horario.', 'error');
+            }
+            grid_load_data();
+        },
+        error: function () {
+            swal.close();
+            swal('Error!', 'No fue posible actualizar el horario.', 'error');
+            grid_load_data();
+        }
+    });
+}
+function confirmar_extra_dl(checkbox) {
+    var $checkbox = $(checkbox);
+    $.ajax({
+        url: "/Asistencias/confirmar_extra_dl",
+        type: 'POST',
+        data: {
+            id: $checkbox.data('id'),
+            confirmado: $checkbox.is(':checked') ? 1 : 0
+        },
+        dataType: 'json',
+        beforeSend: function () {
+            swal({
+                title: "Cargando",
+                showConfirmButton: false,
+                imageUrl: "/assets/images/loader.gif"
+            });
+        },
+        success: function (data) {
+            swal.close();
+            if (!data || !data.status) {
+                swal('Error!', (data && data.mensaje) ? data.mensaje : 'No fue posible confirmar el extra.', 'error');
+            }
+            grid_load_data();
+        },
+        error: function () {
+            swal.close();
+            swal('Error!', 'No fue posible confirmar el extra.', 'error');
+            grid_load_data();
+        }
+    });
+}
 $(document).on('change', 'select[name^="tipos["]', function () {
     toggleColaboradorSelect($(this));
+});
+$(document).on('change', '.extra-horario-select', function () {
+    update_extra_horario(this);
+});
+$(document).on('change', '.confirmar-extra-dl-toggle', function () {
+    confirmar_extra_dl(this);
 });
