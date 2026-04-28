@@ -390,6 +390,7 @@ class QrAcceso extends ANT_Controller
 			'horario_id' => intval($colaborador->horario_id),
 			'colaborador_id' => intval($colaborador->id),
 			'fecha' => $fecha_actual,
+			'requiere_confirmar_dl' => 1,
 			'confirmar_dl' => 0
 		];
 
@@ -406,6 +407,9 @@ class QrAcceso extends ANT_Controller
 		]);
 
 		if ($hasValue) {
+			Empresas_Horarios_Cubiertos_Extras_Model::Update([
+				'requiere_confirmar_dl' => 1
+			], 'id=' . intval($hasValue->id) . ' AND IFNULL(requiere_confirmar_dl,0)!=1');
 			return [
 				'status' => true
 			];

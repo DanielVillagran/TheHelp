@@ -62,9 +62,11 @@
                                         </div>
                                         <legend></legend>
                                         <div class="form-group col-lg-12 col-md-12 pl-0">
-                                            <div style="margin-top: 15px; display:none" id="addExtra" class="form-group col-lg-12 col-md-12 pl-0 text-right">
-                                                <button type="button" id="btn_add_new_extra" class="btn btn-guardar next-step">Agregar extra</button>
-                                            </div>
+                                            <?php if ($this->tank_auth->user_has_privilege('Agregar asistencias extras')) : ?>
+                                                <div style="margin-top: 15px; display:none" id="addExtra" class="form-group col-lg-12 col-md-12 pl-0 text-right">
+                                                    <button type="button" id="btn_add_new_extra" class="btn btn-guardar next-step">Agregar extra</button>
+                                                </div>
+                                            <?php endif; ?>
                                             <div class="table-responsive d-table-lg">
                                                 <table id="asistencias_grid" class="table table-lg" data-filter="#filter" data-filter-text-only="true" data-page-size="10" data-limit-navigation="10">
                                                     <thead>

@@ -159,20 +159,21 @@ class Asistencias extends ANT_Controller
 			$aux = Empresas_Horarios_Cubiertos_Extras_Model::get_grid_info('empresas_horarios_cubiertos_extras.empresa_id=' .  $datos->empresa_id .
 				' AND empresas_horarios_cubiertos_extras.sede_id=' . $datos->sede_id .
 				' AND empresas_horarios_cubiertos_extras.fecha="' .  $datos->fecha . '"');
-			if ($aux) {
-				foreach ($aux as $a) {
-					$clase = 'style="background-color:#aedcae !important;"';
-					$data['table'] .= '<tr>
-					<td ' . $clase . '>' . (empty($a['horario']) ? " FALTA" : $a['horario']) . '</td>
-					<td ' . $clase . '>' . (empty($a['codigo']) ? " FALTA" : $a['codigo']) . '</td>
-					<td ' . $clase . '>' . $a['nombre'] . '</td>
-					<td ' . $clase . '>' . $a['apellido_paterno'] . '</td>
-					<td ' . $clase . '>' . $a['apellido_materno'] . '</td>
-					<td ' . $clase . '>' . $a['puesto'] . ' - EXTRA' .  '</td>
-					<td ' . $clase . '>' . '</td>
-					<td ' . $clase . '>' . '</td>
-					</tr>';
-				}
+				if ($aux) {
+					foreach ($aux as $a) {
+						$clase = 'style="background-color:#aedcae !important;"';
+						$tipo_extra_texto = (isset($a['requiere_confirmar_dl']) && intval($a['requiere_confirmar_dl']) === 1) ? 'Descanso laborado' : 'Extra';
+						$data['table'] .= '<tr>
+						<td ' . $clase . '>' . (empty($a['horario']) ? " FALTA" : $a['horario']) . '</td>
+						<td ' . $clase . '>' . (empty($a['codigo']) ? " FALTA" : $a['codigo']) . '</td>
+						<td ' . $clase . '>' . $a['nombre'] . '</td>
+						<td ' . $clase . '>' . $a['apellido_paterno'] . '</td>
+						<td ' . $clase . '>' . $a['apellido_materno'] . '</td>
+						<td ' . $clase . '>' . $a['puesto'] . ' - ' . $tipo_extra_texto .  '</td>
+						<td ' . $clase . '>' . $tipo_extra_texto . '</td>
+						<td ' . $clase . '>' . '</td>
+						</tr>';
+					}
 			}
 		}
 		if ($data['table'] == "") {
@@ -229,6 +230,7 @@ class Asistencias extends ANT_Controller
 	{
 		date_default_timezone_set("America/Mexico_City");
 		$fecha_actual = date('Y-m-d');
+		//$fecha_actual = "2026-05-05";
 		$token = trim((string)$this->input->post('token'));
 		$lat = $this->input->post('lat');
 		$lng = $this->input->post('lng');
@@ -462,6 +464,7 @@ class Asistencias extends ANT_Controller
 			'horario_id' => intval($colaborador->horario_id),
 			'colaborador_id' => intval($colaborador->id),
 			'fecha' => $fecha_actual,
+			'requiere_confirmar_dl' => 1,
 			'confirmar_dl' => 0
 		];
 
@@ -478,6 +481,9 @@ class Asistencias extends ANT_Controller
 		]);
 
 		if ($hasValue) {
+			Empresas_Horarios_Cubiertos_Extras_Model::Update([
+				'requiere_confirmar_dl' => 1
+			], 'id=' . intval($hasValue->id) . ' AND IFNULL(requiere_confirmar_dl,0)!=1');
 			return [
 				'status' => true
 			];
@@ -755,12 +761,18 @@ class Asistencias extends ANT_Controller
 					$botones = '
 					<button type="button" class="btn btn-default row-delete" onclick="delete_extra(' . $a['id'] . ')"><i class="fa fa-trash"></i></button>';
 					$horarios_extra_options = $this->set_selected_option($data['select_horarios'], $a['horario_id']);
+					$requiere_confirmar_extra_dl = isset($a['requiere_confirmar_dl']) ? intval($a['requiere_confirmar_dl']) : 0;
 					$confirmar_extra_dl = isset($a['confirmar_dl']) ? intval($a['confirmar_dl']) : 0;
-					$extra_cell_style = $confirmar_extra_dl === 1 ? '' : ' style="background-color:#fff3cd !important;"';
-					$confirmar_extra_dl_html = '<label style="margin:0; display:flex; align-items:center; justify-content:center; gap:6px;">
-						<input type="checkbox" class="confirmar-extra-dl-toggle" data-id="' . $a['id'] . '" ' . ($confirmar_extra_dl === 1 ? 'checked' : '') . '>
-						<span>Confirmar DL</span>
-					</label>';
+					$extra_dl_pendiente = ($requiere_confirmar_extra_dl === 1 && $confirmar_extra_dl !== 1);
+					$extra_cell_style = $extra_dl_pendiente ? ' style="background-color:#fff3cd !important;"' : '';
+					$confirmar_extra_dl_html = '';
+					if ($requiere_confirmar_extra_dl === 1) {
+						$confirmar_extra_dl_html = '<label style="margin:0; display:flex; align-items:center; justify-content:center; gap:6px;">
+							<input type="checkbox" class="confirmar-extra-dl-toggle" data-id="' . $a['id'] . '" ' . ($confirmar_extra_dl === 1 ? 'checked' : '') . '>
+							<span>Confirmar DL</span>
+						</label>';
+					}
+					$tipo_extra_texto = $requiere_confirmar_extra_dl === 1 ? 'Descanso laborado' : 'Extra';
 
 					$data['table'] .= '<tr>
 							<td' . $extra_cell_style . '><select class="form-control input-form extra-horario-select" data-id="' . $a['id'] . '">
@@ -768,7 +780,7 @@ class Asistencias extends ANT_Controller
 							</select></td>
 							<td' . $extra_cell_style . '>' . $a['puesto'] . '</td>
 							<td' . $extra_cell_style . '>' . $a['colaborador'] . '</td>
-							<td' . $extra_cell_style . '>Extra</td>
+							<td' . $extra_cell_style . '>' . $tipo_extra_texto . '</td>
 							<td' . $extra_cell_style . '></td>
 							<td' . $extra_cell_style . '>' . $confirmar_extra_dl_html . '</td>
 							<td' . $extra_cell_style . ' class="td-center"><div class="btn-toolbar"><div class="btn-group btn-group-sm">' . $botones . '</div></div></td>
@@ -985,14 +997,15 @@ class Asistencias extends ANT_Controller
 				return;
 			}
 			$id = $hasValue->id;
-			$extras_sin_confirmar = Empresas_Horarios_Cubiertos_Extras_Model::Load([
-				'select' => 'id',
-				'result' => '1row',
-				'where' => 'empresa_id=' . intval($empresa_id) .
-					' AND sede_id=' . intval($sede_id) .
-					" AND fecha='" . addslashes($fecha) . "'" .
-					' AND IFNULL(confirmar_dl,0)!=1'
-			]);
+				$extras_sin_confirmar = Empresas_Horarios_Cubiertos_Extras_Model::Load([
+					'select' => 'id',
+					'result' => '1row',
+					'where' => 'empresa_id=' . intval($empresa_id) .
+						' AND sede_id=' . intval($sede_id) .
+						" AND fecha='" . addslashes($fecha) . "'" .
+						' AND IFNULL(requiere_confirmar_dl,0)=1' .
+						' AND IFNULL(confirmar_dl,0)!=1'
+				]);
 			if ($extras_sin_confirmar) {
 				$this->output_json([
 					'status' => 'error',
@@ -1039,6 +1052,7 @@ class Asistencias extends ANT_Controller
 	function save_extra()
 	{
 		$post = $this->input->post('puesto');
+		$post['requiere_confirmar_dl'] = isset($post['requiere_confirmar_dl']) ? intval($post['requiere_confirmar_dl']) : 0;
 		$post['confirmar_dl'] = isset($post['confirmar_dl']) ? intval($post['confirmar_dl']) : 0;
 		$horario_cubierto = $this->get_horario_cubierto($post['empresa_id'], $post['sede_id'], $post['fecha']);
 		if ($horario_cubierto && intval($horario_cubierto->finalizado) === 1) {
